@@ -17,7 +17,7 @@
                 color: #B0BEC5;
                 display: table;
                 font-weight: 100;
-                font-family: 'Lato', sans-serif;
+                font-family: 'Lato';
             }
 
             .container {
@@ -40,7 +40,9 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Be right back.</div>
+                <div class="title">
+                    <h1>Be right back.</h1>
+                </div>
             </div>
         </div>
     </body>
