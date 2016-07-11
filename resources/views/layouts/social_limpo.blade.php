@@ -19,6 +19,18 @@
     
     <link href="assets/css/application.css" rel="stylesheet">
 
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/chart.js"></script>
+    <script src="assets/js/toolkit.js"></script>
+    <script src="assets/js/application.js"></script>
+    <script>
+      // execute/clear BS loaders for docs
+      $(function(){
+        if (window.BS&&window.BS.loader&&window.BS.loader.length) {
+          while(BS.loader.length){(BS.loader.pop())()}
+        }
+      })
+  </script>
     <style>
       /* note: this is a hack for ios iframe for bootstrap themes shopify page */
       /* this chunk of css is not part of the toolkit :) */
@@ -37,17 +49,6 @@
 	@yield('content')
 
 
-	<script src="assets/js/jquery.min.js"></script>
-	<script src="assets/js/chart.js"></script>
-	<script src="assets/js/toolkit.js"></script>
-	<script src="assets/js/application.js"></script>
-	<script>
-	  // execute/clear BS loaders for docs
-	  $(function(){
-	    if (window.BS&&window.BS.loader&&window.BS.loader.length) {
-	      while(BS.loader.length){(BS.loader.pop())()}
-	    }
-	  })
-</script>
+	
 </body>
 </html>

@@ -25,6 +25,28 @@
       }
     </style>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
+ 	<script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/chart.js"></script>
+    <script src="assets/js/toolkit.js"></script>
+    <script src="assets/js/application.js"></script>
+    
+    <script>
+      // execute/clear BS loaders for docs
+      $(function(){
+        if (window.BS&&window.BS.loader&&window.BS.loader.length) {
+          while(BS.loader.length){(BS.loader.pop())()}
+        }
+      })
+    </script>
+
+    <script type="text/javascript">
+      $('#imageEdit').click(function(){
+        alert('ui');
+        $('#divImage').show();
+      });      
+    </script>
+
   </head>
 
 
@@ -100,26 +122,6 @@
 @yield('content')
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
- 	<script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/toolkit.js"></script>
-    <script src="assets/js/application.js"></script>
-    
-    <script>
-      // execute/clear BS loaders for docs
-      $(function(){
-        if (window.BS&&window.BS.loader&&window.BS.loader.length) {
-          while(BS.loader.length){(BS.loader.pop())()}
-        }
-      })
-    </script>
-
-    <script type="text/javascript">
-      $('#imageEdit').click(function(){
-        alert('ui');
-        $('#divImage').show();
-      });      
-    </script>
+	
   </body>
 </html>

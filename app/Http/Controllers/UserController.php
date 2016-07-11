@@ -28,5 +28,19 @@ class UserController extends Controller
 
     	return view('profile', array('user' => Auth::user()));
     }
+
+     public function add_categoria(Request $request){
+
+        if($request->has('categoria')){
+            $texto = $request->input('categoria');
+
+            $categoria = new Categoria;
+            $categoria->user_id = Auth::user()->id;            
+            $categoria->texto = $texto;
+            //$categoria->save();
+        }
+        
+        return redirect('/profile');
+    }
     
 }

@@ -1,17 +1,6 @@
 @extends('layouts.social')
 
 @section('content')
-<!-- <form enctype="multipart/form-data" action="/profile" method="post">
-    <label>Update Profile Image</label>
-    <input type="file" name="avatar">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <input type="submit" class="pull-right btn btn-sm btn-primary" value="Update Image">
-</form> -->
-
-<!-- <img class="cu qh" src="/uploads/avatars/{{ Auth::user()->avatar }}">
-      <h3 class="anv">{{ Auth::user()->name }}</h3> -->
-
-
 <div class="by amt">
   <div class="gc">
 
@@ -28,7 +17,7 @@
             <p id="imageEdit">edit image</p>
             <div style="display:none" id="divImage">
               <form enctype="multipart/form-data" action="/profile" method="post">                
-                  <input type="file" name="avatar" value="n">
+                  <input type="file" name="avatar">
                   
                   <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
                   <button type="submit" class="cg fm"><span class="h xi"></span></button>
@@ -91,63 +80,112 @@
           </ul>
         </div>
       </div>
+
     </div>
 
     <div class="gz">
-      <ul class="ca qo anx">
-        <li class="b aml">
-          <h3 class="alc">Yours Taks</h3>
-        </li>
+      <ul class="nav ol">
+        <li class="active"><a data-toggle="tab" href="#home">Pessoal</a></li>
+        <li><a data-toggle="tab" href="#menu1">+</a></li>        
+      </ul>      
 
-        <li class="qf b aml">          
-            <input type="text" class="form-control" placeholder="Message">
-        </li>
+      <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">        
 
-        <li class="b qf aml">
-          <div class="qj">
-            <span class="h abv dp"></span>
-          </div>
+          <ul class="ca qo anx">
+            <li class="b aml">
+              <h3 class="alc">Suas Tarefas</h3>
+            </li>
 
-          <div class="qg">
-            <small class="eg dp">1 min</small>
-            <div class="qn">
-              <a href="#"><strong>Dave Gamache</strong></a> went traveling
-            </div>
+            <li class="qf b aml">                          
+                <form enctype="multipart/form-data" action="/tarefa/adiciona" method="post">                
+                  <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva sua tarefa">
+                  <input type="hidden" id="isPrivado" value="0">
+                  <button class="cg ts fx" type="button" id="privado">
+                    <span class="h vc"></span> 
+                    Privado
+                  </button>               
+                  
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
+                  <button type="submit" class="cg fm">Salvar</button>                
+                </form> 
+                <script type="text/javascript">
+                    $('#privado').click(function(){                      
+                      if($('#isPrivado').val() == '1'){
+                        var texto = $('#texto').val();
+                        var textoSemPrivado = texto.replace("#privado", "");
+                        $('#texto').val(textoSemPrivado); 
+                        $('#isPrivado').val('0');
+                      }else{
+                        $('#texto').val($('#texto').val() + " #privado");
+                        $('#isPrivado').val('1');
+                      }
+                    });
+                </script>
+            </li>
 
-          </div>
-        </li>
+            <li class="b qf aml">
+              <div class="qj">
+                <span class="h abv dp"></span>
+              </div>
 
-        <li class="b qf aml">
-          <div class="qj">
-            <span class="h abr dp"></span>
-          </div>
+              <div class="qg">
+                <small class="eg dp">1 min</small>
+                <div class="qn">
+                  <a href="#"><strong>Dave Gamache</strong></a> went traveling
+                </div>
 
-          <div class="qg">
-            <small class="eg dp">3 min</small>
-            <div class="qn">
-              <a href="#"><strong>Mark Otto</strong></a> played destiny
-            </div>
+              </div>
+            </li>
 
-          </div>
-        </li>
+            <li class="b qf aml">
+              <div class="qj">
+                <span class="h abr dp"></span>
+              </div>
 
-        <li class="b qf aml">
-          <div class="qj">
-            <span class="h ajv dp"></span>
-          </div>
+              <div class="qg">
+                <small class="eg dp">3 min</small>
+                <div class="qn">
+                  <a href="#"><strong>Mark Otto</strong></a> played destiny
+                </div>
 
-          <div class="qg">
-            <small class="eg dp">34 min</small>
-            <div class="qn">
-              <a href="#"><strong>Fat</strong></a> and <a href="#"><strong>1 other</strong></a> followed you
-            </div>
-            <ul class="ano">
-              <li class="anp"><img class="cu" src="../assets/img/avatar-fat.jpg">
-              <li class="anp"><img class="cu" src="../assets/img/avatar-dhg.png">
-            </ul>
-          </div>
-        </li>
-      </ul>
+              </div>
+            </li>
+
+            <li class="b qf aml">
+              <div class="qj">
+                <span class="h ajv dp"></span>
+              </div>
+
+              <div class="qg">
+                <small class="eg dp">34 min</small>
+                <div class="qn">
+                  <a href="#"><strong>Fat</strong></a> and <a href="#"><strong>1 other</strong></a> followed you
+                </div>
+                <ul class="ano">
+                  <li class="anp"><img class="cu" src="../assets/img/avatar-fat.jpg">
+                  <li class="anp"><img class="cu" src="../assets/img/avatar-dhg.png">
+                </ul>
+              </div>
+            </li>
+          </ul>
+          
+        </div>
+        <div id="menu1" class="tab-pane fade">
+          <h3>Nova Categoria</h3>          
+           <form  action="/profile/novaCategoria" method="post">                
+                <input type="text" name="categoria" placehold="Nova categoria">
+                
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
+                <button type="submit" class="cg fm">Salvar</button>
+                <!-- <input type="submit" class="pull-right btn btn-sm btn-primary" value="Update Image"> -->
+            </form> 
+        </div>
+      </div>
+
+      
+
+
     </div>
 
     <div class="gn">
