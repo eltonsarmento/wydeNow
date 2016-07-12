@@ -11,9 +11,9 @@
     <title>WydeNow</title>
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-    <link href="assets/css/toolkit.css" rel="stylesheet">
+    <link href="/assets/css/toolkit.css" rel="stylesheet">
     
-    <link href="assets/css/application.css" rel="stylesheet">
+    <link href="/assets/css/application.css" rel="stylesheet">
 
     <style>
       /* note: this is a hack for ios iframe for bootstrap themes shopify page */
@@ -26,10 +26,10 @@
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
- 	<script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/chart.js"></script>
-    <script src="assets/js/toolkit.js"></script>
-    <script src="assets/js/application.js"></script>
+ 	<script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/chart.js"></script>
+    <script src="/assets/js/toolkit.js"></script>
+    <script src="/assets/js/application.js"></script>
     
     <script>
       // execute/clear BS loaders for docs
@@ -62,7 +62,7 @@
 	        <span class="ov"></span>
 	      </button>
 	      <a class="e" href="{{ url('/home') }}">
-	        <img src="assets/img/brand-white.png" alt="brand">
+	        <img src="/assets/img/brand-white.png" alt="brand">
 	      </a>
 	    </div>
 	    <div class="f collapse" id="navbar-collapse-main">

@@ -7,7 +7,7 @@
     <div class="gn">
 
        <div class="qv rc aog alu">
-          <div class="qx" style="background-image: url(assets/img/iceland.jpg);"></div>
+          <div class="qx" style="background-image: url(/assets/img/iceland.jpg);"></div>
           <div class="qw dj">
             <a href="profile/index.html">
               <img class="aoh" src="/uploads/avatars/{{ Auth::user()->avatar }}">
@@ -85,104 +85,108 @@
 
     <div class="gz">
       <ul class="nav ol">
-        <li class="active"><a data-toggle="tab" href="#home">Pessoal</a></li>
+        @foreach($user->categorias as $categoria)
+          <li @if($categoriaSetada == $categoria->descricao) class="active" @endif ><a data-toggle="tab" href="#{{$categoria->descricao}}">{{$categoria->descricao}}</a></li>        
+        @endforeach
         <li><a data-toggle="tab" href="#menu1">+</a></li>        
       </ul>      
 
-      <div class="tab-content">
-        <div id="home" class="tab-pane fade in active">        
+      @foreach($user->categorias as $categoria)
+          <div class="tab-content">
+            <div id="{{$categoria->descricao}}" 
+              class="tab-pane fade 
+                  @if($categoriaSetada == $categoria->descricao) 
+                      in active
+                  @endif">        
 
-          <ul class="ca qo anx">
-            <li class="b aml">
-              <h3 class="alc">Suas Tarefas</h3>
-            </li>
+              <ul class="ca qo anx">
+                <li class="b aml">
+                  <h3 class="alc">Suas Tarefas</h3>
+                </li>
 
-            <li class="qf b aml">                          
-                <form enctype="multipart/form-data" action="/tarefa/adiciona" method="post">                
-                  <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva sua tarefa">
-                  <input type="hidden" id="isPrivado" value="0">
-                  <button class="cg ts fx" type="button" id="privado">
-                    <span class="h vc"></span> 
-                    Privado
-                  </button>               
-                  
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
-                  <button type="submit" class="cg fm">Salvar</button>                
+                <li class="qf b aml">                          
+                    <form enctype="multipart/form-data" action="/tarefa/adiciona" method="post">    
+                      <input type="hidden" name="categoria_id" value="{{$categoria->id}}">            
+                      <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva sua tarefa">
+                      <input type="hidden" id="isPrivado" value="0">
+                      <button class="cg ts fx" type="button" id="privado">
+                        <span class="h vc"></span> 
+                        Privado
+                      </button>               
+                      
+                      <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
+                      <button type="submit" class="cg fm">Salvar</button>                
+                    </form> 
+                    <script type="text/javascript">
+                        $('#privado').click(function(){                      
+                          if($('#isPrivado').val() == '1'){
+                            var texto = $('#texto').val();
+                            var textoSemPrivado = texto.replace("#privado", "");
+                            $('#texto').val(textoSemPrivado); 
+                            $('#isPrivado').val('0');
+                          }else{
+                            $('#texto').val($('#texto').val() + " #privado");
+                            $('#isPrivado').val('1');
+                          }
+                        });
+                    </script>
+                </li>
+
+                @foreach($user->tarefas as $tarefa)
+                    @if($categoria->id == $tarefa->categoria_id)
+                        <li class="b qf aml">
+                          <div class="qj">
+                            <span class="h 
+                                @if($tarefa->privado)
+                                  ajv
+                                @else
+                                  abv
+                                @endif
+                                 dp"></span>
+                          </div>
+
+                          <div class="qg">
+                            <small class="eg dp">{{ $tarefa->tempoCadastada}} </small>
+                            <div class="qn">
+                              <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
+                            </div>
+                          </div>
+                        </li>
+                    @endif
+                @endforeach
+               
+
+                    <li class="b qf aml">
+                      <div class="qj">
+                        <span class="h ajv dp"></span>
+                      </div>
+
+                      <div class="qg">
+                        <small class="eg dp">34 min</small>
+                        <div class="qn">
+                          <a href="#"><strong>Fat</strong></a> and <a href="#"><strong>1 other</strong></a> followed you
+                        </div>
+                        <ul class="ano">
+                          <li class="anp"><img class="cu" src="/assets/img/avatar-fat.jpg">
+                          <li class="anp"><img class="cu" src="/assets/img/avatar-dhg.png">
+                        </ul>
+                      </div>
+                    </li>
+              </ul>
+              
+            </div>
+            <div id="menu1" class="tab-pane fade">
+              <h3>Nova Categoria</h3>          
+               <form  action="/profile/novaCategoria" method="post">                
+                    <input type="text" name="categoria" placehold="Nova categoria">
+                    
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
+                    <button type="submit" class="cg fm">Salvar</button>
+                    <!-- <input type="submit" class="pull-right btn btn-sm btn-primary" value="Update Image"> -->
                 </form> 
-                <script type="text/javascript">
-                    $('#privado').click(function(){                      
-                      if($('#isPrivado').val() == '1'){
-                        var texto = $('#texto').val();
-                        var textoSemPrivado = texto.replace("#privado", "");
-                        $('#texto').val(textoSemPrivado); 
-                        $('#isPrivado').val('0');
-                      }else{
-                        $('#texto').val($('#texto').val() + " #privado");
-                        $('#isPrivado').val('1');
-                      }
-                    });
-                </script>
-            </li>
-
-            <li class="b qf aml">
-              <div class="qj">
-                <span class="h abv dp"></span>
-              </div>
-
-              <div class="qg">
-                <small class="eg dp">1 min</small>
-                <div class="qn">
-                  <a href="#"><strong>Dave Gamache</strong></a> went traveling
-                </div>
-
-              </div>
-            </li>
-
-            <li class="b qf aml">
-              <div class="qj">
-                <span class="h abr dp"></span>
-              </div>
-
-              <div class="qg">
-                <small class="eg dp">3 min</small>
-                <div class="qn">
-                  <a href="#"><strong>Mark Otto</strong></a> played destiny
-                </div>
-
-              </div>
-            </li>
-
-            <li class="b qf aml">
-              <div class="qj">
-                <span class="h ajv dp"></span>
-              </div>
-
-              <div class="qg">
-                <small class="eg dp">34 min</small>
-                <div class="qn">
-                  <a href="#"><strong>Fat</strong></a> and <a href="#"><strong>1 other</strong></a> followed you
-                </div>
-                <ul class="ano">
-                  <li class="anp"><img class="cu" src="../assets/img/avatar-fat.jpg">
-                  <li class="anp"><img class="cu" src="../assets/img/avatar-dhg.png">
-                </ul>
-              </div>
-            </li>
-          </ul>
-          
-        </div>
-        <div id="menu1" class="tab-pane fade">
-          <h3>Nova Categoria</h3>          
-           <form  action="/profile/novaCategoria" method="post">                
-                <input type="text" name="categoria" placehold="Nova categoria">
-                
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
-                <button type="submit" class="cg fm">Salvar</button>
-                <!-- <input type="submit" class="pull-right btn btn-sm btn-primary" value="Update Image"> -->
-            </form> 
-        </div>
-      </div>
-
+            </div>
+          </div>
+      @endforeach
       
 
 
@@ -197,7 +201,7 @@
             <a class="qj" href="#">
               <img
                 class="qh cu"
-                src="../assets/img/avatar-fat.jpg">
+                src="/assets/img/avatar-fat.jpg">
             </a>
             <div class="qg">
               <strong>Jacob Thornton</strong> @fat
@@ -211,7 +215,7 @@
             <a class="qj" href="#">
               <img
                 class="qh cu"
-                src="../assets/img/avatar-mdo.png">
+                src="/assets/img/avatar-mdo.png">
             </a>
             <div class="qg">
               <strong>Mark Otto</strong> @mdo

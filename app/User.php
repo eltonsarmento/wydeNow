@@ -26,5 +26,9 @@ class User extends Authenticatable
 
     public function tarefas(){
         return $this->hasMany('App\Tarefa');
+    }
+    
+    public function categorias(){
+        return $this->hasMany('App\Categoria');
     }    
 }
