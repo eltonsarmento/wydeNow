@@ -20,10 +20,16 @@ Route::auth();
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
 Route::get('/admin', 'AdminController@index');
-Route::get('/profile/{categoria?}', 'UserController@profile');
+
+/*Profile */
+Route::get('/profile/', 'UserController@index');
 Route::post('/profile', 'UserController@update_avatar');
-Route::post('/profile/novaCategoria', 'UserController@add_categoria');
 
 
+/*Tarefas */
+Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::post('/tarefa/adiciona', 'TarefaController@adiciona');
+Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar');
+Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
+
 

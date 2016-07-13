@@ -72,6 +72,7 @@ class AuthController extends Controller
         Categoria::create([
             'descricao' => "Pessoal",
             'user_id' => $user->id,
+            'prioridade' => "data",
             'status' => "A",
             'posicao' => 1,
         ]);

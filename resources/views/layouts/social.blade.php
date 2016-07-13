@@ -72,7 +72,10 @@
 	            <a href="{{ url('/home') }}">Home</a>
 	          </li>
 	          <li>
-	            <a href="{{ url('/profile') }}">Profile</a>
+	            <a href="{{ url('/tarefa') }}">Tarefas</a>
+	          </li>
+	          <li>
+	            <a href="{{ url('/profile') }}">Perfil</a>
 	          </li>
 	          <li>
 	            <a data-toggle="modal" href="#msgModal">Messages</a>
@@ -92,6 +95,7 @@
 	            <button class="cg fm ox anl" data-toggle="popover">
 	              <img class="cu" src="/uploads/avatars/{{ Auth::user()->avatar }}">
 	            </button>
+				
 	          </li>
 	        </ul>
 

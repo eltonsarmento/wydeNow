@@ -115,6 +115,7 @@
                       <li><a href="/tarefa/ordenar/{{$categoria->id}}/prioridade">Por Prioridade</a></li>
                     </ul>
                   </div>
+                  <p>Ordenado por: {{$opçãoEscolhida}}</p>
                 </li>
 
                 <li class="qf b aml">                          
