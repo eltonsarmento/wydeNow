@@ -92,6 +92,9 @@
       </ul>      
 
       @foreach($user->categorias as $categoria)
+          @if($categoriaSetada == $categoria->descricao) 
+              <input type="hidden" id="categoriaSetada"  value="{{$categoria->id}}">
+          @endif 
           <div class="tab-content">
             <div id="{{$categoria->descricao}}" 
               class="tab-pane fade 
@@ -120,7 +123,7 @@
 
                 <li class="qf b aml">                          
                     <form enctype="multipart/form-data" action="/tarefa/adiciona" method="post">    
-                      <input type="hidden" name="categoria_id" value="{{$categoria->id}}">            
+                      <input type="hidden" name="categoria_id"  value="{{$categoria->id}}">                                  
                       <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva sua tarefa">
                       <input type="hidden" id="isPrivado" value="0">
                       <br>
@@ -146,10 +149,14 @@
                         });
                     </script>
                 </li>
-                <br>
+                <br>       
+                <link rel="stylesheet" type="text/css" href="/assets/css/natstable.css">
+                 <div class="dd" id="nestable3">
+                    <ol class="dd-list"> 
+                      <input type="hidden" name="_token" value="{{ csrf_token() }}">    
                 @foreach($user->tarefas as $tarefa)
                     @if($categoria->id == $tarefa->categoria_id)
-                        <li class="b qf aml">
+                        <!-- <li class="b qf aml">
                           <div class="qj">
                             <span class="h 
                                 @if($tarefa->privado)
@@ -166,12 +173,35 @@
                               <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
                             </div>
                           </div>
-                        </li>
+                        </li> -->
+
+                              <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
+                                <div class="qj dd-handles dd3-handles">
+                                  <span class="h 
+                                            @if($tarefa->privado)
+                                              ajv
+                                            @else
+                                              abv
+                                            @endif
+                                            dp">
+                                  </span>
+                                </div>
+
+                                <div class="qg">   
+                                  <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                    <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
+                                </div>
+                                <ul class="ano">
+                                  <li class="anp"><a href="#">X </a>
+                                  <li class="anp"><a href="#">Comentários</a>
+                                </ul>
+                              </li>                          
                     @endif
                 @endforeach
-               
+                      </ol>
+                  </div>
 
-                    <li class="b qf aml">
+                    <!-- <li class="b qf aml">
                       <div class="qj">
                         <span class="h ajv dp"></span>
                       </div>
@@ -186,7 +216,11 @@
                           <li class="anp"><img class="cu" src="/assets/img/avatar-dhg.png">
                         </ul>
                       </div>
-                    </li>
+                    </li> -->
+
+                  <br>                    
+            
+                  
               </ul>
               
             </div>
@@ -271,4 +305,42 @@
     </div>
   </div>
 </div>
+
+<script src="/assets/js/jquery.nestable.js"></script>
+<script>
+$.ajaxSetup({  
+  headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+$(document).ready(function(){
+   var updateOutput = function(e){
+        var list   = e.length ? e : $(e.target),
+            output = list.data('output');
+            
+        var categoria = $('#categoriaSetada').val();
+
+        if (window.JSON) {                    
+            var response = window.JSON.stringify(list.nestable('serialize'));
+
+            var json = jQuery.parseJSON(response);
+            var html = '';
+            var array = '';
+            $.each(json, function(key,value) {
+                array += '{"id":'+value['id']+', "ordem":'+(key+1)+'},';
+            });
+            
+            var novoJason = array.slice(0,array.length-1);
+            var novoJason = '['+novoJason+']';
+            
+            $.post("/tarefa/prioridade/"+categoria, {json: novoJason}, function(result){
+                alert(result);
+            });
+            
+        } else {
+            output.val('JSON browser support required for this demo.');
+        }
+    };
+    $('#nestable3').nestable().on('change', updateOutput);
+});
+</script>
 @endsection

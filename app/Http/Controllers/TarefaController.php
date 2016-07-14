@@ -98,19 +98,7 @@ class TarefaController extends Controller {
     }
 
     public function ordenar($categoria_id, $tipo){
-
-        
-        if($tipo == "data"){
-            $campo = "created_at";
-            $order = "asc";
-        }elseif($tipo == "dataDesc"){
-            $campo = "created_at";
-            $order = "desc";
-        }else{
-            $campo = "posicao";
-            $order = "asc";
-        }
-        
+       
         $vCategoria = categoria::where(
                 [
                     ['user_id', Auth::user()->id],
@@ -125,6 +113,16 @@ class TarefaController extends Controller {
         return redirect('/tarefa/'.$categoria->descricao);        
 
     }
+     public function ordenarPrioridade($categoria_id){
+
+        if(Request::ajax()){
+            $json = Response::json(Request::all());
+            dd($json);
+        }
+
+    }
+
+    
 
     public function add_categoria(Request $request){
 
