@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
+use Request;
 use App\Http\Requests;
 use App\Tarefa;
 use App\Categoria;
@@ -113,16 +114,60 @@ class TarefaController extends Controller {
         return redirect('/tarefa/'.$categoria->descricao);        
 
     }
-     public function ordenarPrioridade($categoria_id){
+
+    public function ordenarPrioridade($categoria_id){
+
+        $vCategoria = categoria::where(
+                [
+                    ['user_id', Auth::user()->id],
+                    ['id', $categoria_id],
+                ]            
+            )->get();
+        $categoria = $vCategoria[0];
+        $categoria->prioridade = "Prioridade";
+        $categoria->save();
 
         if(Request::ajax()){
-            $json = Response::json(Request::all());
-            dd($json);
-        }
+            $post = Request::input('json');
+            $json = json_decode($post,true);
 
+            $tarefas = Tarefa::where(
+                [
+                    ['user_id', Auth::user()->id],
+                    ['categoria_id', $categoria_id],
+                ]            
+            )->get();     
+
+            foreach ($json as $key => $item) {
+                foreach ($tarefas as $key => $tarefa) {
+                    //echo "<br> id: ".$item['id'] . " == ".$tarefa->id;
+                    if($item['id'] == $tarefa->id){
+                        //echo "<br> sim. atualiza de ".$tarefa->posicao . " para ".$item['ordem'];
+                        $tarefa->posicao = $item['ordem'];
+                        $tarefa->save();
+                    }
+                }
+            }
+            return redirect('/tarefa/'.$categoria->descricao);die();
+        }
+        return redirect('/tarefa/');die();
     }
 
-    
+    public function concluir($categoria_id){
+
+        if(Request::ajax()){
+            $id = Request::input('id');
+            print_r($id);die();
+
+            $tarefa = Tarefa::find($id);
+            $tarefa->status = "C";
+            $tarefa->save();
+
+            return redirect('/tarefa/'.$categoria->descricao);die();
+        }
+        return redirect('/tarefa/');die();
+    }
+
 
     public function add_categoria(Request $request){
 

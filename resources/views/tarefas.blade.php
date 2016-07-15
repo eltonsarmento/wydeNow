@@ -2,88 +2,9 @@
 
 @section('content')
 <div class="by amt">
-  <div class="gc">
+  <div class="gc">    
 
-    <div class="gn">
-
-       <div class="qv rc aog alu">
-          <div class="qx" style="background-image: url(/assets/img/iceland.jpg);"></div>
-          <div class="qw dj">
-            <a href="profile/index.html">
-              <img class="aoh" src="/uploads/avatars/{{ Auth::user()->avatar }}">
-            </a>
-
-            <h5 class="qy">{{ Auth::user()->name }} </h5>
-            <p id="imageEdit">edit image</p>
-            <div style="display:none" id="divImage">
-              <form enctype="multipart/form-data" action="/profile" method="post">                
-                  <input type="file" name="avatar">
-                  
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
-                  <button type="submit" class="cg fm"><span class="h xi"></span></button>
-                  <!-- <input type="submit" class="pull-right btn btn-sm btn-primary" value="Update Image"> -->
-              </form> 
-            </div>
-
-
-            <p class="alu">I wish i was a little bit taller, wish i was a baller, wish i had a girl… also.</p>
-
-            <ul class="aoi">
-              <li class="aoj">
-                <a href="#userModal" class="aku" data-toggle="modal">
-                  Friends
-                  <h5 class="ali">0</h5>
-                </a>
-              </li>
-
-              <li class="aoj">
-                <a href="#userModal" class="aku" data-toggle="modal">
-                  Task
-                  <h5 class="ali">0</h5>
-                </a>
-              </li>
-            </ul>
-          </div>
-      </div>
-
-      <div class="ca alu">
-        <a href="#" class="b">
-          <span class="h uy eg"></span>
-          Notifications
-        </a>
-        <a href="#" class="b">
-          <span class="h uy eg"></span>
-          Mentions
-        </a>
-      </div>
-
-       <div class="qv rc sm sp">
-        
-      </div>
-
-      <div class="qv rc sm sp">
-        <div class="qw">
-          <h5 class="ald">Trending Searches <small>· <a href="#">Change</a></small></h5>
-          <ul class="eb tb">
-            <li><a href="#">#Bootstrap</a>
-            <li><a href="#">Mdo for pres</a>
-            <li><a href="#">#fatsux</a>
-            <li><a href="#">#buyme</a>
-            <li><a href="#">#designishard</a>
-            <li><a href="#">#helpawesomepeople</a>
-            <li><a href="#">#doawesomestuff</a>
-            <li><a href="#">Tom Brady</a>
-            <li><a href="#">Magna Carta</a>
-            <li><a href="#">Mark Otto</a>
-            <li><a href="#">Dave Gamache</a>
-            <li><a href="#">Jacob Thornton</a>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="gz">
+    <div class="gz" style="width: 75%;">
       <ul class="nav ol">
         @foreach($user->categorias as $categoria)
           <li @if($categoriaSetada == $categoria->descricao) class="active" @endif ><a data-toggle="tab" href="#{{$categoria->descricao}}">{{$categoria->descricao}}</a></li>        
@@ -118,7 +39,7 @@
                       <li><a href="/tarefa/ordenar/{{$categoria->id}}/prioridade">Por Prioridade</a></li>
                     </ul>
                   </div>
-                  <p>Ordenado por: {{$opçãoEscolhida}}</p>
+                  <p>Ordenado por: <strong id="tipoOrdenacaoReturn">{{$opçãoEscolhida}}</strong></p>
                 </li>
 
                 <li class="qf b aml">                          
@@ -127,100 +48,86 @@
                       <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva sua tarefa">
                       <input type="hidden" id="isPrivado" value="0">
                       <br>
-                      <button class="cg ts fx" type="button" id="privado">
-                        <span class="h vc"></span> 
-                        Privado
-                      </button>               
-                      
+                      <button class="cg tr" type="button" id="privado">
+                        <span class="h adw" id="btnIconPrivado"></span>
+                      </button>                                     
                       <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
-                      <button type="submit" class="cg ts fx">Salvar</button>                
-                    </form> 
-                    <script type="text/javascript">
-                        $('#privado').click(function(){                      
-                          if($('#isPrivado').val() == '1'){
-                            var texto = $('#texto').val();
-                            var textoSemPrivado = texto.replace("#privado", "");
-                            $('#texto').val(textoSemPrivado); 
-                            $('#isPrivado').val('0');
-                          }else{
-                            $('#texto').val($('#texto').val() + " #privado");
-                            $('#isPrivado').val('1');
-                          }
-                        });
-                    </script>
+                      <button type="submit" class="cg tr">Salvar</button>                
+                    </form>                     
                 </li>
                 <br>       
                 <link rel="stylesheet" type="text/css" href="/assets/css/natstable.css">
                  <div class="dd" id="nestable3">
                     <ol class="dd-list"> 
                       <input type="hidden" name="_token" value="{{ csrf_token() }}">    
-                @foreach($user->tarefas as $tarefa)
-                    @if($categoria->id == $tarefa->categoria_id)
-                        <!-- <li class="b qf aml">
-                          <div class="qj">
-                            <span class="h 
-                                @if($tarefa->privado)
-                                  ajv
-                                @else
-                                  abv
-                                @endif
-                                 dp"></span>
-                          </div>
-
-                          <div class="qg">
-                            <small class="eg dp">{{ $tarefa->tempoCadastada}} </small>
-                            <div class="qn">
-                              <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
+                      @foreach($user->tarefas as $tarefa)
+                          @if($categoria->id == $tarefa->categoria_id)
+                      
+                          <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
+                            <div class="qj dd-handles dd3-handles">
+                              <span class="h 
+                                        @if($tarefa->privado)
+                                          adw
+                                        @else
+                                          abv
+                                        @endif">
+                              </span>
                             </div>
-                          </div>
-                        </li> -->
 
-                              <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
-                                <div class="qj dd-handles dd3-handles">
-                                  <span class="h 
-                                            @if($tarefa->privado)
-                                              ajv
-                                            @else
-                                              abv
-                                            @endif
-                                            dp">
-                                  </span>
-                                </div>
+                            <div class="qg">   
+                              <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
+                            </div>
+                            <div class="panel panel-default panel-link-list">
+                              <div class="panel-body">
+                                    <a href="#" style="margin-right: 10px;"><span class="h ya"></span> Cancelar</a>
+                                  
+                                    <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+                                  
+                                    <!-- <a href="#" style="margin-right: 10px;"><span class="h xl"></span> Concluir</a>   -->
+                                    <a data-toggle="modal" href="#msgModalConcluir" 
+                                      onClick="setaDadosModalConcluir({{$tarefa->texto}}, {{$tarefa->descricao}});"><span class="h xl"></span> Concluir</a>  
+                              </div>
+                            </div>
+                          </li>  
 
-                                <div class="qg">   
-                                  <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
-                                    <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
-                                </div>
-                                <ul class="ano">
-                                  <li class="anp"><a href="#">X </a>
-                                  <li class="anp"><a href="#">Comentários</a>
-                                </ul>
-                              </li>                          
-                    @endif
-                @endforeach
+
+                                              
+                          @endif
+                      @endforeach                      
                       </ol>
                   </div>
 
-                    <!-- <li class="b qf aml">
-                      <div class="qj">
-                        <span class="h ajv dp"></span>
-                      </div>
+                  @if($user->tarefasConcluidas)
+                        @foreach($user->tarefasConcluidas as $tarefa)
+                            @if($categoria->id == $tarefa->categoria_id)
+                              <li class="b qf aml" >
+                              <div class="qj ">
+                                <span class="h 
+                                          @if($tarefa->privado)
+                                            adw
+                                          @else
+                                            abv
+                                          @endif">
+                                </span>
+                              </div>
 
-                      <div class="qg">
-                        <small class="eg dp">34 min</small>
-                        <div class="qn">
-                          <a href="#"><strong>Fat</strong></a> and <a href="#"><strong>1 other</strong></a> followed you
-                        </div>
-                        <ul class="ano">
-                          <li class="anp"><img class="cu" src="/assets/img/avatar-fat.jpg">
-                          <li class="anp"><img class="cu" src="/assets/img/avatar-dhg.png">
-                        </ul>
-                      </div>
-                    </li> -->
+                              <div class="qg">   
+                                <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                  <strike>{{$tarefa->texto}}</strike>
+                              </div>
+                              <div class="panel panel-default panel-link-list">
+                                <div class="panel-body">                                  
+                                      <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
+                                </div>
+                              </div>
+                            </li>     
+                        @endif
+                    @endforeach
+                  @endif
 
-                  <br>                    
-            
-                  
+                  <br>   
+
               </ul>
               
             </div>
@@ -303,44 +210,76 @@
           </div>
       </div>
     </div>
+    
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalSugestao" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Titulo da Tarefa</h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="Messages">
+        </div>        
+        <div class="uq">          
+
+          <div class="alj js-conversation">
+            <ul class="qo aob">
+
+              <li class="qf aoe alu">
+                <div class="qg">
+                  <div class="aoc">MEU TEXTO</div>
+                  <div class="aod"><small class="dp"><a href="#">Dave Gamache</a> at 4:20PM</small></div>
+                </div>
+                <a class="qi" href="#"><img class="cu qh" src="assets/img/avatar-dhg.png"></a>
+              </li>
+
+              <li class="qf alu">
+                <a class="qj" href="#"><img class="cu qh" src="assets/img/avatar-fat.jpg"></a>
+                <div class="qg">
+                  <div class="aoc">TEXTO SUJERIDO</div>
+                  <div class="aod"><small class="dp"><a href="#">Fat</a> at 4:28PM</small></div>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
+
+
+<!-- Modal Confirmação Concluir -->
+<div class="cd fade" id="msgModalConcluir" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog rq" >
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Concluir tarefa</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deseja concluir a terefa <span id="msgModalConcluirCampoTarefa">xxxx</span> ?</p>
+      </div>
+      <div class="ur">
+        <button type="button" class="fu us" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnConcluir"><strong>Continue</strong></button>
+        <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</div>
+
+
 <script src="/assets/js/jquery.nestable.js"></script>
-<script>
-$.ajaxSetup({  
-  headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-  }
-});
-$(document).ready(function(){
-   var updateOutput = function(e){
-        var list   = e.length ? e : $(e.target),
-            output = list.data('output');
-            
-        var categoria = $('#categoriaSetada').val();
-
-        if (window.JSON) {                    
-            var response = window.JSON.stringify(list.nestable('serialize'));
-
-            var json = jQuery.parseJSON(response);
-            var html = '';
-            var array = '';
-            $.each(json, function(key,value) {
-                array += '{"id":'+value['id']+', "ordem":'+(key+1)+'},';
-            });
-            
-            var novoJason = array.slice(0,array.length-1);
-            var novoJason = '['+novoJason+']';
-            
-            $.post("/tarefa/prioridade/"+categoria, {json: novoJason}, function(result){
-                alert(result);
-            });
-            
-        } else {
-            output.val('JSON browser support required for this demo.');
-        }
-    };
-    $('#nestable3').nestable().on('change', updateOutput);
-});
-</script>
+<script src="/scripts/tarefas.js"></script>
 @endsection
