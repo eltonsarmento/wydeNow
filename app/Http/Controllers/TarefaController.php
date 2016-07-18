@@ -153,19 +153,56 @@ class TarefaController extends Controller {
         return redirect('/tarefa/');die();
     }
 
-    public function concluir($categoria_id){
+    public function concluir(){
 
         if(Request::ajax()){
             $id = Request::input('id');
-            print_r($id);die();
+            $tarefa = Tarefa::find($id);
+            
+
+            $tarefasAtivas     = Tarefa::where([
+                                        ['status', 'A'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->get();
+            
+            $tarefasConcluidas = Tarefa::where([
+                                        ['status', 'C'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->get();
+
+            
+
+            foreach ($tarefasAtivas as $key => $ta) {
+                $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+
+
+            foreach ($tarefasConcluidas as $key => $tc) {
+                $dt = new Carbon($tc->created_at, 'America/Maceio');                
+
+                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
+
+            $json = array_merge($jsonAtivas, $jsonConcluidas);
+            
+            
+            echo json_encode($json);die();
+            //return response()->json($json);
+
+            /*print_r($id);die();
 
             $tarefa = Tarefa::find($id);
             $tarefa->status = "C";
             $tarefa->save();
 
-            return redirect('/tarefa/'.$categoria->descricao);die();
+            return redirect('/tarefa/'.$categoria->descricao);die();*/
         }
-        return redirect('/tarefa/');die();
+        /*return redirect('/tarefa/');die();*/
     }
 
 

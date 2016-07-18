@@ -34,13 +34,13 @@ Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 
 
 Route::post('tarefa/prioridade/{categoria_id?}', 'TarefaController@ordenarPrioridade');
-Route::post('tarefa/concluir/{categoria_id?}', 'TarefaController@concluir');
-/*Route::post('tarefa/prioridade/{categoria_id?}', function(){
+Route::post('tarefa/concluir/', 'TarefaController@concluir');
+/*Route::post('tarefa/concluir', function(){
 	if(Request::ajax()){
-		$post = Request::input('json');
-		$json = json_decode($post,true);
-    	print_r($json);die();
+		$id = Request::input('id');
+		
+    	print_r($id);die();
     }
-});
-*/
+});*/
+
 

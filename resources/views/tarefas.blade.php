@@ -58,46 +58,47 @@
                 <br>       
                 <link rel="stylesheet" type="text/css" href="/assets/css/natstable.css">
                  <div class="dd" id="nestable3">
-                    <ol class="dd-list"> 
-                      <input type="hidden" name="_token" value="{{ csrf_token() }}">    
-                      @foreach($user->tarefas as $tarefa)
-                          @if($categoria->id == $tarefa->categoria_id)
-                      
-                          <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
-                            <div class="qj dd-handles dd3-handles">
-                              <span class="h 
-                                        @if($tarefa->privado)
-                                          adw
-                                        @else
-                                          abv
-                                        @endif">
-                              </span>
-                            </div>
-
-                            <div class="qg">   
-                              <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
-                                <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
-                            </div>
-                            <div class="panel panel-default panel-link-list">
-                              <div class="panel-body">
-                                    <a href="#" style="margin-right: 10px;"><span class="h ya"></span> Cancelar</a>
-                                  
-                                    <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
-                                  
-                                    <!-- <a href="#" style="margin-right: 10px;"><span class="h xl"></span> Concluir</a>   -->
-                                    <a data-toggle="modal" href="#msgModalConcluir" 
-                                      onClick="setaDadosModalConcluir({{$tarefa->texto}}, {{$tarefa->descricao}});"><span class="h xl"></span> Concluir</a>  
+                    <ol class="dd-list" > 
+                      <input type="hidden" name="_token" value="{{ csrf_token() }}">  
+                      <div id="returnListaAtivas">
+                        @foreach($user->tarefas as $tarefa)
+                            @if($categoria->id == $tarefa->categoria_id)
+                        
+                            <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
+                              <div class="qj dd-handles dd3-handles">
+                                <span class="h 
+                                          @if($tarefa->privado)
+                                            adw
+                                          @else
+                                            abv
+                                          @endif">
+                                </span>
                               </div>
-                            </div>
-                          </li>  
 
-
-                                              
-                          @endif
-                      @endforeach                      
+                              <div class="qg">   
+                                <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                  <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
+                              </div>
+                              <div class="panel panel-default panel-link-list">
+                                <div class="panel-body">
+                                      <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
+                                    
+                                      <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+                                    
+                                      <!-- <a href="#" style="margin-right: 10px;"><span class="h xl"></span> Concluir</a>   -->
+                                      <a data-toggle="modal" href="#msgModalConcluir" 
+                                        onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>  
+                                </div>
+                              </div>
+                            </li>  
+                                                
+                            @endif
+                        @endforeach                      
+                      </div>  
                       </ol>
                   </div>
 
+                  <div id="returnListaConcluidas">
                   @if($user->tarefasConcluidas)
                         @foreach($user->tarefasConcluidas as $tarefa)
                             @if($categoria->id == $tarefa->categoria_id)
@@ -125,7 +126,7 @@
                         @endif
                     @endforeach
                   @endif
-
+                  </div>
                   <br>   
 
               </ul>
@@ -264,17 +265,40 @@
         <h4 class="modal-title">Concluir tarefa</h4>
       </div>
       <div class="modal-body">
-        <p>Deseja concluir a terefa <span id="msgModalConcluirCampoTarefa">xxxx</span> ?</p>
+        <p>Deseja concluir a terefa: <strong id="msgModalConcluirCampoTextoTarefa"></strong>  ?</p>        
+        <input type="hidden" id="idTarefaConcluir">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">    
       </div>
       <div class="ur">
-        <button type="button" class="fu us" data-dismiss="modal">Cancel</button>
-        <button type="button" class="fu us" id="btnConcluir"><strong>Continue</strong></button>
+        <button type="button" class="fu us" onclick="limpaCamposModal('Concluir');" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnConcluirModalConcluir"><strong>Continue</strong></button>
         <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
       </div>
     </div>
   </div>
 </div>
 
+
+<!-- Modal Confirmação Concluir -->
+<div class="cd fade" id="msgModalCancelar" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog rq" >
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Cancelar tarefa</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deseja cancelar a terefa: <strong id="msgModalCancelarCampoTextoTarefa"></strong>  ?</p>        
+        <input type="hidden" id="idTarefaCancelar">
+      </div>
+      <div class="ur">
+        <button type="button" class="fu us" onclick="limpaCamposModal('Cancelar');" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnContinueModalCancelar"><strong>Continue</strong></button>
+        <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
+      </div>
+    </div>
+  </div>
+</div>
 
   </div>
 </div>
