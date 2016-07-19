@@ -35,6 +35,7 @@ Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 
 Route::post('tarefa/prioridade/{categoria_id?}', 'TarefaController@ordenarPrioridade');
 Route::post('tarefa/concluir/', 'TarefaController@concluir');
+Route::post('tarefa/remover/', 'TarefaController@remover');
 /*Route::post('tarefa/concluir', function(){
 	if(Request::ajax()){
 		$id = Request::input('id');

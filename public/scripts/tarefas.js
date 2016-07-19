@@ -13,7 +13,7 @@ $.ajaxSetup({
     $('#btnConcluirModalConcluir').click(function(){                      
         var idTarefa = $('#idTarefaConcluir').val(); 
 
-        $.post("tarefa/concluir/", {id: idTarefa}, function(result){            
+        $.post("/tarefa/concluir/", {id: idTarefa}, function(result){            
             
             var json = jQuery.parseJSON(result);
 
@@ -22,6 +22,7 @@ $.ajaxSetup({
 
             $.each(json, function(key,value) {
                 if(key == 'tarefasAtivas'){
+                    htmlAtivas += ' <ol class="dd-list">';
                      $.each(value, function(key2,item) {
                         htmlAtivas += ' <li class="b qf aml dd-item dd3-item" data-id="'+item['id']+'">';
                         htmlAtivas += '   <div class="qj dd-handles dd3-handles">';
@@ -46,6 +47,7 @@ $.ajaxSetup({
                         htmlAtivas += '   </div>';
                         htmlAtivas += '</li>';  
                      });
+                    htmlAtivas += '</ol>';  
                 }else if(key == 'tarefasConcluidas'){
                     $.each(value, function(key3,item2) {
                         htmlConcluidas +='  <li class="b qf aml" >';
@@ -76,8 +78,7 @@ $.ajaxSetup({
             $('#returnListaConcluidas').html(htmlConcluidas);
             $('#msgModalConcluir').modal('toggle');
             
-            /*$('#returnListaAtivas').html(htmlAtivas);
-            $('#returnListaConcluidas').html(htmlConcluidas);*/
+            limpaCamposModal('Concluir');
         });
     });
     /*Botão Concluir*/
@@ -104,12 +105,70 @@ function setaDadosModalCancelar(id,texto){
 $('#btnContinueModalCancelar').click(function(){                      
     var idTarefa = $('#idTarefaCancelar').val(); 
 
-    $.post("tarefa/concluir/", {id: idTarefa}, function(result){            
-        var json = jQuery.parseJSON(response);
-        alert(json);
-        /*$.each(json, function(key,value) {
+    $.post("/tarefa/remover/", {id: idTarefa}, function(result){            
+        var json = jQuery.parseJSON(result);
 
-        }*/
+        var htmlAtivas     = '';
+        var htmlConcluidas = '';
+
+        $.each(json, function(key,value) {
+            if(key == 'tarefasAtivas'){
+                htmlAtivas += ' <ol class="dd-list">';
+                 $.each(value, function(key2,item) {
+                    htmlAtivas += ' <li class="b qf aml dd-item dd3-item" data-id="'+item['id']+'">';
+                    htmlAtivas += '   <div class="qj dd-handles dd3-handles">';
+                    htmlAtivas += '     <span class="h';
+                    if(item['privado']) 
+                        htmlAtivas += ' adw ">';                                            
+                    else
+                        htmlAtivas += ' abv ">';                                                                    
+                    
+                    htmlAtivas += '     </span>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   <div class="qg">';   
+                    htmlAtivas += '      <small class="eg dp">'+item['tempoCadastada']+'</small>';
+                    htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   <div class="panel panel-default panel-link-list">';
+                    htmlAtivas += '     <div class="panel-body">';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                    htmlAtivas += '     </div>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '</li>';  
+                 });
+                htmlAtivas += '</ol>';  
+            }else if(key == 'tarefasConcluidas'){
+                $.each(value, function(key3,item2) {
+                    htmlConcluidas +='  <li class="b qf aml" >';
+                    htmlConcluidas +='    <div class="qj ">';
+                    htmlConcluidas +='      <span class="h'; 
+
+                    if(item2['privado']){
+                        htmlConcluidas += ' adw">';
+                    }else{
+                        htmlConcluidas += ' abv">';
+                    }
+                    htmlConcluidas +='      </span>';
+                    htmlConcluidas +='    </div>';
+                    htmlConcluidas +='  <div class="qg">';
+                    htmlConcluidas +='      <small class="eg dp">'+item2['tempoCadastada']+'</small>';
+                    htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
+                    htmlConcluidas +='  </div>';
+                    htmlConcluidas +='  <div class="panel panel-default panel-link-list">';
+                    htmlConcluidas +='      <div class="panel-body">';
+                    htmlConcluidas +='          <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlConcluidas +='      </div>';
+                    htmlConcluidas +='  </div>';
+                    htmlConcluidas +='</li> ';
+                })
+            }
+        });
+        $('#returnListaAtivas').html(htmlAtivas);
+        $('#returnListaConcluidas').html(htmlConcluidas);
+        $('#msgModalCancelar').modal('toggle');    
+        limpaCamposModal('Cancelar');
     });
 });
 /************************************* CANCELAR TAREFA *******************************************************/
@@ -141,9 +200,9 @@ $(document).ready(function(){
         var categoria = $('#categoriaSetada').val();
 
         if (window.JSON) {                    
-            var response = window.JSON.stringify(list.nestable('serialize'));
-
+            var response = window.JSON.stringify(list.nestable('serialize'));            
             var json = jQuery.parseJSON(response);
+
             var html = '';
             var array = '';
             $.each(json, function(key,value) {
@@ -153,8 +212,7 @@ $(document).ready(function(){
             var novoJason = array.slice(0,array.length-1);
             var novoJason = '['+novoJason+']';
             
-            $.post("/tarefa/prioridade/"+categoria, {json: novoJason}, function(result){
-                //alert(result);
+            $.post("/tarefa/prioridade/"+categoria, {json: novoJason}, function(result){                
                 $('#tipoOrdenacaoReturn').html('Prioridade');
             });
             

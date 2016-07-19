@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Request;
 use App\Http\Requests;
 use App\Tarefa;
+use App\User;
 use App\Categoria;
 use Carbon\Carbon;
 use Auth;
@@ -19,8 +20,7 @@ class TarefaController extends Controller {
 
     public function index($categoriaDefault = "Pessoal"){        
         $user = Auth::user();             
-
-
+       
         $vCategoria = categoria::where(
                 [
                     ['user_id', Auth::user()->id],
@@ -42,35 +42,63 @@ class TarefaController extends Controller {
             $campoOrdenacao = "posicao";
             $opçãoEscolhida = "Prioridade";
         }
-        $tarefas = Tarefa::where(
+
+        $tarefasAtivas = Tarefa::where(
                 [
                     ['user_id', Auth::user()->id],
                     ['categoria_id', $categoria->id],
+                    ['status', 'A'],
                 ]            
             )->orderBy($campoOrdenacao, $order)->get();        
 
-        $user->tarefas = $tarefas;
+        $tarefasConcluidas = Tarefa::where(
+                [
+                    ['user_id', Auth::user()->id],
+                    ['categoria_id', $categoria->id],
+                    ['status', 'C'],
+                    ['data_conclusao', '>=', Carbon::today()],
+                    ['data_conclusao', '<', Carbon::tomorrow()],
+                ]            
+            )->orderBy($campoOrdenacao, $order)->get();        
+
+
+        //print_r($tarefasConcluidas);
+        $user->tarefas = $tarefasAtivas;
         foreach ($user->tarefas as $key => $t) {
             $dt = new Carbon($t->created_at, 'America/Maceio');
             $user->tarefas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
         }
+        $user->tarefasConcluidas = $tarefasConcluidas;
+        foreach ($user->tarefasConcluidas as $key => $t) {
+            $dt = new Carbon($t->created_at, 'America/Maceio');
+            $user->tarefasConcluidas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
+        }
         
-        return view('tarefas', array('user' => $user, 'categoriaSetada' => $categoriaDefault, "opçãoEscolhida" => $opçãoEscolhida));
+        
+        $amigos = User::where('amigos.me', Auth::user()->id)->join('amigos', 'amigos.user_id', '=', 'users.id')->get();
+        
+        return view('tarefas', array(
+                 'user' => $user, 
+                 'categoriaSetada' => $categoriaDefault, 
+                 "opçãoEscolhida" => $opçãoEscolhida,
+                 "amigos" => $amigos,
+        ));
     }
 
-    public function adiciona(Request $request){
+    public function adiciona(){
 
-        $categoria_id = $request->input('categoria_id');
+        $categoria_id = Request::input('categoria_id');
         $tarefa = Tarefa::select('posicao')->where(
             [
                 ['categoria_id', $categoria_id],
                 ['user_id', Auth::user()->id],
+                ['status', 'A'],
             ]
-        )->get();
+        )->orderBy('posicao', "desc")->get();  
 
         $posicao = (empty($tarefa[0]) ? 1 : $tarefa[0]->posicao + 1);
 
-    	$texto    = $request->input('texto');
+    	$texto    = Request::input('texto');        
 
     	/*Valida */
     	$palavra  = "#privado";
@@ -92,10 +120,93 @@ class TarefaController extends Controller {
         $tarefa->categoria_id = $categoria_id;
         $tarefa->status       = "A";
     	$tarefa->user_id      = Auth::user()->id;  
-
     	$tarefa->save();
+
+        $categoria = Categoria::find($categoria_id);
         
-        return redirect('/tarefa');
+        return redirect('/tarefa/'.$categoria->descricao);
+    }
+
+    public function concluir(){
+
+        if(Request::ajax()){
+            $id = Request::input('id');
+            $tarefa = Tarefa::find($id);            
+            $tarefa->status = "C";
+            $tarefa->data_conclusao = Carbon::now();
+            $tarefa->save();
+            
+            $tarefasAtivas     = Tarefa::where([
+                                        ['status', 'A'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->orderBy('posicao', "asc")->get();  
+            $tarefasConcluidas = Tarefa::where([
+                                        ['status', 'C'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->get();
+
+            foreach ($tarefasAtivas as $key => $ta) {
+                $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+
+
+            foreach ($tarefasConcluidas as $key => $tc) {
+                $dt = new Carbon($tc->created_at, 'America/Maceio');                
+
+                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
+
+            $json = array_merge($jsonAtivas, $jsonConcluidas);
+            
+            
+            echo json_encode($json);die();           
+        }
+        
+    }
+
+    public function remover(){
+
+        if(Request::ajax()){
+            $id = Request::input('id');
+            $tarefa = Tarefa::find($id);            
+            $tarefa->status = "E";            
+            $tarefa->save();
+            
+            $tarefasAtivas     = Tarefa::where([
+                                        ['status', 'A'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->orderBy('posicao', "asc")->get();  
+            $tarefasConcluidas = Tarefa::where([
+                                        ['status', 'C'],
+                                        ['categoria_id', $tarefa->categoria_id],
+                                        ['user_id', $tarefa->user_id]
+                                ])->get();
+
+            foreach ($tarefasAtivas as $key => $ta) {
+                $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+
+
+            foreach ($tarefasConcluidas as $key => $tc) {
+                $dt = new Carbon($tc->created_at, 'America/Maceio');                
+
+                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            }
+            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
+
+            $json = array_merge($jsonAtivas, $jsonConcluidas);
+                        
+            echo json_encode($json);die();           
+        }
+        
     }
 
     public function ordenar($categoria_id, $tipo){
@@ -153,68 +264,17 @@ class TarefaController extends Controller {
         return redirect('/tarefa/');die();
     }
 
-    public function concluir(){
+    
 
-        if(Request::ajax()){
-            $id = Request::input('id');
-            $tarefa = Tarefa::find($id);
-            
+    public function add_categoria(){
 
-            $tarefasAtivas     = Tarefa::where([
-                                        ['status', 'A'],
-                                        ['categoria_id', $tarefa->categoria_id],
-                                        ['user_id', $tarefa->user_id]
-                                ])->get();
-            
-            $tarefasConcluidas = Tarefa::where([
-                                        ['status', 'C'],
-                                        ['categoria_id', $tarefa->categoria_id],
-                                        ['user_id', $tarefa->user_id]
-                                ])->get();
-
-            
-
-            foreach ($tarefasAtivas as $key => $ta) {
-                $dt = new Carbon($ta->created_at, 'America/Maceio');                
-                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
-            }
-            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
-
-
-            foreach ($tarefasConcluidas as $key => $tc) {
-                $dt = new Carbon($tc->created_at, 'America/Maceio');                
-
-                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
-            }
-            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
-
-            $json = array_merge($jsonAtivas, $jsonConcluidas);
-            
-            
-            echo json_encode($json);die();
-            //return response()->json($json);
-
-            /*print_r($id);die();
-
-            $tarefa = Tarefa::find($id);
-            $tarefa->status = "C";
-            $tarefa->save();
-
-            return redirect('/tarefa/'.$categoria->descricao);die();*/
-        }
-        /*return redirect('/tarefa/');die();*/
-    }
-
-
-    public function add_categoria(Request $request){
-
-        if($request->has('categoria')){
-            $texto = $request->input('categoria');
+        if(Request::has('categoria')){
+            $descricao = Request::input('categoria');
 
             $categoria = new Categoria;
             $categoria->user_id = Auth::user()->id;            
-            $categoria->texto = $texto;
-            //$categoria->save();
+            $categoria->descricao = $descricao;
+            $categoria->save();
         }
         
         return redirect('/tarefa');
