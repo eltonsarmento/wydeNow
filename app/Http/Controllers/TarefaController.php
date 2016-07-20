@@ -21,9 +21,10 @@ class TarefaController extends Controller {
     public function index($categoriaDefault = "Pessoal"){        
         $user = Auth::user();             
        
+
         $vCategoria = categoria::where(
                 [
-                    ['user_id', Auth::user()->id],
+                    ['user_id', $user->id],
                     ['descricao', $categoriaDefault],
                 ]            
             )->get();
@@ -45,7 +46,7 @@ class TarefaController extends Controller {
 
         $tarefasAtivas = Tarefa::where(
                 [
-                    ['user_id', Auth::user()->id],
+                    ['user_id', $user->id],
                     ['categoria_id', $categoria->id],
                     ['status', 'A'],
                 ]            
@@ -53,7 +54,7 @@ class TarefaController extends Controller {
 
         $tarefasConcluidas = Tarefa::where(
                 [
-                    ['user_id', Auth::user()->id],
+                    ['user_id', $user->id],
                     ['categoria_id', $categoria->id],
                     ['status', 'C'],
                     ['data_conclusao', '>=', Carbon::today()],
@@ -72,16 +73,17 @@ class TarefaController extends Controller {
         foreach ($user->tarefasConcluidas as $key => $t) {
             $dt = new Carbon($t->created_at, 'America/Maceio');
             $user->tarefasConcluidas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
-        }
+        }        
+
+        if($user->followers()->count() == 0)
+            $people = User::where('id','<>', $user->id)->take(5)->get();
         
-        
-        $amigos = User::where('amigos.me', Auth::user()->id)->join('amigos', 'amigos.user_id', '=', 'users.id')->get();
         
         return view('tarefas', array(
                  'user' => $user, 
                  'categoriaSetada' => $categoriaDefault, 
                  "opçãoEscolhida" => $opçãoEscolhida,
-                 "amigos" => $amigos,
+                 "people" => $people,
         ));
     }
 

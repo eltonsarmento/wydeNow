@@ -22,7 +22,7 @@ Route::get('/home', 'HomeController@index');
 Route::get('/admin', 'AdminController@index');
 
 /*Profile */
-Route::get('/profile/', 'UserController@index');
+Route::get('/profile/{nickname?}', 'UserController@index');
 Route::post('/profile', 'UserController@update_avatar');
 
 

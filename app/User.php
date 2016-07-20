@@ -31,5 +31,11 @@ class User extends Authenticatable
     public function categorias(){
         return $this->hasMany('App\Categoria');
     }
+
+    public function followers(){
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
+        //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
+            // if you want to rely on accepted field, then add this:        
+    }
     
 }
