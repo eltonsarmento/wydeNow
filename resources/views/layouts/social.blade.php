@@ -40,12 +40,7 @@
       })
     </script>
 
-    <script type="text/javascript">
-      $('#imageEdit').click(function(){
-        alert('ui');
-        $('#divImage').show();
-      });      
-    </script>
+    
 
   </head>
 

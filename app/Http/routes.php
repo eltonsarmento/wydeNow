@@ -23,7 +23,16 @@ Route::get('/admin', 'AdminController@index');
 
 /*Profile */
 Route::get('/profile/{nickname?}', 'UserController@index');
+Route::get('/profile/{nickname?}/{categoria?}', 'UserController@index');
 Route::post('/profile', 'UserController@update_avatar');
+Route::post('/profile/follow/', 'UserController@follow');
+Route::post('/profile/unfollow/', 'UserController@unFollow');
+Route::post('/profile/favorite/', 'UserController@favorite');
+Route::post('/profile/unfavorite/', 'UserController@unFavorite');
+Route::post('/profile/permit/', 'UserController@permit');
+Route::post('/profile/unpermit/', 'UserController@unPermit');
+
+
 
 
 /*Tarefas */
