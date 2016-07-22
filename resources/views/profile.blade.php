@@ -35,7 +35,7 @@
               <li class="aoj">
                 <a href="#userModal" class="aku" data-toggle="modal">
                   Followers
-                  <h5 class="ali">{{$user->followers()->count()}}</h5>
+                  <h5 class="ali">{{$user->countFollowers()}}</h5>
                 </a>
               </li>
 
@@ -68,7 +68,7 @@
             @if(Auth::user()->followers()->count() > 0)  
                   <h5 class="ald">Estou Seguindo<small> · <a href="#"> Ver todos</a></small></h5>
                   <ul class="qo anx">
-                    @foreach(Auth::user()->followers() as $key => $follow)  
+                    @foreach(Auth::user()->followers()->get() as $key => $follow) 
                       @if($key < 5)
                         <li class="qf alm">
                           <a class="qj" href="/profile/{{ $follow->nickname }}"><img class="qh cu" src="/uploads/avatars/{{$follow->avatar}}"></a>
@@ -88,8 +88,8 @@
                         </li>           
                       @endif
                     @endforeach
-                    </ul>
-                    </div>
+                  </ul>
+                  </div>
             @else          
                 <h5 class="ald">Nenhum Seguidor <small> ·<a href="#"> Procurar</a></small></h5>
                 <ul class="qo anx">

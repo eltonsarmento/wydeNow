@@ -77,6 +77,13 @@ class AuthController extends Controller
             'status' => "A",
             'posicao' => 1,
         ]);
+        Categoria::create([
+            'descricao' => "Delegar",
+            'user_id' => $user->id,
+            'prioridade' => "data",
+            'status' => "I",
+            'posicao' => 2,
+        ]);
 
         return $user;
     }

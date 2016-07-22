@@ -26,6 +26,7 @@ class UserController extends Controller{
 		}else{
         	$vUser = User::where('nickname',$nickname)->get();
         	$user = $vUser[0];
+            $my_perfil = false;
 
         	//$vFollower = Auth::user()->followers()->where('follower_id',$user->id)->get();
             //$follower = (empty($vFollower[0]) ? null : $vFollower[0]);
@@ -33,13 +34,13 @@ class UserController extends Controller{
             $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
             $follower = (empty($follower[0]) ? null : $follower[0]);
 
-	        $my_perfil = false;
+	        
 
             $categoriasAutorizadas = DB::table('categorias')
                             ->join('follower_categoria', 'categorias.id', '=', 'follower_categoria.categoria_id')
                             ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
                             ->select('categorias.*')
-                            ->where('followers.follower_id',Auth::user()->id)->get();
+                            ->where('followers.id', $follower->id)->get();
             
             
     	}
@@ -121,24 +122,39 @@ class UserController extends Controller{
             /*update um registo*/
             //$user->roles()->updateExistingPivot($roleId, $attributes);
             if($user){
-                Auth::user()->followers()->attach($user->id);
+                $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
+                $follower = (empty($follower[0]) ? null : $follower[0]);
+
+                if($follower){
+                    Auth::user()->followers()->updateExistingPivot($user->id, ['follow' => 1]);
+                }else{
+                    Auth::user()->followers()->attach($user->id, ['follow' => 1]);
+                }           
                 echo "1";
             }else{
                 echo "0";
-            }            
+            }           
         }
     }
 
     public function unFollow(Request $request){
         if($request->ajax()){
             $idUser = $request->input('idUser');
-            $user = User::find($idUser);            
+            $user = User::find($idUser);     
+
+
             if($user){
-                Auth::user()->followers()->attach($user->id);
+                $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
+                $follower = (empty($follower[0]) ? null : $follower[0]);
+
+                if($follower){
+                    Auth::user()->followers()->updateExistingPivot($user->id, ['follow' => 0,  'favorite' => 0]);
+                }  
+                $this->validaFollower($user->id);         
                 echo "1";
             }else{
                 echo "0";
-            }            
+            }
         }
     }
 
@@ -154,9 +170,8 @@ class UserController extends Controller{
                 if($follower){
                     Auth::user()->followers()->updateExistingPivot($user->id, ['favorite' => 1]);
                 }else{
-                    Auth::user()->followers()->attach($user->id, ['favorite' => 1]);
+                    Auth::user()->followers()->attach($user->id, ['favorite' => 1, 'follow' => 1]);
                 }            
-
                 echo "1";
             }else{
                 echo "0";
@@ -171,13 +186,19 @@ class UserController extends Controller{
 
             if($user){
                 Auth::user()->followers()->updateExistingPivot($user->id, ['favorite' => 0]);             
-            }        
+            }  
+            $this->validaFollower($user->id);      
             echo "1";    
         }
     }
 
     public function permit(Request $request){
         if($request->ajax()){
+
+            $opcoes = $request->input('opcoes');
+            $vCategorias = json_decode($opcoes,true);
+            
+            
             $idUser = $request->input('idUser');
             $user = User::find($idUser);
 
@@ -187,8 +208,13 @@ class UserController extends Controller{
 
                 if($follower){
                     Auth::user()->followers()->updateExistingPivot($user->id, ['permit' => 1]);
+                    $this->addOrRemoveCategoriasPermit($follower->id, $vCategorias);
+                    
                 }else{
                     Auth::user()->followers()->attach($user->id, ['permit' => 1]);
+                    $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
+                    
+                    $this->addOrRemoveCategoriasPermit($follower[0]->id, $vCategorias);
                 }            
 
                 echo "1";
@@ -198,7 +224,8 @@ class UserController extends Controller{
         }
     }
     public function unPermit(Request $request){
-        if($request->ajax()){
+        if($request->ajax()){            
+
             $idUser = $request->input('idUser');
             $user = User::find($idUser);
 
@@ -208,7 +235,9 @@ class UserController extends Controller{
 
                 if($follower){
                     Auth::user()->followers()->updateExistingPivot($user->id, ['permit' => 0]);
-                }            
+                    DB::table('follower_categoria')->where('follower_id', $follower->id)->delete();
+                }    
+                $this->validaFollower($user->id);        
                 echo "1";
             }else{
                 echo "0";
@@ -216,7 +245,30 @@ class UserController extends Controller{
         }
     }
 
+    private function validaFollower($id){
+        $follower = Auth::user()->followersTable()->where('follower_id',$id)->get();
+        $follower = (empty($follower[0]) ? null : $follower[0]);
+
+        if($follower){
+            if (!$follower->permit && !$follower->favorite && !$follower->follow) {
+                DB::table('followers')->where('id', $follower->id)->delete();
+                DB::table('follower_categoria')->where('follower_id', $follower->id)->delete(); 
+            }            
+        }  
+
+    }
+    private function addOrRemoveCategoriasPermit($follower_id, $categorias){        
+        
+        DB::table('follower_categoria')->where('follower_id', $follower_id)->delete(); 
+        if(!empty($categorias)){            
+            foreach ($categorias as $key => $categoria) {
+                DB::table('follower_categoria')->insert([
+                    ['follower_id' => $follower_id, 'categoria_id' => $categoria['categoria_id']],
+                ]);   
+            }                       
+        }
     
+    }    
     
     public function update_avatar(Request $request){
 

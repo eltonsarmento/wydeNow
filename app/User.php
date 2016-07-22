@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use DB;
 class User extends Authenticatable
 {
     /**
@@ -45,4 +45,15 @@ class User extends Authenticatable
             // if you want to rely on accepted field, then add this:        
     }    
     
+    public function countFollowers(){
+        return DB::table('followers')->select('followers.*')->where('follower_id',$this->id)->count();
+    }
+
+    public function following(){
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')
+                        ->where('follow',1)
+                        ->orWhere('favorite', 1);
+        //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
+            // if you want to rely on accepted field, then add this:        
+    }
 }

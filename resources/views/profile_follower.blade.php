@@ -15,11 +15,15 @@
             <input name="idUser" id="idUser" value="{{$user->id}}" type="hidden">            
             <h5 class="qy">{{ $user->name }} </h5>            
             <div id="divBtnSeguir">
-
               @if($follower)
-                <button type="button" class="cg fz tt active" onclick="btnFollow('remover', '+id+'); return false;" ><span class="h xl"></span> seguindo</button>      
+                @if($follower->follow)
+                  <button type="button" class="cg fz tt active" onclick="btnFollow('remover', {{ $user->id }}); return false;" ><span class="h xl"></span> seguindo</button>      
+                @else
+                  <button type="button" class="cg fz tt " onclick="btnFollow('add', {{ $user->id }}); return false;"><span class="h vc"></span> seguir</button>
+                @endif
+
               @else
-                <button type="button" class="cg fz tt " onclick="btnFollow('add', '+id+'); return false;"><span class="h vc"></span> seguir</button>
+                <button type="button" class="cg fz tt " onclick="btnFollow('add', {{ $user->id }}); return false;"><span class="h vc"></span> seguir</button>
               @endif              
             </div>
             <br><br>
@@ -41,7 +45,7 @@
               <li class="aoj">
                 <a href="#userModal" class="aku" data-toggle="modal">
                   Followers
-                  <h5 class="ali">{{$user->followers()->count()}}</h5>
+                  <h5 class="ali">{{$user->countFollowers()}}</h5>
                 </a>
               </li>
 
@@ -65,13 +69,15 @@
               <li class="aoj">   
                 <div id="divBtnPermit">         
                     @if($follower)
-                        @if($follower->permit == 1)
-                            <button type="button" onclick="btnPermit('remover', {{$user->id}}); return false;" class="cg fx tw "><span class="h ago"></span> Don't Permit</button>    
-                        @else
-                            <button type="button" onclick="btnPermit('add', {{$user->id}}); return false;" class="cg fx ts "><span class="h vc "></span> Permit</button>                        
+                        @if($follower->permit == 1)                                                        
+                            <button type="button" data-toggle="modal" href="#msgModalPermit" class="cg fx tw "><span class="h ago"></span> Don't Permit</button>    
+                        @else                            
+                            <button type="button" data-toggle="modal" href="#msgModalPermit" class="cg fx ts"><span class="h vc "></span> Permit</button>                                       
                         @endif
                     @else
-                        <button type="button" onclick="btnPermit('add', {{$user->id}}); return false;" class="cg fx ts"><span class="h vc "></span> Permit</button>                        
+                        <button type="button" data-toggle="modal" href="#msgModalPermit" class="cg fx ts"><span class="h vc "></span> Permit</button>                        
+                        <!-- <button type="button" onclick="btnPermit('add', {{$user->id}}); return false;" class="cg fx ts"><span class="h vc "></span> Permit</button>                         -->
+                        <!-- <button type="button" onclick="btnPermit('remover', {{$user->id}}); return false;" class="cg fx tw "><span class="h ago"></span> Don't Permit</button>     -->
                     @endif                    
                 </div>
               </li>
@@ -151,6 +157,14 @@
                           <div class="qn">
                             <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
                           </div>
+                          <div class="panel panel-default panel-link-list">
+                              <div class="panel-body">
+                              <!--       <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a> -->                                  
+                                    <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                                                      
+                                  <!--   <a data-toggle="modal" href="#msgModalConcluir" 
+                                      onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>   -->
+                              </div>
+                            </div>
                         </div>
                       </li>
                     @endunless
@@ -169,10 +183,10 @@
     <div class="gn">
           <div class="qv rc alu ss">
             <div class="qw"> 
-            @if(Auth::user()->followers()->count() > 0)  
+            @if(Auth::user()->following()->count() > 0)  
                   <h5 class="ald">Estou Seguindo<small> · <a href="#"> Ver todos</a></small></h5>
                   <ul class="qo anx">
-                    @foreach(Auth::user()->followers()->get() as $key => $follow)  
+                    @foreach(Auth::user()->following()->get() as $key => $follow)  
                       @if($key < 5)
                         <li class="qf alm">
                           <a class="qj" href="/profile/{{ $follow->nickname }}"><img class="qh cu" src="/uploads/avatars/{{$follow->avatar}}"></a>
@@ -240,6 +254,91 @@
 
       </div>
     </div>
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalPermit" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Permit to write in your task</h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+              
+        <div class="uq">          
+
+          <div class="alj js-conversation">
+            <p><strong>Choose the categories that you permit  this user? </strong></p>
+
+              <div class="bv" data-example-id="">
+                  @foreach(Auth::user()->categorias()->get() as $categoria)
+                    @foreach($categoriasAutorizadas as $ca)
+                        <div class="ex ug uk">
+                          <label><input type="checkbox" @if($ca->id == $categoria->id) checked @endif name="lista" value="{{ $categoria->id }}"><span class="uh"></span>
+                            {{ $categoria->descricao }}
+                          </label>
+                        </div>
+                    @endforeach
+                  @endforeach
+              </div>
+
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="ur">
+        <button type="button" class="fu us" data-dismiss="modal">Close</button>
+        <button type="button" class="fu us" onclick="btnPermit({{$user->id}}); return false;" ><strong>Save</strong></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalSugestao" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Titulo da Tarefa</h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+        <div class="modal-body">
+          <input type="text" class="form-control" placeholder="Messages">
+        </div>        
+        <div class="uq">          
+
+          <div class="alj js-conversation">
+            <ul class="qo aob">
+
+              <li class="qf aoe alu">
+                <div class="qg">
+                  <div class="aoc">MEU TEXTO</div>
+                  <div class="aod"><small class="dp"><a href="#">Dave Gamache</a> at 4:20PM</small></div>
+                </div>
+                <a class="qi" href="#"><img class="cu qh" src="/assets/img/avatar-dhg.png"></a>
+              </li>
+
+              <li class="qf alu">
+                <a class="qj" href="#"><img class="cu qh" src="/assets/img/avatar-fat.jpg"></a>
+                <div class="qg">
+                  <div class="aoc">TEXTO SUJERIDO</div>
+                  <div class="aod"><small class="dp"><a href="#">Fat</a> at 4:28PM</small></div>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
   </div>
