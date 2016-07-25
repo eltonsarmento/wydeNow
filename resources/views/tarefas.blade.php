@@ -8,9 +8,14 @@
       <ul class="nav ol">
         @foreach($user->categorias as $categoria)
           <li @if($categoriaSetada == $categoria->descricao) class="active" @endif >
-            <a  href="/tarefa/{{$categoria->descricao}}">{{$categoria->descricao}}</a></li>        
-            <!-- <a data-toggle="tab" href="#{{$categoria->descricao}}">{{$categoria->descricao}}</a></li>         -->
+            <a  href="/tarefa/{{$categoria->descricao}}">{{$categoria->descricao}} </a>
+          </li>        
         @endforeach
+        @if($user->tarefasDoIT->count() > 0)
+          <li @if($categoriaSetada == $categoria->descricao) class='active' @endif >
+            <a  href="/tarefa/doit/{{$user->nickname}}">Compatilhadas ({{$user->tarefasDoIT->count() }})</a>
+          </li>        
+        @endif
         <li><a data-toggle="tab" href="#menu1">+</a></li>        
       </ul>      
 
@@ -41,7 +46,7 @@
                             <li><a href="/tarefa/ordenar/{{$categoria->id}}/prioridade">Por Prioridade</a></li>
                           </ul>
                         </div>
-                        <p>Ordenado por: <strong id="tipoOrdenacaoReturn">{{$opçãoEscolhida}}</strong></p>
+                        <p>Ordenado por: <strong id="tipoOrdenacaoReturn">{{$opcaoEscolhida}}</strong></p>
                       </li>
 
                       <li class="qf b aml">                          
@@ -69,7 +74,9 @@
                                     <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
                                       <div class="qj dd-handles dd3-handles">
                                         <span class="h 
-                                                  @if($tarefa->privado)
+                                                  @if($tarefa->isdoit)
+                                                    ajw
+                                                  @elseif($tarefa->privado)
                                                     adw
                                                   @else
                                                     abv
@@ -78,21 +85,39 @@
                                       </div>
 
                                       <div class="qg">   
-                                        <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
-                                          <a href="#"><strong>{{$tarefa->texto}}</strong></a> 
-                                      </div>
+                                          <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                          <a href="#"><strong>{{$tarefa->texto}}</strong></a>  
+                                      </div>                                      
                                       <div class="panel panel-default panel-link-list">
                                         <div class="panel-body">
-                                              <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
                                             
-                                              <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+                                              @if($tarefa->isdoit)
+                                                <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Recusar</a>
+
+                                                <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>  
+
+                                                <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
+                                              @else
+                                                <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
+
+                                                <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+
+                                                <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
+                                              @endif
+
                                             
-                                              <a data-toggle="modal" href="#msgModalConcluir" 
-                                                onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>  
+                                              
                                         </div>
-                                      </div>
+                                      </div>                                    
+                                      @if($tarefa->isdoit)
+                                          <ul class="ano">
+                                            <li class="anp" style="vertical-align: 0">                                              
+                                              <img class="cu" src="/uploads/avatars/{{$tarefa->userDoIt->avatar}}">
+                                            </li>
+                                            <li style="display: inline-block"><small>{{$tarefa->userDoIt->nickname}}</small></li>
+                                          </ul>
+                                      @endif                                    
                                     </li>  
-                                                        
                                     @endif
                                 @endforeach                      
                               <!-- </div>   -->
@@ -157,7 +182,7 @@
 
     <div class="gn">
       <div class="qv rc alu ss">
-            <div class="qw"> 
+            <div class="qw">             
             @if($user->followers->count() > 0)  
                   <h5 class="ald">Estou Seguindo<small> · <a href="#"> Ver todos</a></small></h5>
                   <ul class="qo anx">
@@ -297,7 +322,7 @@
 </div>
 
 
-<!-- Modal Confirmação Concluir -->
+<!-- Modal Confirmação Cancelar -->
 <div class="cd fade" id="msgModalCancelar" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
   <div class="modal-dialog rq" >
     <div class="modal-content">
@@ -313,6 +338,27 @@
       <div class="ur">
         <button type="button" class="fu us" onclick="limpaCamposModal('Cancelar');" data-dismiss="modal">Cancel</button>
         <button type="button" class="fu us" id="btnContinueModalCancelar"><strong>Continue</strong></button>
+        <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Confirmação Recusar -->
+<div class="cd fade" id="msgModalCancelarDoIt" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog rq" >
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Recusar tarefa (Do It)</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deseja recusar a terefa: <strong id="msgModalCancelarCampoTextoTarefaDoIt"></strong>  ?</p>        
+        <input type="hidden" id="idTarefaCancelarDoIt">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">    
+      </div>
+      <div class="ur">
+        <button type="button" class="fu us" onclick="limpaCamposModal('Cancelar');" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnContinueModalCancelarDoIt"><strong>Continue</strong></button>
         <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
       </div>
     </div>

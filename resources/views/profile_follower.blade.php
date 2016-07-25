@@ -120,27 +120,29 @@
                 <li class="b aml">
                   <h3 class="alcs">Tarefas de hoje</h3>                  
                 </li>
-
-              @foreach($categoriasAutorizadas as $categoriasAutorizada)                      
-                  @if($categoriaSetada->descricao == $categoriasAutorizada->descricao)
-                      <li class="qf b aml">   
-                          <form enctype="multipart/form-data" action="/tarefa/envia" method="post">    
-                            <input type="hidden" name="categoria_id"  value="{{$categoria->id}}">                                  
-                            <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva para ele">
-                            <input type="hidden" id="isPrivado" value="0">
-                            <br>                                    
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
-                            <button type="submit" class="cg tr">Salvar</button>                
-                          </form> 
-                      </li>
-                      <br>
-                      @break
-                  @endif                    
-              @endforeach
+              @if($categoriasAutorizadasDoVisitante)
+                  @foreach($categoriasAutorizadasDoVisitante as $categoriasAutorizada)                      
+                      @if($categoriaSetada->descricao == $categoriasAutorizada->descricao)
+                          <li class="qf b aml">   
+                              <form  action="/tarefa/doit" method="post">    
+                                <input type="hidden" name="categoria_id"  value="{{$categoriaSetada->id}}">
+                                <input type="hidden" name="user_id"  value="{{$user->id}}">                                  
+                                <input type="text" class="form-control" id="texto" name="texto" placeholder="Escreva para ele">
+                                <input type="hidden" id="isPrivado" value="0">
+                                <br>                                    
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">                  
+                                <button type="submit" class="cg tr">Salvar</button>                
+                              </form> 
+                          </li>
+                          <br>
+                          @break
+                      @endif                    
+                  @endforeach
+              @endif
           
               @foreach($user->tarefas as $tarefa)
-                  @if($categoriaSetada->id == $tarefa->categoria_id)
-                    @unless($tarefa->privado)
+                  @if($categoriaSetada->id == $tarefa->categoria_id)                    
+                    
                       <li class="b qf aml">
                         <div class="qj">
                           <span class="h 
@@ -166,8 +168,7 @@
                               </div>
                             </div>
                         </div>
-                      </li>
-                    @endunless
+                      </li>                    
                   @endif
               @endforeach               
               </ul>
@@ -272,14 +273,12 @@
             <p><strong>Choose the categories that you permit  this user? </strong></p>
 
               <div class="bv" data-example-id="">
-                  @foreach(Auth::user()->categorias()->get() as $categoria)
-                    @foreach($categoriasAutorizadas as $ca)
-                        <div class="ex ug uk">
-                          <label><input type="checkbox" @if($ca->id == $categoria->id) checked @endif name="lista" value="{{ $categoria->id }}"><span class="uh"></span>
-                            {{ $categoria->descricao }}
-                          </label>
-                        </div>
-                    @endforeach
+                  @foreach($categoriasUserLogado as $categoria)                                        
+                    <div class="ex ug uk">
+                      <label><input type="checkbox" @if($categoria->selected) checked @endif name="lista" value="{{ $categoria->id }}"><span class="uh"></span>
+                        {{ $categoria->descricao }}
+                      </label>
+                    </div>                    
                   @endforeach
               </div>
 

@@ -26,22 +26,49 @@ class UserController extends Controller{
 		}else{
         	$vUser = User::where('nickname',$nickname)->get();
         	$user = $vUser[0];
-            $my_perfil = false;
-
-        	//$vFollower = Auth::user()->followers()->where('follower_id',$user->id)->get();
-            //$follower = (empty($vFollower[0]) ? null : $vFollower[0]);
-
-            $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
+            $my_perfil = false;            
+            $categoriasUserLogado = Auth::user()->categorias()->get();
+            $categoriasAutorizadasParaVisitante = null;
+        	
+            /*Vefificação se eu permiti ao visitante*/
+            $follower = Auth::user()->followersTable()->where([
+                                                        ['follower_id',$user->id],
+                                                        ['user_id',Auth::user()->id],
+                                                    ])->get();
             $follower = (empty($follower[0]) ? null : $follower[0]);
 
-	        
+	        if($follower){
+                $categoriasAutorizadasParaVisitante = DB::table('categorias')
+                                ->join('follower_categoria', 'categorias.id', '=', 'follower_categoria.categoria_id')
+                                ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
+                                ->select('categorias.*')
+                                ->where('followers.id', $follower->id)->get();
+                
+                foreach ($categoriasUserLogado as $key => $categoria) {
+                    foreach ($categoriasAutorizadasParaVisitante as $key2 => $ca) {
+                        if ($ca->id == $categoria->id) {
+                            $categoriasUserLogado[$key]['selected'] = true;
+                        }
+                    }
+                }
+            }
 
-            $categoriasAutorizadas = DB::table('categorias')
-                            ->join('follower_categoria', 'categorias.id', '=', 'follower_categoria.categoria_id')
-                            ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
-                            ->select('categorias.*')
-                            ->where('followers.id', $follower->id)->get();
+            /*Vefificação se o visitante me permitiu acesso*/
+            $follower2 = $user->followersTable()->where([
+                                                        ['follower_id',Auth::user()->id],
+                                                        ['user_id',$user->id],
+                                                    ])->get();
             
+            $follower2 = (empty($follower2[0]) ? null : $follower2[0]);
+            $categoriasAutorizadasDoVisitante = null;
+            if($follower2){
+                $categoriasAutorizadasDoVisitante = DB::table('categorias')
+                                ->join('follower_categoria', 'categorias.id', '=', 'follower_categoria.categoria_id')
+                                ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
+                                ->select('categorias.*')
+                                ->where('followers.id', $follower2->id)->get();
+            }
+
             
     	}
        
@@ -64,7 +91,7 @@ class UserController extends Controller{
         $order = "asc";
         $tarefasAtivas = Tarefa::where(
                 [
-                    ['user_id', $user->id],
+                    ['doit', $user->id],
                     ['categoria_id', $categoria->id],
                     ['status', 'A'],
                 ]            
@@ -72,11 +99,25 @@ class UserController extends Controller{
 
         
         $user->tarefas = $tarefasAtivas;
-        foreach ($user->tarefas as $key => $t) {
-            $dt = new Carbon($t->created_at, 'America/Maceio');
-            $user->tarefas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
+        if($my_perfil){
+            foreach ($user->tarefas as $key => $t) {               
+                $dt = new Carbon($t->created_at, 'America/Maceio');
+                $user->tarefas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
+            
+            }
+        }else{
+            foreach ($user->tarefas as $key => $t) {   
+                if($t->privado == 1 && $t->user_id == Auth::user()->id or $t->privado != 1){
+                    $dt = new Carbon($t->created_at, 'America/Maceio');
+                    $user->tarefas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
+                }else{
+                    unset($user->tarefas[$key]);
+                }
+            }
         }
-        
+
+
+
         if($my_perfil){
 
             if($user->followers()->count() == 0)
@@ -98,7 +139,9 @@ class UserController extends Controller{
                  'my_perfil' => $my_perfil,
                  'follower' => $follower,
                  'people' => $people,
-                 'categoriasAutorizadas' => $categoriasAutorizadas,
+                 'categoriasAutorizadasParaVisitante' => $categoriasAutorizadasParaVisitante,
+                 'categoriasAutorizadasDoVisitante' => $categoriasAutorizadasDoVisitante,
+                 'categoriasUserLogado' => $categoriasUserLogado,
             ));
 
         }

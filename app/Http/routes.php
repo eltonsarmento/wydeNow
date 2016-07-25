@@ -37,7 +37,9 @@ Route::post('/profile/unpermit/', 'UserController@unPermit');
 
 /*Tarefas */
 Route::get('/tarefa/{categoria?}', 'TarefaController@index');
+Route::get('/tarefa/doit/{nickname?}', 'TarefaController@indexDoit');
 Route::post('/tarefa/adiciona', 'TarefaController@adiciona');
+Route::post('/tarefa/doit', 'TarefaController@doit');
 Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar');
 Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 
@@ -45,6 +47,8 @@ Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 Route::post('tarefa/prioridade/{categoria_id?}', 'TarefaController@ordenarPrioridade');
 Route::post('tarefa/concluir/', 'TarefaController@concluir');
 Route::post('tarefa/remover/', 'TarefaController@remover');
+Route::post('tarefa/removerdoit/', 'TarefaController@removerDoIt');
+Route::post('tarefa/recusardoit/', 'TarefaController@recusarDoIt');
 /*Route::post('tarefa/concluir', function(){
 	if(Request::ajax()){
 		$id = Request::input('id');

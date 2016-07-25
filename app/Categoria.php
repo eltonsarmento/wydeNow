@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Categoria extends Model{
     
     public function user(){
-        return $this->belongsTo('estoque\User');
+        return $this->belongsTo('App\User');
     }
 
     protected $fillable = [
