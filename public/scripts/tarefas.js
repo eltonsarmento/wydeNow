@@ -74,7 +74,7 @@ $.ajaxSetup({
                         htmlConcluidas +='    <div class="qj ">';
                         htmlConcluidas +='      <span class="h'; 
                         if(item2['isdoit']) {
-                            htmlAtivas += ' ajw ">';
+                            htmlConcluidas += ' ajw ">';
                         }else if(item2['privado']){
                             htmlConcluidas += ' adw">';
                         }else{
@@ -88,25 +88,25 @@ $.ajaxSetup({
                         htmlConcluidas +='  </div>';
 
                         if(item2['isdoit']) {
-                            htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                            htmlAtivas += '     <div class="panel-body">';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlAtivas += '     </div>';
-                            htmlAtivas += '   </div>';
-                            htmlAtivas += '   <ul class="ano">';
-                            htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
-                            htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
-                            htmlAtivas += '     </li>';
-                            htmlAtivas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
-                            htmlAtivas += '   </ul>';
-                            htmlAtivas += '</li>';
+                            htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                            htmlConcluidas += '     <div class="panel-body">';
+                            htmlConcluidas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                            htmlConcluidas += '     </div>';
+                            htmlConcluidas += '   </div>';
+                            htmlConcluidas += '   <ul class="ano">';
+                            htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
+                            htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                            htmlConcluidas += '     </li>';
+                            htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                            htmlConcluidas += '   </ul>';
+                            htmlConcluidas += '</li>';
                         }else{
-                            htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                            htmlAtivas += '     <div class="panel-body">';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlAtivas += '     </div>';
-                            htmlAtivas += '   </div>';
-                            htmlAtivas += '</li>';  
+                            htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                            htmlConcluidas += '     <div class="panel-body">';
+                            htmlConcluidas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                            htmlConcluidas += '     </div>';
+                            htmlConcluidas += '   </div>';
+                            htmlConcluidas += '</li>';  
                         }
                     })
                 }
@@ -127,34 +127,40 @@ $.ajaxSetup({
         }else if(tipo == 'Cancelar'){
             $('#msgModalCancelarCampoTextoTarefa').html('');
             $('#idTarefaCancelar').val(''); 
-        }else if(tipo == 'DoIt'){
-            $('#msgModalCancelarCampoTextoTarefaDoIt').html('');
-            $('#idTarefaCancelarDoIt').val('');   
+        }else if(tipo == 'Recusar'){
+            $('#msgModalRecusarCampoTextoTarefaDoIt').html('');
+            $('#idTarefaRecusarDoIt').val('');   
+        }else if(tipo == 'Excluir'){
+            $('#msgModalExcluirCampoTextoTarefaDoIt').html('');
+            $('#idTarefaExcluirDoIt').val('');   
         }
         
     };
 /************************************* CONCLUIR TAREFA *******************************************************/
 
 
-/************************************* CANCELAR TAREFA *******************************************************/
+/************************************* CANCELAR, RECUSAR E  EXCLUIR : TAREFA *******************************************************/
 /*Setar Modal Concluir*/
 function setaDadosModalCancelar(id,texto){        
     $('#msgModalCancelarCampoTextoTarefa').html(texto);
     $('#idTarefaCancelar').val(id);   
 }
-function setaDadosModalCancelarDoIt(id,texto){        
-    $('#msgModalCancelarCampoTextoTarefaDoIt').html(texto);
-    $('#idTarefaCancelarDoIt').val(id);   
+function setaDadosModalRecusarDoIt(id,texto){        
+    $('#msgModalRecusarCampoTextoTarefaDoIt').html(texto);
+    $('#idTarefaRecusarDoIt').val(id);   
+}
+function setaDadosModalExcluirDoIt(id,texto){        
+    $('#msgModalExcluirCampoTextoTarefaDoIt').html(texto);
+    $('#idTarefaExcluirDoIt').val(id);   
 }
 
-
-/*Botão Concluir*/
+/*Botão Cancelar*/
 $('#btnContinueModalCancelar').click(function(){                      
     var idTarefa = $('#idTarefaCancelar').val(); 
 
     $.post("/tarefa/remover/", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
-
+        alert(json);
         var htmlAtivas     = '';
         var htmlConcluidas = '';
 
@@ -218,9 +224,9 @@ $('#btnContinueModalCancelar').click(function(){
         limpaCamposModal('Cancelar');
     });
 });
-/*Botão Concluir*/
-$('#btnContinueModalCancelarDoIt').click(function(){                      
-    var idTarefa = $('#idTarefaCancelar').val(); 
+/*Botão Recusar*/
+$('#btnContinueModalRecusarDoIt').click(function(){                      
+    var idTarefa = $('#idTarefaRecusarDoIt').val(); 
 
     $.post("/tarefa/recusardoit/", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
@@ -320,8 +326,78 @@ $('#btnContinueModalCancelarDoIt').click(function(){
         });
         $('#returnListaAtivas').html(htmlAtivas);
         $('#returnListaConcluidas').html(htmlConcluidas);
-        $('#msgModalCancelar').modal('toggle');    
-        limpaCamposModal('Cancelar');
+        $('#msgModalRecusarDoIt').modal('toggle');    
+        limpaCamposModal('Recusar');
+    });
+});
+/*Botão Excluir*/
+$('#btnContinueModalExcluirDoIt').click(function(){                      
+    var idTarefa = $('#idTarefaExcluirDoIt').val(); 
+
+    $.post("/tarefa/removerdoit/", {id: idTarefa}, function(result){            
+        var json = jQuery.parseJSON(result);
+
+        var htmlAtivas     = '';
+        var htmlConcluidas = '';
+
+        $.each(json, function(key,value) {
+            if(key == 'tarefasAtivas'){
+                htmlAtivas += ' <ol class="dd-list">';
+                 $.each(value, function(key2,item) {
+                    htmlAtivas += ' <li class="b qf aml dd-item dd3-item" data-id="'+item['id']+'">';
+                    htmlAtivas += '   <div class="qj dd-handles dd3-handles">';
+                    htmlAtivas += '     <span class="h ajw "></span>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   <div class="qg">';   
+                    htmlAtivas += '      <small class="eg dp">'+item['tempoCadastada']+'</small>';
+                    htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
+                    htmlAtivas += '   </div>';                
+                    htmlAtivas += '   <div class="panel panel-default panel-link-list">';
+                    htmlAtivas += '     <div class="panel-body">';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Excluir</a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                    htmlAtivas += '     </div>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   <ul class="ano">';
+                    htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
+                    htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item['avatar']+'">';
+                    htmlAtivas += '     </li>';
+                    htmlAtivas += '     <li style="display: inline-block"><small>'+item['nickname']+'</small></li>';
+                    htmlAtivas += '   </ul>';
+                    htmlAtivas += '</li>';
+                    
+                 });
+                htmlAtivas += '</ol>';  
+            }else if(key == 'tarefasConcluidas'){
+                $.each(value, function(key3,item2) {
+                    htmlConcluidas +='  <li class="b qf aml" >';
+                    htmlConcluidas +='    <div class="qj ">';
+                    htmlConcluidas +='      <span class="h ajw "></span>';
+                    htmlConcluidas +='    </div>';
+                    htmlConcluidas +='  <div class="qg">';
+                    htmlConcluidas +='      <small class="eg dp">'+item2['tempoCadastada']+'</small>';
+                    htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
+                    htmlConcluidas +='  </div>';                    
+                    htmlAtivas += '   <div class="panel panel-default panel-link-list">';
+                    htmlAtivas += '     <div class="panel-body">';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlAtivas += '     </div>';
+                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   <ul class="ano">';
+                    htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
+                    htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                    htmlAtivas += '     </li>';
+                    htmlAtivas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                    htmlAtivas += '   </ul>';
+                    htmlAtivas += '</li>';                    
+                })
+            }
+        });
+        $('#returnListaAtivas').html(htmlAtivas);
+        $('#returnListaConcluidas').html(htmlConcluidas);
+        $('#msgModalExcluirDoIt').modal('toggle');    
+        limpaCamposModal('Excluir');
     });
 });
 /************************************* CANCELAR TAREFA *******************************************************/

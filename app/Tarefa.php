@@ -12,5 +12,7 @@ class Tarefa extends Model{
 
     protected $fillable = array('texto','status','privado');
 
-   
+   	public function suggestions(){
+        return $this->hasMany('App\Suggestion');
+    } 
 }

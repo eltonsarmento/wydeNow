@@ -92,7 +92,7 @@
                                         <div class="panel-body">
                                             
                                               @if($tarefa->isdoit)
-                                                <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Recusar</a>
+                                                <a data-toggle="modal" href="#msgModalRecusarDoIt" style="margin-right: 10px;" onclick="setaDadosModalRecusarDoIt('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Recusar</a>
 
                                                 <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>  
 
@@ -344,7 +344,7 @@
   </div>
 </div>
 <!-- Modal Confirmação Recusar -->
-<div class="cd fade" id="msgModalCancelarDoIt" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+<div class="cd fade" id="msgModalRecusarDoIt" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
   <div class="modal-dialog rq" >
     <div class="modal-content">
       <div class="d">
@@ -352,13 +352,13 @@
         <h4 class="modal-title">Recusar tarefa (Do It)</h4>
       </div>
       <div class="modal-body">
-        <p>Deseja recusar a terefa: <strong id="msgModalCancelarCampoTextoTarefaDoIt"></strong>  ?</p>        
-        <input type="hidden" id="idTarefaCancelarDoIt">
+        <p>Deseja recusar a terefa: <strong id="msgModalRecusarCampoTextoTarefaDoIt"></strong>  ?</p>        
+        <input type="hidden" id="idTarefaRecusarDoIt">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">    
       </div>
       <div class="ur">
-        <button type="button" class="fu us" onclick="limpaCamposModal('Cancelar');" data-dismiss="modal">Cancel</button>
-        <button type="button" class="fu us" id="btnContinueModalCancelarDoIt"><strong>Continue</strong></button>
+        <button type="button" class="fu us" onclick="limpaCamposModal('Recusar');" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnContinueModalRecusarDoIt"><strong>Continue</strong></button>
         <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
       </div>
     </div>

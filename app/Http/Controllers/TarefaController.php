@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Tarefa;
 use App\User;
 use App\Categoria;
+use App\Suggestion;
 use Carbon\Carbon;
 use Auth;
 
@@ -73,10 +74,9 @@ class TarefaController extends Controller {
         $user->tarefasDoIT = Tarefa::where(
                 [
                     ['user_id', Auth::user()->id],
-                    ['doit', '<>' ,Auth::user()->id],                    
-                    ['status', 'A'],
+                    ['doit', '<>' ,Auth::user()->id],                                        
                 ]            
-        )->get();
+        )->whereIn('status', ['A','R'])->get();
 
         $user->tarefas = $tarefasAtivas;
         foreach ($user->tarefas as $key => $t) {
@@ -108,10 +108,10 @@ class TarefaController extends Controller {
         $user->tarefas = Tarefa::where(
                 [
                     ['user_id', Auth::user()->id],
-                    ['doit', '<>' ,Auth::user()->id],                    
-                    ['status', 'A'],
+                    ['doit', '<>' ,Auth::user()->id],                              
                 ]            
-        )->join('users', 'users.id', '=', 'tarefas.doit')
+        )->whereIn('status', ['A','R'])
+        ->join('users', 'users.id', '=', 'tarefas.user_id')
         ->orderBy('nickname')
         ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get();
         
@@ -123,10 +123,11 @@ class TarefaController extends Controller {
                     ['data_conclusao', '>=', Carbon::today()],
                     ['data_conclusao', '<', Carbon::tomorrow()],
                 ]            
-        )->join('users', 'users.id', '=', 'tarefas.doit')
+        )->join('users', 'users.id', '=', 'tarefas.user_id')
         ->orderBy('nickname')
-        ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get();    
+        ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get();   
 
+        
         
         foreach ($user->tarefas as $key => $t) {
             $dt = new Carbon($t->created_at, 'America/Maceio');
@@ -224,15 +225,51 @@ class TarefaController extends Controller {
         return redirect('/profile/'.$user->nickname.'/'.$categoria->descricao);
     }
 
+    public function adiciona_sugestao(){
+
+        if(Request::ajax()){
+            $suggestoin            = new Suggestion();
+            $suggestoin->texto     = Request::input('texto');        
+            $suggestoin->tarefa_id = Request::input('tarefa_id');        
+            $suggestoin->user_id   = Auth::user()->id;
+            $suggestoin->status    = "A";
+            $suggestoin->save();            
+        }
+    }
+    public function getSuggestion(){
+
+        
+           
+            $suggestoins = Suggestion::where('suggestions.tarefa_id', 16)
+                            ->join('users', 'users.id', '=', 'suggestions.user_id')
+                            ->join('tarefas', 'tarefas.id', '=', 'suggestions.tarefa_id')
+                            ->join('users as owner', 'owner.id', '=', 'tarefas.doit')                            
+                            ->select('suggestions.texto', 'users.name', 'users.nickname','users.avatar', 'owner.id', 'owner.name', 'owner.avatar', 'owner.nickname')
+                            ->orderBy('suggestions.created_at', 'asc')->get(); 
+
+
+/*select `suggestions`.*, `users`.`name`, `users`.`nickname`, `users`.`avatar`, `owner`.`name`  
+from `suggestions` 
+inner join `users` on (`users`.`id` = `suggestions`.`user_id`)
+inner join `tarefas` on (`tarefas`.`id` = `suggestions`.`tarefa_id`)
+inner join `users`as `owner` on (`owner`.`id` = `tarefas`.`doit`)
+where `suggestions`.`tarefa_id` = 16
+order by `created_at` asc*/
+            dd($suggestoins);
+        
+    }
+
     public function concluir(){
 
         if(Request::ajax()){
             $id = Request::input('id');
             $tarefa = Tarefa::find($id);            
-            //$tarefa->status = "C";
+            $tarefa->status = "C";
             $tarefa->data_conclusao = Carbon::now();
             $tarefa->save();
             
+            $json = [];
+
             $tarefasAtivas     = Tarefa::where([
                                         ['status', 'A'],
                                         ['categoria_id', $tarefa->categoria_id],
@@ -257,6 +294,7 @@ class TarefaController extends Controller {
                 }
                 $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
 
+                $json = $jsonAtivas;
             }
             $tarefasConcluidas = Tarefa::where([
                                         ['status', 'C'],
@@ -280,17 +318,14 @@ class TarefaController extends Controller {
                 }                
                 foreach ($tarefasConcluidas as $key => $tc) {
                     $dt = new Carbon($tc->created_at, 'America/Maceio');                
-                    $arrayConcluidas[] = ['id' => $tc->id, 'isdoit' => $tc->isdoit, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+                    $arrayConcluidas[] = ['id' => $tc->id, 'isdoit' => $tc->isdoit, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')) , 'avatar' => $tc->avatar, 'name' => $tc->name, 'nickname' => $tc->nickname];                 
                 }
                 $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
 
-                $json = array_merge($jsonAtivas, $jsonConcluidas);
-            }else{
-                if($tarefasAtivas->count() > 0){
-                    $json = $jsonAtivas;
-                }else{
-                    $json = null;
-                }
+                if($jsonAtivas)
+                    $json = array_merge($jsonAtivas, $jsonConcluidas);
+                else
+                    $json = $jsonConcluidas;
             }
             echo json_encode($json);die();           
         }
@@ -305,33 +340,41 @@ class TarefaController extends Controller {
             $tarefa->status = "E";            
             $tarefa->save();
             
-            $tarefasAtivas     = Tarefa::where([
-                                        ['status', 'A'],
+            $json = [];
+            $tarefasAtivas     = Tarefa::where([                                        
                                         ['categoria_id', $tarefa->categoria_id],
-                                        ['user_id', $tarefa->user_id]
-                                ])->orderBy('posicao', "asc")->get();  
+                                        ['doit', $tarefa->user_id]
+                                ])->whereIn('status', ['A','R'])
+                                  ->orderBy('posicao', "asc")->get();  
             $tarefasConcluidas = Tarefa::where([
                                         ['status', 'C'],
                                         ['categoria_id', $tarefa->categoria_id],
-                                        ['user_id', $tarefa->user_id]
+                                        ['doit', $tarefa->user_id]
                                 ])->get();
 
-            foreach ($tarefasAtivas as $key => $ta) {
-                $dt = new Carbon($ta->created_at, 'America/Maceio');                
-                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+            if($tarefasAtivas()->count() > 0){
+                foreach ($tarefasAtivas as $key => $ta) {
+                    $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                    $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+                }
+                $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+                $json = $jsonAtivas;
             }
-            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
 
+            if($tarefasConcluidas()->count() > 0){
+                foreach ($tarefasConcluidas as $key => $tc) {
+                    $dt = new Carbon($tc->created_at, 'America/Maceio');                
 
-            foreach ($tarefasConcluidas as $key => $tc) {
-                $dt = new Carbon($tc->created_at, 'America/Maceio');                
+                    $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+                }
+                $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
 
-                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio'))];         
+                if($jsonAtivas)
+                    $json = array_merge($jsonAtivas, $jsonConcluidas);
+                else
+                    $json = $jsonConcluidas;
             }
-            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
-
-            $json = array_merge($jsonAtivas, $jsonConcluidas);
-                        
+ 
             echo json_encode($json);die();           
         }
         
@@ -345,6 +388,7 @@ class TarefaController extends Controller {
             $tarefa->status = "E";            
             $tarefa->save();
 
+            $json = [];
             $tarefasAtivas = Tarefa::where(
                     [
                         ['user_id', Auth::user()->id],
@@ -353,11 +397,11 @@ class TarefaController extends Controller {
                         ['data_conclusao', '>=', Carbon::today()],
                         ['data_conclusao', '<', Carbon::tomorrow()],
                     ]            
-            )->join('users', 'users.id', '=', 'tarefas.doit')
+            )->join('users', 'users.id', '=', 'tarefas.user_id')
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get(); 
 
-            $user->tarefasConcluidas = Tarefa::where(
+            $tarefasConcluidas = Tarefa::where(
                     [
                         ['user_id', Auth::user()->id],
                         ['doit', '<>' ,Auth::user()->id],
@@ -365,24 +409,31 @@ class TarefaController extends Controller {
                         ['data_conclusao', '>=', Carbon::today()],
                         ['data_conclusao', '<', Carbon::tomorrow()],
                     ]            
-            )->join('users', 'users.id', '=', 'tarefas.doit')
+            )->join('users', 'users.id', '=', 'tarefas.user_id')
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get(); 
 
-
-            foreach ($tarefasAtivas as $key => $ta) {
-                $dt = new Carbon($ta->created_at, 'America/Maceio');                
-                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')), 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
+            if($tarefasAtivas->count() > 0){
+                foreach ($tarefasAtivas as $key => $ta) {
+                    $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                    $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')), 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
+                }
+                $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+                $json = $jsonAtivas;
             }
-            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
 
-            foreach ($tarefasConcluidas as $key => $tc) {
-                $dt = new Carbon($tc->created_at, 'America/Maceio');                
-                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')) , 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
-            }
-            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
+            if($tarefasConcluidas->count() > 0){
+                foreach ($tarefasConcluidas as $key => $tc) {
+                    $dt = new Carbon($tc->created_at, 'America/Maceio');                
+                    $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')) , 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
+                }
+                $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
 
-            $json = array_merge($jsonAtivas, $jsonConcluidas);
+                if($jsonAtivas)
+                    $json = array_merge($jsonAtivas, $jsonConcluidas);
+                else
+                    $json = $jsonConcluidas;
+            }            
                         
             echo json_encode($json);die();           
         }
@@ -397,23 +448,33 @@ class TarefaController extends Controller {
             $tarefa->status = "R";            
             $tarefa->save();
 
+            $json = [];
+
             $tarefasAtivas = Tarefa::where(
-                    [
-                        ['user_id', Auth::user()->id],
-                        ['doit', '<>' ,Auth::user()->id],
+                    [                        
+                        ['doit',Auth::user()->id],
                         ['status', 'A'],
-                        ['data_conclusao', '>=', Carbon::today()],
-                        ['data_conclusao', '<', Carbon::tomorrow()],
+                        ['categoria_id', $tarefa->categoria_id],
                     ]            
             )->join('users', 'users.id', '=', 'tarefas.doit')
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get(); 
 
-            $user->tarefasConcluidas = Tarefa::where(
-                    [
-                        ['user_id', Auth::user()->id],
-                        ['doit', '<>' ,Auth::user()->id],
+            if ($tarefasAtivas->count() > 0) {
+                foreach ($tarefasAtivas as $key => $ta) {
+                    $dt = new Carbon($ta->created_at, 'America/Maceio');                
+                    $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')), 'avatar' => $ta->avatar, 'name' => $ta->name, 'nickname' => $ta->nickname];         
+                }
+                $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
+
+                $json = $jsonAtivas;
+            }
+
+            $tarefasConcluidas = Tarefa::where(
+                    [                        
+                        ['doit',Auth::user()->id],
                         ['status', 'C'],
+                        ['categoria_id', $tarefa->categoria_id],
                         ['data_conclusao', '>=', Carbon::today()],
                         ['data_conclusao', '<', Carbon::tomorrow()],
                     ]            
@@ -421,20 +482,18 @@ class TarefaController extends Controller {
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get(); 
 
+            if ($tarefasConcluidas->count() > 0) {        
+                foreach ($tarefasConcluidas as $key => $tc) {
+                    $dt = new Carbon($tc->created_at, 'America/Maceio');                
+                    $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')) , 'avatar' => $tc->avatar, 'name' => $tc->name, 'nickname' => $tc->nickname];         
+                }
+                $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
 
-            foreach ($tarefasAtivas as $key => $ta) {
-                $dt = new Carbon($ta->created_at, 'America/Maceio');                
-                $arrayAtivas[] = ['id' => $ta->id, 'texto' => $ta->texto, 'status' => $ta->status, "privado" => $ta->privado ,"tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')), 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
+                if($jsonAtivas)
+                    $json = array_merge($jsonAtivas, $jsonConcluidas);
+                else
+                    $json = $jsonConcluidas;
             }
-            $jsonAtivas = array('tarefasAtivas' => $arrayAtivas);
-
-            foreach ($tarefasConcluidas as $key => $tc) {
-                $dt = new Carbon($tc->created_at, 'America/Maceio');                
-                $arrayConcluidas[] = ['id' => $tc->id, 'texto' => $tc->texto , 'status' => $tc->status, "privado" => $tc->privado, "tempoCadastada" => $dt->diffForHumans(Carbon::now('America/Maceio')) , 'avatar' => $t->avatar, 'name' => $t->name, 'nickname' => $t->nickname];         
-            }
-            $jsonConcluidas = array('tarefasConcluidas' => $arrayConcluidas);
-
-            $json = array_merge($jsonAtivas, $jsonConcluidas);
                         
             echo json_encode($json);die();           
         }

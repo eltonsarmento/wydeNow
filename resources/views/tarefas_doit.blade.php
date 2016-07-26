@@ -31,43 +31,66 @@
                   
                   <ol class="dd-list" > 
                       @foreach($user->tarefas as $tarefa)
-                      
-                          <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
-                            <div class="qj dd-handles dd3-handles">
-                              <span class="h ajw"></span>
-                            </div>
-
-                            <div class="qg">   
-                                <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
-                                <a href="#"><strong>{{$tarefa->texto}}</strong></a>  
-                            </div>                                      
-                            <div class="panel panel-default panel-link-list">
-                              <div class="panel-body">
-
-                                    <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
-
-                                    <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
-                                                                          
+                          @if($tarefa->status == 'R')
+                              <li class="b qf aml" >
+                              <div class="qj ">
+                                <span class="h ya"></span>
                               </div>
-                            </div>                                    
+
+                              <div class="qg">   
+                                <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                  <strike>{{$tarefa->texto}}</strike> - RECUSADA
+                              </div> 
+                               <div class="panel panel-default panel-link-list">
+                                <div class="panel-body">
+                                      <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Excluir</a>
+                                </div>
+                              </div>
+                              <ul class="ano">
+                                <li class="anp" style="vertical-align: 0">                                              
+                                  <img class="cu" src="/uploads/avatars/{{$tarefa->avatar}}">
+                                </li>
+                                <li style="display: inline-block"><small>{{$tarefa->nickname}}</small></li>
+                              </ul>                             
+                            </li>  
+                          @else
+                          
+                              <li class="b qf aml dd-item dd3-item" data-id="{{$tarefa->id}}">
+                                <div class="qj dd-handles dd3-handles">
+                                  <span class="h ajw"></span>
+                                </div>
+
+                                <div class="qg">   
+                                    <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
+                                    <a href="#"><strong>{{$tarefa->texto}}</strong></a>  
+                                </div>                                      
+                                <div class="panel panel-default panel-link-list">
+                                  <div class="panel-body">
+
+                                        <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Excluir</a>
+
+                                        <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+                                                                              
+                                  </div>
+                                </div>                                    
+                                
+                                <ul class="ano">
+                                  <li class="anp" style="vertical-align: 0">                                              
+                                    <img class="cu" src="/uploads/avatars/{{$tarefa->avatar}}">
+                                  </li>
+                                  <li style="display: inline-block"><small>{{$tarefa->nickname}}</small></li>
+                                </ul>
                             
-                            <ul class="ano">
-                              <li class="anp" style="vertical-align: 0">                                              
-                                <img class="cu" src="/uploads/avatars/{{$tarefa->avatar}}">
-                              </li>
-                              <li style="display: inline-block"><small>{{$tarefa->nickname}}</small></li>
-                            </ul>
-                        
-                          </li>                              
+                              </li>  
+                          @endif                            
                       @endforeach                      
                     </ol>
                     </div>
                 </div>
                 
                 <div id="returnListaConcluidas">
-                @if($user->tarefasConcluidas)
+                @if($user->tarefasConcluidas->count() > 0)
                       @foreach($user->tarefasConcluidas as $tarefa)
-                          @if($categoria->id == $tarefa->categoria_id)
                             <li class="b qf aml" >
                             <div class="qj ">
                               <span class="h adw"></span>
@@ -84,8 +107,13 @@
                                   </div>
                                 </div>
                             @endif
+                           <ul class="ano">
+                              <li class="anp" style="vertical-align: 0">                                              
+                                <img class="cu" src="/uploads/avatars/{{$tarefa->avatar}}">
+                              </li>
+                              <li style="display: inline-block"><small>{{$tarefa->nickname}}</small></li>
+                            </ul>
                           </li>     
-                      @endif
                   @endforeach
                 @endif
                 </div>
@@ -254,21 +282,21 @@
 
 
 <!-- Modal Confirmação Concluir -->
-<div class="cd fade" id="msgModalCancelar" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+<div class="cd fade" id="msgModalExcluirDoIt" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
   <div class="modal-dialog rq" >
     <div class="modal-content">
       <div class="d">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Cancelar Do It</h4>
+        <h4 class="modal-title">Excluir tarefa (Do It)</h4>
       </div>
       <div class="modal-body">
-        <p>Deseja cancelar a terefa: <strong id="msgModalCancelarCampoTextoTarefa"></strong>  ?</p>        
-        <input type="hidden" id="idTarefaCancelar">
+        <p>Deseja excluir a terefa: <strong id="msgModalExcluirCampoTextoTarefaDoIt"></strong>  ?</p>        
+        <input type="hidden" id="idTarefaExcluirDoIt">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">    
       </div>
       <div class="ur">
-        <button type="button" class="fu us" onclick="limpaCamposModal('Cancelar');" data-dismiss="modal">Cancel</button>
-        <button type="button" class="fu us" id="btnContinueModalCancelar"><strong>Continue</strong></button>
+        <button type="button" class="fu us" onclick="limpaCamposModal('Excluir');" data-dismiss="modal">Cancel</button>
+        <button type="button" class="fu us" id="btnContinueModalExcluirDoIt"><strong>Continue</strong></button>
         <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
       </div>
     </div>
