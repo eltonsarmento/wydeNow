@@ -27,6 +27,15 @@ class User extends Authenticatable
     public function tarefas(){
         return $this->hasMany('App\Tarefa');
     }
+    public function tarefasConcluidas(){
+        return $this->hasMany('App\Tarefa')->where('status', 'C');
+    }
+    public function tarefasPendentes(){
+        return Tarefa::where([
+                    ['doit', $this->id],
+                    ['status', 'A'],
+                ])->orderBy('created_at', 'asc')->get();
+    }
     
     public function categorias(){
         return $this->hasMany('App\Categoria');

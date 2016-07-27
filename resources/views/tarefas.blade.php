@@ -94,13 +94,13 @@
                                               @if($tarefa->isdoit)
                                                 <a data-toggle="modal" href="#msgModalRecusarDoIt" style="margin-right: 10px;" onclick="setaDadosModalRecusarDoIt('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Recusar</a>
 
-                                                <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>  
+                                                <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
 
                                                 <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
                                               @else
                                                 <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
 
-                                                <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                    
+                                                <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
 
                                                 <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
                                               @endif
@@ -148,7 +148,7 @@
                                     @if($tarefa->sugestao)
                                         <div class="panel panel-default panel-link-list">
                                           <div class="panel-body">                                  
-                                                <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
+                                                <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
                                           </div>
                                         </div>
                                     @endif
@@ -255,50 +255,6 @@
       </div>
     </div>
     
-<!-- Modal Sugestões -->
-<div class="cd fade" id="msgModalSugestao" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="d">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
-        <h4 class="modal-title">Titulo da Tarefa</h4>
-      </div>
-
-      <div class="modal-body amf js-modalBody">
-        <div class="modal-body">
-          <input type="text" class="form-control" placeholder="Messages">
-        </div>        
-        <div class="uq">          
-
-          <div class="alj js-conversation">
-            <ul class="qo aob">
-
-              <li class="qf aoe alu">
-                <div class="qg">
-                  <div class="aoc">MEU TEXTO</div>
-                  <div class="aod"><small class="dp"><a href="#">Dave Gamache</a> at 4:20PM</small></div>
-                </div>
-                <a class="qi" href="#"><img class="cu qh" src="/assets/img/avatar-dhg.png"></a>
-              </li>
-
-              <li class="qf alu">
-                <a class="qj" href="#"><img class="cu qh" src="/assets/img/avatar-fat.jpg"></a>
-                <div class="qg">
-                  <div class="aoc">TEXTO SUJERIDO</div>
-                  <div class="aod"><small class="dp"><a href="#">Fat</a> at 4:28PM</small></div>
-                </div>
-              </li>
-
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
 <!-- Modal Confirmação Concluir -->
 <div class="cd fade" id="msgModalConcluir" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
   <div class="modal-dialog rq" >
@@ -365,10 +321,39 @@
   </div>
 </div>
 
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalSugestao" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title" id="tituloTarefaSugestao"></h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+        <div class="modal-body">
+          <input type="hidden" id="idUserTarefaSugestao">
+          <input type="hidden" id="idTarefaSugestao">
+          <input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">
+        </div>        
+        <div class="uq">          
+
+          <div class="alj js-conversation" id="corpoTarefaSugestao">
+            <ul class="qo aob">
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>
 
 
 <script src="/assets/js/jquery.nestable.js"></script>
 <script src="/scripts/tarefas.js"></script>
+<script src="/scripts/suggestions.js"></script>
 @endsection

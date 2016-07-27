@@ -73,8 +73,15 @@
 	            <a href="{{ url('/profile') }}">Perfil</a>
 	          </li>
 	          <li>
-	            <a data-toggle="modal" href="#msgModal">Messages</a>
+	            <a >({{Auth::user()->tarefas()->count()}}) tarefas</a>
 	          </li>
+	          <li>
+	            <a data-toggle="modal" href="/tarefa/listar/concluidas">({{Auth::user()->tarefasConcluidas()->count()}}) finish</a>
+	          </li>
+	          <li>
+	            <a data-toggle="modal" href="/tarefa/listar/ativas">({{Auth::user()->tarefasPendentes()->count()}}) waiting</a>
+	          </li>
+	          
 	          <li>
 	            <a href="docs/index.html">Docs</a>
 	          </li>

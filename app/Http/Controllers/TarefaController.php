@@ -150,6 +150,54 @@ class TarefaController extends Controller {
         ));
     }
 
+    public function listByStatus($tipo = "Ativas"){
+
+        if($tipo == "ativas"){
+            $opcao = 'Aguardando';
+            $status = 'A';
+        }else if($tipo == "concluidas"){
+            $opcao = 'Concluídas';
+            $status = 'C';
+        }
+        
+        $user = Auth::user();
+
+        $tarefas = Tarefa::where(
+            [
+                ['doit', Auth::user()->id],
+                ['status', $status],
+            ]            
+        )->orderBy('created_at', 'asc')->get(); 
+
+
+        foreach ($tarefas as $key => $t) {        
+            if($t->user_id != Auth::user()->id){
+                $tarefas[$key]['isdoit'] = true;
+                $userDoIT = User::find($t->user_id);
+                $tarefas[$key]['userDoIt'] = $userDoIT;
+            }
+        }
+        $user->tarefas = $tarefas;
+        foreach ($user->tarefas as $key => $t) {
+            $dt = new Carbon($t->created_at, 'America/Maceio');
+            $user->tarefas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
+        }        
+
+
+        if($user->followers()->count() == 0)
+            $people = User::where('id','<>', $user->id)->take(5)->get();
+        
+        
+        return view('tarefas_by_filter', array(
+                 'user' => $user,                                           
+                 'opcao' => $opcao,
+                 "people" => (empty($people) ? null : $people),
+        ));
+
+
+        
+    }
+
     public function adiciona(){
 
         $categoria_id = Request::input('categoria_id');
@@ -233,30 +281,68 @@ class TarefaController extends Controller {
             $suggestoin->tarefa_id = Request::input('tarefa_id');        
             $suggestoin->user_id   = Auth::user()->id;
             $suggestoin->status    = "A";
-            $suggestoin->save();            
+            $suggestoin->save();  
+
+            $suggestions = Suggestion::where('suggestions.tarefa_id', $suggestoin->tarefa_id)
+                                ->join('users', 'users.id', '=', 'suggestions.user_id')
+                                ->join('tarefas', 'tarefas.id', '=', 'suggestions.tarefa_id')
+                                ->join('users as owner', 'owner.id', '=', 'tarefas.doit')                            
+                                ->select('suggestions.*', 'users.name', 'users.nickname','users.avatar', 'owner.id as owner')
+                                ->orderBy('suggestions.created_at', 'asc')->get();
+
+            $json = [];
+            if($suggestions->count() > 0){
+                foreach ($suggestions as $key => $s) {
+                    $owner = false;
+                    if($s->owner == $s->user_id){
+                        $owner = true;
+                    }
+                    
+                    $dt = new Carbon($s->created_at, 'America/Maceio');                                
+                    $diference = Carbon::today()->diffInHours($dt, false);       
+                    if($diference > 1 && $diference <= 23)
+                        $dataFormat = $dt->format('h:i A');
+                    else
+                        $dataFormat = $dt->format('d/m/Y h:i A');;            
+                    
+                    $json[] = ['id' => $s->id, 'isOwner' => $owner, 'texto' => $s->texto, "data" => $dataFormat , 'avatar' => $s->avatar, 'name' => $s->name, 'nickname' => $s->nickname];
+                }
+            }
+
+            echo json_encode($json);die();         
         }
     }
     public function getSuggestion(){
 
-        
-           
-            $suggestoins = Suggestion::where('suggestions.tarefa_id', 16)
-                            ->join('users', 'users.id', '=', 'suggestions.user_id')
-                            ->join('tarefas', 'tarefas.id', '=', 'suggestions.tarefa_id')
-                            ->join('users as owner', 'owner.id', '=', 'tarefas.doit')                            
-                            ->select('suggestions.texto', 'users.name', 'users.nickname','users.avatar', 'owner.id', 'owner.name', 'owner.avatar', 'owner.nickname')
-                            ->orderBy('suggestions.created_at', 'asc')->get(); 
+        if(Request::ajax()){
+            $tarefa_id = Request::input('tarefa_id');
+            $suggestions = Suggestion::where('suggestions.tarefa_id', $tarefa_id)
+                                ->join('users', 'users.id', '=', 'suggestions.user_id')
+                                ->join('tarefas', 'tarefas.id', '=', 'suggestions.tarefa_id')
+                                ->join('users as owner', 'owner.id', '=', 'tarefas.doit')                            
+                                ->select('suggestions.*', 'users.name', 'users.nickname','users.avatar', 'owner.id as owner')
+                                ->orderBy('suggestions.created_at', 'asc')->get(); 
 
+            $json = [];
+            if($suggestions->count() > 0){
+                foreach ($suggestions as $key => $s) {
+                    $owner = false;
+                    if($s->owner == $s->user_id){
+                        $owner = true;
+                    }
+                    $dt = new Carbon($s->created_at, 'America/Maceio');                   
+                    $diference = Carbon::today()->diffInHours($dt, false);       
+                    if($diference > 1 && $diference <= 23){
+                        $dataFormat = $dt->format('h:i A');            
+                    }else{
+                        $dataFormat = $dt->format('d/m/Y h:i A');;            
+                    }
+                    $json[] = ['id' => $s->id, 'isOwner' => $owner, 'texto' => $s->texto, "data" => $dataFormat, 'avatar' => $s->avatar, 'name' => $s->name, 'nickname' => $s->nickname];
+                }
+            }
 
-/*select `suggestions`.*, `users`.`name`, `users`.`nickname`, `users`.`avatar`, `owner`.`name`  
-from `suggestions` 
-inner join `users` on (`users`.`id` = `suggestions`.`user_id`)
-inner join `tarefas` on (`tarefas`.`id` = `suggestions`.`tarefa_id`)
-inner join `users`as `owner` on (`owner`.`id` = `tarefas`.`doit`)
-where `suggestions`.`tarefa_id` = 16
-order by `created_at` asc*/
-            dd($suggestoins);
-        
+            echo json_encode($json);die();
+        } 
     }
 
     public function concluir(){

@@ -3,6 +3,7 @@ $.ajaxSetup({
   }
 });
 
+
 /************************************* CONCLUIR TAREFA *******************************************************/
  /*Setar Modal Concluir*/
     function setaDadosModalConcluir(id,texto){            

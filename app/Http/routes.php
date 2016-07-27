@@ -36,13 +36,18 @@ Route::post('/profile/unpermit/', 'UserController@unPermit');
 
 
 /*Tarefas */
-Route::get('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
+
+
+//Route::get('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
+
+Route::get('/tarefa/listar/{tipo?}', 'TarefaController@listByStatus');
 Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::get('/tarefa/doit/{nickname?}', 'TarefaController@indexDoit');
 Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar');
 
 
 
+Route::post('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
 Route::post('/tarefa/adiciona', 'TarefaController@adiciona');
 Route::post('/tarefa/doit', 'TarefaController@doit');
 Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');

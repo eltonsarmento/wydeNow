@@ -161,10 +161,9 @@
                           </div>
                           <div class="panel panel-default panel-link-list">
                               <div class="panel-body">
-                              <!--       <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a> -->                                  
-                                    <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>                                                                      
-                                  <!--   <a data-toggle="modal" href="#msgModalConcluir" 
-                                      onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>   -->
+                              
+                                    <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
+                              
                               </div>
                             </div>
                         </div>
@@ -316,22 +315,6 @@
           <div class="alj js-conversation" id="corpoTarefaSugestao">
             <ul class="qo aob">
 
-              <li class="qf aoe alu">
-                <div class="qg">
-                  <div class="aoc">MEU TEXTO</div>
-                  <div class="aod"><small class="dp"><a href="#">Dave Gamache</a> at 4:20PM</small></div>
-                </div>
-                <a class="qi" href="#"><img class="cu qh" src="/assets/img/avatar-dhg.png"></a>
-              </li>
-
-              <li class="qf alu">
-                <a class="qj" href="#"><img class="cu qh" src="/assets/img/avatar-fat.jpg"></a>
-                <div class="qg">
-                  <div class="aoc">TEXTO SUJERIDO</div>
-                  <div class="aod"><small class="dp"><a href="#">Fat</a> at 4:28PM</small></div>
-                </div>
-              </li>
-
             </ul>
           </div>
         </div>
@@ -346,4 +329,5 @@
 </div>
 
 <script src="/scripts/profile.js"></script>
+<script src="/scripts/suggestions.js"></script>
 @endsection
