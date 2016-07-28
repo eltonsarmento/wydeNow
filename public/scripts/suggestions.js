@@ -4,13 +4,16 @@ function setaDadosModalSugestao(id, texto){
 
 
 
-    $.post("/tarefa/getSuggestion/", {tarefa_id: id}, function(result){  
+    $.post("/tarefa/getSuggestion", {tarefa_id: id}, function(result){  
                
         var json = jQuery.parseJSON(result);
         
         var htmlBody = '<ul class="qo aob">';
 
         $.each(json, function(key,item) {
+            if(item['statusTarefa'] != "A"){
+                $("#divInputSugestao").html('');
+            }
             if(item['isOwner']){
 
                 htmlBody += '<li class="qf aoe alu">';
@@ -44,7 +47,7 @@ $(document).keypress(function(e) {
         if(texto.length > 3){            
             $('#sugestao').val('');
 
-            $.post("/tarefa/sugestao/", {tarefa_id: tarefa_id, texto: texto}, function(result){  
+            $.post("/tarefa/suggestion", {tarefa_id: tarefa_id, texto: texto}, function(result){  
                
                 var json = jQuery.parseJSON(result);
                 

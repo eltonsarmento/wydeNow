@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Carbon\Carbon;
 use App\User;
-use App\categoria;
+use App\Categoria;
 use App\Tarefa;
 use Auth;
 use DB;

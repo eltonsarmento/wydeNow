@@ -145,7 +145,7 @@
                                       <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
                                         <strike>{{$tarefa->texto}}</strike>
                                     </div>
-                                    @if($tarefa->sugestao)
+                                    @if($tarefa->id_suggestion)
                                         <div class="panel panel-default panel-link-list">
                                           <div class="panel-body">                                  
                                                 <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
@@ -334,7 +334,9 @@
         <div class="modal-body">
           <input type="hidden" id="idUserTarefaSugestao">
           <input type="hidden" id="idTarefaSugestao">
-          <input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">
+          <div id="divInputSugestao">
+            <input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">
+          </div>
         </div>        
         <div class="uq">          
 

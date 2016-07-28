@@ -14,7 +14,7 @@ $.ajaxSetup({
     $('#btnConcluirModalConcluir').click(function(){                      
         var idTarefa = $('#idTarefaConcluir').val(); 
 
-        $.post("/tarefa/concluir/", {id: idTarefa}, function(result){            
+        $.post("/tarefa/concluir", {id: idTarefa}, function(result){            
             
             var json = jQuery.parseJSON(result);
 
@@ -45,9 +45,9 @@ $.ajaxSetup({
                         if(item['isdoit']) {
                             htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                             htmlAtivas += '     <div class="panel-body">';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';
+                            htmlAtivas += "         <a  onClick='setaDadosModalSugestao("+item['id']+",\'"+item['texto']+"\'); return false;' style='margin-right: 10px;'><span class='h xk'></span> Sugestões</a>";
+                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                             htmlAtivas += '     </div>';
                             htmlAtivas += '   </div>';
                             htmlAtivas += '   <ul class="ano">';
@@ -60,9 +60,9 @@ $.ajaxSetup({
                         }else{
                             htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                             htmlAtivas += '     <div class="panel-body">';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';                            
+                            htmlAtivas += "         <a  onClick='setaDadosModalSugestao("+item['id']+",\'"+item['texto']+"\'); return false;' style='margin-right: 10px;'><span class='h xk'></span> Sugestões</a>";
+                            htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                             htmlAtivas += '     </div>';
                             htmlAtivas += '   </div>';
                             htmlAtivas += '</li>';  
@@ -88,12 +88,14 @@ $.ajaxSetup({
                         htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
                         htmlConcluidas +='  </div>';
 
-                        if(item2['isdoit']) {
-                            htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
-                            htmlConcluidas += '     <div class="panel-body">';
-                            htmlConcluidas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlConcluidas += '     </div>';
-                            htmlConcluidas += '   </div>';
+                        if(item2['isdoit']) {                            
+                            if(item2['hasSuggestion']){
+                                htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                                htmlConcluidas += '     <div class="panel-body">';
+                                htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                                htmlConcluidas += '     </div>';
+                                htmlConcluidas += '   </div>';
+                            }
                             htmlConcluidas += '   <ul class="ano">';
                             htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
                             htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
@@ -102,11 +104,13 @@ $.ajaxSetup({
                             htmlConcluidas += '   </ul>';
                             htmlConcluidas += '</li>';
                         }else{
-                            htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
-                            htmlConcluidas += '     <div class="panel-body">';
-                            htmlConcluidas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                            htmlConcluidas += '     </div>';
-                            htmlConcluidas += '   </div>';
+                            if(item2['hasSuggestion']){
+                                htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                                htmlConcluidas += '     <div class="panel-body">';
+                                htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                                htmlConcluidas += '     </div>';
+                                htmlConcluidas += '   </div>';
+                            }
                             htmlConcluidas += '</li>';  
                         }
                     })
@@ -159,9 +163,8 @@ function setaDadosModalExcluirDoIt(id,texto){
 $('#btnContinueModalCancelar').click(function(){                      
     var idTarefa = $('#idTarefaCancelar').val(); 
 
-    $.post("/tarefa/remover/", {id: idTarefa}, function(result){            
+    $.post("/tarefa/remover", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
-        alert(json);
         var htmlAtivas     = '';
         var htmlConcluidas = '';
 
@@ -185,9 +188,9 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                     htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';                    
+                    htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
                     htmlAtivas += '</li>';  
@@ -211,8 +214,8 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
                     htmlConcluidas +='  </div>';
                     htmlConcluidas +='  <div class="panel panel-default panel-link-list">';
-                    htmlConcluidas +='      <div class="panel-body">';
-                    htmlConcluidas +='          <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlConcluidas +='      <div class="panel-body">';                                        
+                    htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                     htmlConcluidas +='      </div>';
                     htmlConcluidas +='  </div>';
                     htmlConcluidas +='</li> ';
@@ -229,7 +232,7 @@ $('#btnContinueModalCancelar').click(function(){
 $('#btnContinueModalRecusarDoIt').click(function(){                      
     var idTarefa = $('#idTarefaRecusarDoIt').val(); 
 
-    $.post("/tarefa/recusardoit/", {id: idTarefa}, function(result){            
+    $.post("/tarefa/recusardoit", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
 
         var htmlAtivas     = '';
@@ -258,9 +261,9 @@ $('#btnContinueModalRecusarDoIt').click(function(){
                     if(item['isdoit']) {
                         htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                         htmlAtivas += '     <div class="panel-body">';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelarDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelarDoIt('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';                                                
+                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                         htmlAtivas += '     </div>';
                         htmlAtivas += '   </div>';
                         htmlAtivas += '   <ul class="ano">';
@@ -273,9 +276,9 @@ $('#btnContinueModalRecusarDoIt').click(function(){
                     }else{
                         htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                         htmlAtivas += '     <div class="panel-body">';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';
+                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                         htmlAtivas += '     </div>';
                         htmlAtivas += '   </div>';
                         htmlAtivas += '</li>';  
@@ -303,8 +306,8 @@ $('#btnContinueModalRecusarDoIt').click(function(){
 
                     if(item2['isdoit']) {
                         htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                        htmlAtivas += '     <div class="panel-body">';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                        htmlAtivas += '     <div class="panel-body">';                                                
+                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                         htmlAtivas += '     </div>';
                         htmlAtivas += '   </div>';
                         htmlAtivas += '   <ul class="ano">';
@@ -317,7 +320,7 @@ $('#btnContinueModalRecusarDoIt').click(function(){
                     }else{
                         htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                         htmlAtivas += '     <div class="panel-body">';
-                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                         htmlAtivas += '     </div>';
                         htmlAtivas += '   </div>';
                         htmlAtivas += '</li>';  
@@ -335,7 +338,7 @@ $('#btnContinueModalRecusarDoIt').click(function(){
 $('#btnContinueModalExcluirDoIt').click(function(){                      
     var idTarefa = $('#idTarefaExcluirDoIt').val(); 
 
-    $.post("/tarefa/removerdoit/", {id: idTarefa}, function(result){            
+    $.post("/tarefa/removerdoit", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
 
         var htmlAtivas     = '';
@@ -355,9 +358,9 @@ $('#btnContinueModalExcluirDoIt').click(function(){
                     htmlAtivas += '   </div>';                
                     htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                     htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Excluir</a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h xl"></span> Concluir</a>';  
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Excluir</a>';                    
+                    htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <ul class="ano">';
@@ -380,18 +383,18 @@ $('#btnContinueModalExcluirDoIt').click(function(){
                     htmlConcluidas +='      <small class="eg dp">'+item2['tempoCadastada']+'</small>';
                     htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
                     htmlConcluidas +='  </div>';                    
-                    htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                    htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                    htmlAtivas += '     </div>';
-                    htmlAtivas += '   </div>';
-                    htmlAtivas += '   <ul class="ano">';
-                    htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
-                    htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
-                    htmlAtivas += '     </li>';
-                    htmlAtivas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
-                    htmlAtivas += '   </ul>';
-                    htmlAtivas += '</li>';                    
+                    htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                    htmlConcluidas += '     <div class="panel-body">';                                         
+                    htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                    htmlConcluidas += '     </div>';
+                    htmlConcluidas += '   </div>';
+                    htmlConcluidas += '   <ul class="ano">';
+                    htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
+                    htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                    htmlConcluidas += '     </li>';
+                    htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                    htmlConcluidas += '   </ul>';
+                    htmlConcluidas += '</li>';                    
                 })
             }
         });

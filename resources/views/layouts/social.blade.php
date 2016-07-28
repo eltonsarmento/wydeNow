@@ -112,12 +112,15 @@
 	          <li><a href="{{ url('/profile') }}">Profile</a></li>
 	          <li><a href="#">Notifications</a></li>
 	          <li><a data-toggle="modal" href="#msgModal">Messages</a></li>
-	          <li><a href="docs/index.html">Docs</a></li>
+	          <li><a href="docs/index.html">Docs</a></li>	          
 	          <li><a href="#" data-action="growl">Growl</a></li>
 	          <li><a href="{{ url('/logout') }}">Logout</a></li>
 	        </ul>
 
 	        <ul class="nav navbar-nav hidden">
+	        <li><a  onClick="setaDadosModalSugestao('12','criar os layouts secundários do projeto wydenow'); return false;" style="margin-right: 10px;">
+	          		<span class="h xk"></span> Leonardo respondeu a sua sugestão!</a>
+	          </li>
 	          <li><a href="#" data-action="growl">Growl</a></li>
 	          <li><a href="{{ url('/logout') }}">Logout</a></li>
 	        </ul>

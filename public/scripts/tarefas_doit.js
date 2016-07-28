@@ -28,7 +28,7 @@ function setaDadosModalCancelar(id,texto){
 $('#btnContinueModalCancelar').click(function(){                      
     var idTarefa = $('#idTarefaCancelar').val(); 
 
-    $.post("/tarefa/removerdoit/", {id: idTarefa}, function(result){            
+    $.post("/tarefa/removerdoit", {id: idTarefa}, function(result){            
         var json = jQuery.parseJSON(result);
 
         var htmlAtivas     = '';
@@ -45,11 +45,11 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlAtivas += '   <div class="qg">';   
                     htmlAtivas += '      <small class="eg dp">'+item['tempoCadastada']+'</small>';
                     htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
-                    htmlAtivas += '   </div>';
+                    htmlAtivas += '   </div>';                    
                     htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                     htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar("'+item['id']+'","'+item['texto']+'"); return false;"><span class="h ya"></span> Cancelar</a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
+                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\'+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';
+                    htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <ul class="ano">';
@@ -69,16 +69,18 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlConcluidas +='      <small class="eg dp">'+item2['tempoCadastada']+'</small>';
                     htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
                     htmlConcluidas +='  </div>';
-                    htmlConcluidas +='  <div class="panel panel-default panel-link-list">';
-                    htmlConcluidas +='      <div class="panel-body">';
-                    htmlConcluidas +='          <a data-toggle="modal" href="#msgModalSugestao" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>';
-                    htmlConcluidas +='      </div>';
-                    htmlConcluidas +='  </div>';
+                    if(item2['hasSuggestion']){
+                        htmlConcluidas +='  <div class="panel panel-default panel-link-list">';
+                        htmlConcluidas +='      <div class="panel-body">';
+                        htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlConcluidas +='      </div>';
+                        htmlConcluidas +='  </div>';
+                    }
                     htmlConcluidas += '   <ul class="ano">';
                     htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
-                    htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item['avatar']+'">';
+                    htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
                     htmlConcluidas += '     </li>';
-                    htmlConcluidas += '     <li style="display: inline-block"><small>'+item['nickname']+'</small></li>';
+                    htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
                     htmlConcluidas += '   </ul>';
                     htmlConcluidas += '</li>';
                 })
