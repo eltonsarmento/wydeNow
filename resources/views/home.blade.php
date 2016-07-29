@@ -8,29 +8,25 @@
         <div class="qx" style="background-image: url(assets/img/iceland.jpg);"></div>
         <div class="qw dj">
           <a href="profile/index.html">
-            <img
-              class="aoh"
-              src="/uploads/avatars/{{ Auth::user()->avatar }}">
+            <img class="aoh" src="/uploads/avatars/{{ Auth::user()->avatar }}">
           </a>
 
           <h5 class="qy">
             <a class="aku" href="profile/index.html">{{ Auth::user()->name }}</a>
-          </h5>
-
-          <p class="alu">I wish i was a little bit taller, wish i was a baller, wish i had a girl… also.</p>
+          </h5>          
 
           <ul class="aoi">
             <li class="aoj">
               <a href="#userModal" class="aku" data-toggle="modal">
                 Friends
-                <h5 class="ali">0</h5>
+                <h5 class="ali">{{Auth::user()->countFollowers()}}</h5>
               </a>
             </li>
 
             <li class="aoj">
               <a href="#userModal" class="aku" data-toggle="modal">
                 Task
-                <h5 class="ali">0</h5>
+                <h5 class="ali">{{Auth::user()->my_tarefas()->count()}}</h5>
               </a>
             </li>
           </ul>
@@ -88,6 +84,7 @@
         <li class="qf b aml">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Message">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="fj">
               <button type="button" class="cg fm">
                 <span class="h xi"></span>
@@ -95,122 +92,29 @@
             </div>
           </div>
         </li>
-
-        <li class="qf b aml">
-          <a class="qj" href="#">
-            <img
-              class="qh cu"
-              src="/uploads/avatars/{{ Auth::user()->avatar }}">
-          </a>
-          <div class="qg">
-            <div class="qn">
-              <small class="eg dp">4 min</small>
-              <h5>{{ Auth::user()->name }}</h5>
-            </div>
-
-            <p>
-              Aenean lacinia bibendum nulla sed consectetur. Vestibulum id ligula porta felis euismod semper. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-            </p>
-
-            <div class="any" data-grid="images">
-              <div style="display: none">
-                <img data-action="zoom" data-width="1050" data-height="700" src="assets/img/unsplash_1.jpg">
-              </div>
-
-              <div style="display: none">
-                <img data-action="zoom" data-width="640" data-height="640" src="assets/img/instagram_1.jpg">
-              </div>
-
-              <div style="display: none">
-                <img data-action="zoom" data-width="640" data-height="640" src="assets/img/instagram_13.jpg">
-              </div>
-
-              <div style="display: none">
-                <img data-action="zoom" data-width="1048" data-height="700" src="assets/img/unsplash_2.jpg">
-              </div>
-            </div>
-
-            <ul class="qo alm">
-              <li class="qf">
-                <a class="qj" href="#">
-                  <img
-                    class="qh cu"
-                    src="assets/img/avatar-fat.jpg">
-                </a>
-                <div class="qg">
-                  <strong>Jacon Thornton: </strong>
-                  Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
-                </div>
-              </li>
-              <li class="qf">
-                <a class="qj" href="#">
-                  <img
-                    class="qh cu"
-                    src="assets/img/avatar-mdo.png">
-                </a>
-                <div class="qg">
-                  <strong>Mark Otto: </strong>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
-
-        <li class="qf b aml">
-          <a class="qj" href="#">
-            <img
-              class="qh cu"
-              src="assets/img/avatar-fat.jpg">
-          </a>
-          <div class="qg">
-            <div class="aoc">
-              <div class="qn">
-                <small class="eg dp">12 min</small>
-                <h5>Jacob Thornton</h5>
-              </div>
-              <p>
-                Donec id elit non mi porta gravida at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-            </div>
-          </div>
-        </li>
-
-        <li class="qf b aml">
-          <a class="qj" href="#">
-            <img
-              class="qh cu"
-              src="assets/img/avatar-mdo.png">
-          </a>
-          <div class="qg">
-            <div class="qn">
-              <small class="eg dp">34 min</small>
-              <h5>Mark Otto</h5>
-            </div>
-
-            <p>
-              Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-
-            <div class="any" data-grid="images">
-              <img style="display: none" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_3.jpg">
-            </div>
-
-            <ul class="qo">
-              <li class="qf">
-                <a class="qj" href="#">
-                  <img
-                    class="qh cu"
-                    src="/uploads/avatars/{{ Auth::user()->avatar }}">
-                </a>
-                <div class="qg">
-                  <strong>{{ Auth::user()->name }}: </strong>
-                  Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
-                </div>
-              </li>
-            </ul>
-          </div>
-        </li>
+        <br>
+        <input type="hidden" id="totalTarefas" value="{{ $tarefasPublicas->count()}}">
+        <div id="timeline">
+        @if($tarefasPublicas->count() > 0)
+          @foreach($tarefasPublicas as $tarefa)
+                <li class="qf b aml">
+                  <a class="qj" href="/profile/{{ $tarefa->nickname }}"><img class="qh cu" src="/uploads/avatars/{{ $tarefa->avatar }}"></a>
+                  <div class="qg">
+                    <div class="aoc">
+                      <div class="qn">
+                        <small class="eg dp">{{ $tarefa->tempoCadastada }}</small>
+                        <h5>{{ $tarefa->name }}</h5>
+                      </div>
+                      <p>{{ $tarefa->texto }}</p>
+                      
+                        <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
+                    </div>
+                  </div>
+                </li>
+                <br>
+          @endforeach
+        @endif
+        </div>   
       </ul>
     </div>
     <div class="gn">
@@ -226,7 +130,7 @@
             <img class="qh" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg">
           </div>
           <p><strong>It might be time to visit Iceland.</strong> Iceland is so chill, and everything looks cool here. Also, we heard the people are pretty nice. What are you waiting for?</p>
-          <button class="cg ts fx">Buy a ticket</button>
+          <button class="cg ts fx" >Buy a ticket</button>
         </div>
       </div>
 
@@ -289,7 +193,48 @@
           <a href="#">Advertise</a>
         </div>
       </div>
+
     </div>
   </div>
 </div>
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalSugestao" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title" id="tituloTarefaSugestao"></h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+        <div class="modal-body">
+          <input type="hidden" id="idUserTarefaSugestao">
+          <input type="hidden" id="idTarefaSugestao">
+          <div id="divInputSugestao">
+            <input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">
+          </div>
+        </div>        
+        <div class="uq">          
+
+          <div class="alj js-conversation" id="corpoTarefaSugestao">
+            <ul class="qo aob">
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<a class="cg ts fx" type="hidden" data-action="growl" id="btnNotification"></a>
+<div class="anq" id="app-growl">
+  <div class="alert pv alert-dismissible fade"  role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <p>teste.</p>
+  </div>
+</div>
+
+<script src="/scripts/home.js"></script>
+<script src="/scripts/suggestions.js"></script>
 @endsection

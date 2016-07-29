@@ -62,10 +62,7 @@
 	    </div>
 	    <div class="f collapse" id="navbar-collapse-main">
 
-	        <ul class="nav navbar-nav ss">
-	          <li class="active">
-	            <a href="{{ url('/home') }}">Home</a>
-	          </li>
+	        <ul class="nav navbar-nav ss">	          
 	          <li>
 	            <a href="{{ url('/tarefa') }}">Tarefas</a>
 	          </li>
@@ -73,7 +70,7 @@
 	            <a href="{{ url('/profile') }}">Perfil</a>
 	          </li>
 	          <li>
-	            <a >({{Auth::user()->tarefas()->count()}}) tarefas</a>
+	            <a >({{Auth::user()->my_tarefas()->count()}}) tarefas</a>
 	          </li>
 	          <li>
 	            <a data-toggle="modal" href="/tarefa/listar/concluidas">({{Auth::user()->tarefasConcluidas()->count()}}) finish</a>

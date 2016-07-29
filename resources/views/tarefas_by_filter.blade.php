@@ -76,7 +76,7 @@
 
 	                                        <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
 
-	                                        <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
+	                                        <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluirBy('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h xl"></span> Concluir</a>    
 	                                      @else
 	                                        <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"><span class="h ya"></span> Cancelar</a>
 
@@ -201,7 +201,7 @@
       </div>
       <div class="ur">
         <button type="button" class="fu us" onclick="limpaCamposModal('Concluir');" data-dismiss="modal">Cancel</button>
-        <button type="button" class="fu us" id="btnConcluirModalConcluir"><strong>Continue</strong></button>
+        <button type="button" class="fu us" id="btnConcluirModalConcluirByFilter"><strong>Continue</strong></button>
         <!-- <button type="button" class="fu us" data-dismiss="modal"><strong>Continue</strong></button> -->
       </div>
     </div>

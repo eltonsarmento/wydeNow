@@ -19,6 +19,7 @@ Route::auth();
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
+Route::post('/home/getTimeline', 'HomeController@getTimeline');
 Route::get('/admin', 'AdminController@index');
 
 /*Profile */
@@ -53,6 +54,7 @@ Route::post('/tarefa/doit', 'TarefaController@doit');
 Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 Route::post('/tarefa/prioridade/{categoria_id?}', 'TarefaController@ordenarPrioridade');
 Route::post('/tarefa/concluir', 'TarefaController@concluir');
+Route::post('/tarefa/concluirByFilter', 'TarefaController@concluirByFilter');
 Route::post('/tarefa/remover', 'TarefaController@remover');
 Route::post('/tarefa/removerdoit', 'TarefaController@removerDoIt');
 Route::post('/tarefa/recusardoit', 'TarefaController@recusarDoIt');

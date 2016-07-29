@@ -52,7 +52,7 @@
               <li class="aoj">
                 <a href="#userModal" class="aku" data-toggle="modal">
                   Task
-                  <h5 class="ali">{{$user->tarefas()->count()}}</h5>
+                  <h5 class="ali">{{$user->my_tarefas()->count()}}</h5>
                 </a>
               </li>
             </ul>
