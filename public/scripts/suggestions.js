@@ -10,27 +10,55 @@ function setaDadosModalSugestao(id, texto){
         
         var htmlBody = '<ul class="qo aob">';
 
-        $.each(json, function(key,item) {
+        var texto = '';
+        $.each(json, function(key,item) {            
             if(item['statusTarefa'] != "A"){
                 $("#divInputSugestao").html('');
             }
-            if(item['isOwner']){
 
-                htmlBody += '<li class="qf aoe alu">';
-                htmlBody += '    <div class="qg">';
-                htmlBody += '      <div class="aoc">'+item['texto']+'</div>';
-                htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
-                htmlBody += '    </div>';
-                htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
-                htmlBody += '</li>';
+            if((key+1) == json.length){
+                texto  += item['texto'];             
+                if(item['isOwner']){                    
+                    htmlBody += '<li class="qf aoe alu">';
+                    htmlBody += '    <div class="qg">';
+                    htmlBody += '      <div class="aoc">'+texto+'</div>';
+                    htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                    htmlBody += '    </div>';
+                    htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                    htmlBody += '</li>';
+                }else{
+                    htmlBody += '<li class="qf alu">';
+                    htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                    htmlBody += '      <div class="qg">';
+                    htmlBody += '           <div class="aoc">'+texto+'</div>';
+                    htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                    htmlBody += '    </div>';
+                    htmlBody += '</li>';                        
+                }
             }else{
-                htmlBody += '<li class="qf alu">';
-                htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
-                htmlBody += '      <div class="qg">';
-                htmlBody += '           <div class="aoc">'+item['texto']+'</div>';
-                htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
-                htmlBody += '    </div>';
-                htmlBody += '</li>';                        
+                if(json[key+1]['id_usuario'] != item['id_usuario']){    
+                    texto  += item['texto'];                                
+                    if(item['isOwner']){
+                        htmlBody += '<li class="qf aoe alu">';
+                        htmlBody += '    <div class="qg">';
+                        htmlBody += '      <div class="aoc">'+texto+'</div>';
+                        htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                        htmlBody += '    </div>';
+                        htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                        htmlBody += '</li>';
+                    }else{
+                        htmlBody += '<li class="qf alu">';
+                        htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                        htmlBody += '      <div class="qg">';
+                        htmlBody += '           <div class="aoc">'+texto+'</div>';
+                        htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                        htmlBody += '    </div>';
+                        htmlBody += '</li>';                        
+                    }
+                    texto = '';
+                }else{                                      
+                    texto  += item['texto'] + '<br>';                    
+                }
             }
         });    
         
@@ -53,25 +81,52 @@ $(document).keypress(function(e) {
                 
                 var htmlBody = '<ul class="qo aob">';
 
-                $.each(json, function(key,item) {
-                    
-                    if(item['isOwner']){
-		                htmlBody += '<li class="qf aoe alu">';
-		                htmlBody += '    <div class="qg">';
-		                htmlBody += '      <div class="aoc">'+item['texto']+'</div>';
-		                htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
-		                htmlBody += '    </div>';
-		                htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
-		                htmlBody += '</li>';
-		            }else{
-		                htmlBody += '<li class="qf alu">';
-		                htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
-		                htmlBody += '      <div class="qg">';
-		                htmlBody += '           <div class="aoc">'+item['texto']+'</div>';
-		                htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
-		                htmlBody += '    </div>';
-		                htmlBody += '</li>';                        
-		            }
+                $.each(json, function(key,item) {                
+
+                    if((key+1) == json.length){
+                        texto  += item['texto'];             
+                        if(item['isOwner']){                    
+                            htmlBody += '<li class="qf aoe alu">';
+                            htmlBody += '    <div class="qg">';
+                            htmlBody += '      <div class="aoc">'+texto+'</div>';
+                            htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                            htmlBody += '    </div>';
+                            htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                            htmlBody += '</li>';
+                        }else{
+                            htmlBody += '<li class="qf alu">';
+                            htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                            htmlBody += '      <div class="qg">';
+                            htmlBody += '           <div class="aoc">'+texto+'</div>';
+                            htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                            htmlBody += '    </div>';
+                            htmlBody += '</li>';                        
+                        }
+                    }else{
+                        if(json[key+1]['id_usuario'] != item['id_usuario']){    
+                            texto  += item['texto'];                                
+                            if(item['isOwner']){
+                                htmlBody += '<li class="qf aoe alu">';
+                                htmlBody += '    <div class="qg">';
+                                htmlBody += '      <div class="aoc">'+texto+'</div>';
+                                htmlBody += '      <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                                htmlBody += '    </div>';
+                                htmlBody += '    <a class="qi" href="#"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                                htmlBody += '</li>';
+                            }else{
+                                htmlBody += '<li class="qf alu">';
+                                htmlBody += '    <a class="qj" href="/profile/'+item['nickname']+'"><img class="cu qh" src="/uploads/avatars/'+item['avatar']+'"></a>';
+                                htmlBody += '      <div class="qg">';
+                                htmlBody += '           <div class="aoc">'+texto+'</div>';
+                                htmlBody += '           <div class="aod"><small class="dp"><a href="/profile/'+item['nickname']+'">'+item['name']+'</a> at '+item['data']+'</small></div>';
+                                htmlBody += '    </div>';
+                                htmlBody += '</li>';                        
+                            }
+                            texto = '';
+                        }else{                                      
+                            texto  += item['texto'] + '<br>';                    
+                        }
+                    }
                 });    
                 
                 htmlBody += '</ul>';

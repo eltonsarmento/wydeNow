@@ -46,36 +46,6 @@
         </div>
       </div>
 
-       <div class="qv rc sm sp">
-        <div class="qw">
-          <h5 class="ald">Photos <small>· <a href="#">Edit</a></small></h5>
-          <div data-grid="images" data-target-height="150">
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_5.jpg">
-            </div>
-
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_6.jpg">
-            </div>
-
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_7.jpg">
-            </div>
-
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_8.jpg">
-            </div>
-
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_9.jpg">
-            </div>
-
-            <div>
-              <img data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_10.jpg">
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="gz">
@@ -122,17 +92,7 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <a class="pr" href="profile/index.html">Visit your profile!</a> Check your self, you aren't looking too good.
       </div>
-
-      <div class="qv rc alu ss">
-        <div class="qw">
-          <h5 class="ald">Sponsored</h5>
-          <div data-grid="images" data-target-height="150">
-            <img class="qh" data-width="640" data-height="640" data-action="zoom" src="assets/img/instagram_2.jpg">
-          </div>
-          <p><strong>It might be time to visit Iceland.</strong> Iceland is so chill, and everything looks cool here. Also, we heard the people are pretty nice. What are you waiting for?</p>
-          <button class="cg ts fx" >Buy a ticket</button>
-        </div>
-      </div>
+     
 
       <div class="qv rc alu ss">
         <div class="qw">
@@ -227,12 +187,10 @@
     </div>
   </div>
 </div>
-<a class="cg ts fx" type="hidden" data-action="growl" id="btnNotification"></a>
+
+
 <div class="anq" id="app-growl">
-  <div class="alert pv alert-dismissible fade"  role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-    <p>teste.</p>
-  </div>
+  
 </div>
 
 <script src="/scripts/home.js"></script>

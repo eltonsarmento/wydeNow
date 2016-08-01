@@ -9,7 +9,7 @@ function atualizarTimeline(){
     $.post('home/getTimeline', {totalTarefas : count},  function (result) {
  
  		var json = jQuery.parseJSON(result);
- 		
+
  		if(json != ''){
  			var htmlBody = '';
  			var totalTarefas = 0;
@@ -41,7 +41,7 @@ function atualizarTimeline(){
 	        $('#timeline').html(htmlBody);
 	        $('#totalTarefas').val(totalTarefas);
 	        
-			notification();
+			
  		}
     });
 }
@@ -49,8 +49,23 @@ function atualizarTimeline(){
 // Definindo intervalo que a função será chamada
 setInterval("atualizarTimeline()", 30000);
 
-
-
-function notification(){
-	//$('#btnNotification').click();	
+verificaNotifications();
+setInterval("verificaNotifications()", 10000);
+function verificaNotifications(){
+	$.get('notification/verificanotifications',  function (result) {
+ 		var json = jQuery.parseJSON(result);
+ 		if(json != ''){
+ 			var htmlMessagem = '';
+ 			$.each(json, function(key,value) {
+				 htmlMessagem += '<div class="alert pv alert-dismissible fade in" role="alert">';
+				 htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+				 htmlMessagem += '	 <p>'+value['message']+'</p>';
+				 htmlMessagem += ' </div>';
+ 			})
+ 			$("#app-growl").html(htmlMessagem);
+ 		}else{
+			$("#app-growl").html('');
+ 		}
+	});
+	
 }

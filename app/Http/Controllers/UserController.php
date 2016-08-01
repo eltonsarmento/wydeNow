@@ -71,22 +71,41 @@ class UserController extends Controller{
 
             
     	}
-       
-        $vCategoria = categoria::where([
-                    ['user_id', $user->id],
-                    ['descricao', $categoriaDefault],
-        ])->get();
+
+       $vCategoriasExibir = categoria::where([
+                    ['categorias.user_id', $user->id],
+                    ['tarefas.privado', 0],
+                    ['tarefas.status', 'A'],
+                ])->join('tarefas', 'categorias.id', '=', 'tarefas.categoria_id')
+                  ->select('categorias.*')
+                  ->distinct()->get();                
+
+        foreach ($vCategoriasExibir as $key => $categoria) {
+            if($categoria['descricao'] == $categoriaDefault){
+                $categoria = $categoria;
+            }
+        }
         
-        if(empty($vCategoria[0])){           
-            $categoriaDefault = "Pessoal";
+        if(empty($categoria)){
             $vCategoria = categoria::where([
                     ['user_id', $user->id],
                     ['descricao', $categoriaDefault],
             ])->get();
             
-        }
-        $categoria = $vCategoria[0];
-       
+            if(empty($vCategoria[0])){           
+                $categoriaDefault = "Pessoal";
+                $vCategoria = categoria::where([
+                        ['user_id', $user->id],
+                        ['descricao', $categoriaDefault],
+                ])->get();            
+            }
+            $categoria = $vCategoria[0];
+        }else{
+            $categoria = $vCategoriasExibir[0];
+        }        
+        
+
+
         $campoOrdenacao = "created_at";
         $order = "asc";
         $tarefasAtivas = Tarefa::where(
@@ -97,7 +116,6 @@ class UserController extends Controller{
                 ]            
             )->orderBy($campoOrdenacao, $order)->get();        
 
-        
         $user->tarefas = $tarefasAtivas;
         if($my_perfil){
             foreach ($user->tarefas as $key => $t) {               
@@ -135,6 +153,7 @@ class UserController extends Controller{
 
             return view('profile_follower', array(
                  'user' => $user, 
+                 'categoriasExibir' => $vCategoriasExibir,
                  'categoriaSetada' => $categoriaDefault,
                  'my_perfil' => $my_perfil,
                  'follower' => $follower,
@@ -152,18 +171,6 @@ class UserController extends Controller{
             $idUser = $request->input('idUser');
             $user = User::find($idUser);
 
-            /*apagará o registo*/
-            //$user->roles()->detach($roleId);
-            //$user->roles()->detach([1, 2, 3]);
-            //$user->roles()->detach(); all
-
-            /*inserir um registo*/
-            //$user->roles()->attach($roleId);
-            /*inserir um registo + campos*/
-            //$user->roles()->attach($roleId, ['expires' => $expires]);
-
-            /*update um registo*/
-            //$user->roles()->updateExistingPivot($roleId, $attributes);
             if($user){
                 $follower = Auth::user()->followersTable()->where('follower_id',$user->id)->get();
                 $follower = (empty($follower[0]) ? null : $follower[0]);

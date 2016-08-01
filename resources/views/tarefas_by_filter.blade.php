@@ -42,7 +42,7 @@
 		                              <small class="eg dp">{{ $tarefa->tempoCadastada}}</small>                                                         
 		                                <strike>{{$tarefa->texto}}</strike>
 		                            </div>
-		                            @if($tarefa->sugestao)
+		                            @if($tarefa->id_suggestion)
 		                                <div class="panel panel-default panel-link-list">
 		                                  <div class="panel-body">                                  
 		                                        <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>

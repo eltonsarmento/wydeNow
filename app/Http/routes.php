@@ -60,6 +60,10 @@ Route::post('/tarefa/removerdoit', 'TarefaController@removerDoIt');
 Route::post('/tarefa/recusardoit', 'TarefaController@recusarDoIt');
 Route::post('/tarefa/suggestion', 'TarefaController@adiciona_sugestao');
 
+
+Route::get('/notification/verificanotifications', 'NotificationController@verificanotifications');
+
+
 /*Route::post('tarefa/concluir', function(){
 	if(Request::ajax()){
 		$id = Request::input('id');

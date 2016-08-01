@@ -106,7 +106,7 @@
 
     <div class="gz">
       <ul class="nav ol">
-        @foreach($user->categorias as $categoria)
+        @foreach($categoriasExibir as $categoria)
           <li @if($categoriaSetada->descricao == $categoria->descricao) class="active" @endif >
             <a href="/profile/{{$user->nickname}}/{{$categoria->descricao}}">{{$categoria->descricao}}</a></li>        
         @endforeach
