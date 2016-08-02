@@ -1,19 +1,27 @@
 function setaDadosModalSugestao(id, texto){
     $('#tituloTarefaSugestao').html(texto);
     $('#idTarefaSugestao').val(id);   
+    getSuggestion(id);
+}
 
 
 
-    $.post("/tarefa/getSuggestion", {tarefa_id: id}, function(result){  
+
+function getSuggestion(tarefa_id){
+
+    $.post("/tarefa/getSuggestion", {tarefa_id: tarefa_id}, function(result){  
                
+        $("#divInputSugestao").html('<input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">');
+        
         var json = jQuery.parseJSON(result);
         
         var htmlBody = '<ul class="qo aob">';
 
         var texto = '';
+
         $.each(json, function(key,item) {            
             if(item['statusTarefa'] != "A"){
-                $("#divInputSugestao").html('');
+                
             }
 
             if((key+1) == json.length){

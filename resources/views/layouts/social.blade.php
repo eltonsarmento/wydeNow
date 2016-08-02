@@ -86,8 +86,13 @@
 
 	        <ul class="nav navbar-nav og ale ss">
 	          <li >
-	            <a class="g" href="notifications/index.html">
+	            <a class="g" data-toggle="modal" href="#msgModalNotification">	            
 	              <span class="h ws"></span>
+	              <div id="divNumberNotification">
+		              @if(Auth::user()->notification()->count() > 0)
+		              	({{ Auth::user()->notification()->count() }})
+		              @endif
+	              </div>
 	            </a>
 	          </li>
 	          <li>
@@ -128,6 +133,30 @@
 @yield('content')
 
 
-	
+
+	<div class="cd fade" id="msgModalNotification" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="d">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+	        <h4 class="modal-title" >Notifications</h4>
+	      </div>
+
+	      <div class="modal-body amf js-modalBody">        
+	        <div class="uq">          
+
+	          <div class="alj js-conversation" id="corpoModalNotification">            
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="anq" id="app-growl">
+	  
+	</div>
+
+	<script src="/scripts/notification.js"></script>
   </body>
 </html>

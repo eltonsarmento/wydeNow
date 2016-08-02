@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Carbon\Carbon;
 use App\User;
 use App\Categoria;
+use App\Notification;
 use App\Tarefa;
 use Auth;
 use DB;
@@ -24,7 +25,7 @@ class UserController extends Controller{
 			$my_perfil = true;
 
 		}else{
-        	$vUser = User::where('nickname',$nickname)->get();
+        	$vUser = User::where('nickname',$nickname)->get();            
         	$user = $vUser[0];
             $my_perfil = false;            
             $categoriasUserLogado = Auth::user()->categorias()->get();
@@ -179,7 +180,16 @@ class UserController extends Controller{
                     Auth::user()->followers()->updateExistingPivot($user->id, ['follow' => 1]);
                 }else{
                     Auth::user()->followers()->attach($user->id, ['follow' => 1]);
-                }           
+                }
+                /*Envia notificação*/
+                $message = "Está seguindo você!!!";
+                $id = Notification::insertGetId(
+                        ['user_id' =>  $user->id, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
+
+                $notification = Notification::find($id);                
+                $notification->save();           
+
                 echo "1";
             }else{
                 echo "0";
@@ -200,7 +210,17 @@ class UserController extends Controller{
                 if($follower){
                     Auth::user()->followers()->updateExistingPivot($user->id, ['follow' => 0,  'favorite' => 0]);
                 }  
-                $this->validaFollower($user->id);         
+                $this->validaFollower($user->id);       
+
+                /*Envia notificação*/
+                $message = "Não está mais seguindo você!!!";
+                $id = Notification::insertGetId(
+                        ['user_id' =>  $user->id, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
+
+                $notification = Notification::find($id);                
+                $notification->save();  
+
                 echo "1";
             }else{
                 echo "0";
@@ -266,6 +286,15 @@ class UserController extends Controller{
                     
                     $this->addOrRemoveCategoriasPermit($follower[0]->id, $vCategorias);
                 }            
+
+                /*Envia notificação*/
+                $message = "Permitiu a você escrever nas tarefas dele!!!";
+                $id = Notification::insertGetId(
+                        ['user_id' =>  $user->id, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
+
+                $notification = Notification::find($id);                
+                $notification->save();
 
                 echo "1";
             }else{

@@ -189,10 +189,11 @@
 </div>
 
 
-<div class="anq" id="app-growl">
-  
-</div>
+
+
+
 
 <script src="/scripts/home.js"></script>
+
 <script src="/scripts/suggestions.js"></script>
 @endsection

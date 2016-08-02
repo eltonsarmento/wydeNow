@@ -68,4 +68,11 @@ class User extends Authenticatable
         //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
             // if you want to rely on accepted field, then add this:        
     }
+
+    public function notification(){
+        return $this->hasMany('App\Notification')->where([
+                                                ['status','A'],
+                                                ['user_id',$this->id],
+                                            ])->get();
+    }
 }

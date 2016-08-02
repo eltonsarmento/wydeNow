@@ -62,6 +62,7 @@ Route::post('/tarefa/suggestion', 'TarefaController@adiciona_sugestao');
 
 
 Route::get('/notification/verificanotifications', 'NotificationController@verificanotifications');
+Route::post('/notification/setStatus', 'NotificationController@setStatusNotification');
 
 
 /*Route::post('tarefa/concluir', function(){

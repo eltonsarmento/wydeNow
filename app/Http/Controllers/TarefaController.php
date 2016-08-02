@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Request;
 use App\Http\Requests;
 use App\Tarefa;
+use App\Notification;
 use App\User;
 use App\Categoria;
 use App\Suggestion;
@@ -239,6 +240,7 @@ class TarefaController extends Controller {
         $tarefa->save();
 
         $categoria = Categoria::find($categoria_id);
+
         
         return redirect('/tarefa/'.$categoria->descricao);
     }
@@ -272,6 +274,14 @@ class TarefaController extends Controller {
         $categoria = Categoria::find($categoria_id);
         
         
+        $id = Notification::insertGetId(
+                    ['user_id' => $user_id, 'sender_id' => Auth::user()->id, 'message' => "Enviou uma tarefa DoIt para você!", 'status' => 'I', 'created_at' => Carbon::now()]
+                    );
+
+        $notification = Notification::find($id);
+        $notification->link= "setaDadosModalSugestaoNotification('".$tarefa->id."','".$tarefa->texto."', '".$id."'); return false;";
+        $notification->save();
+
         return redirect('/profile/'.$user->nickname.'/'.$categoria->descricao);
     }
 
@@ -289,12 +299,13 @@ class TarefaController extends Controller {
                                 ->join('users', 'users.id', '=', 'suggestions.user_id')
                                 ->join('tarefas', 'tarefas.id', '=', 'suggestions.tarefa_id')
                                 ->join('users as owner', 'owner.id', '=', 'tarefas.doit')                            
-                                ->select('suggestions.*', 'users.name', 'users.nickname','users.avatar', 'owner.id as owner')
+                                ->select('suggestions.*', 'tarefas.texto as textoTarefa','users.name', 'users.nickname','users.avatar', 'owner.id as owner')
                                 ->orderBy('suggestions.created_at', 'asc')->get();
 
             $json = [];
             if($suggestions->count() > 0){
                 foreach ($suggestions as $key => $s) {
+                    $textoTarefa = $s->textoTarefa;
                     $owner = false;
                     if($s->owner == $s->user_id){
                         $owner = true;
@@ -310,6 +321,17 @@ class TarefaController extends Controller {
                     $json[] = ['id' => $s->id, 'isOwner' => $owner, 'texto' => $s->texto, "data" => $dataFormat , 'id_usuario' => $s->user_id, 'avatar' => $s->avatar, 'name' => $s->name, 'nickname' => $s->nickname];
                 }
             }
+
+
+
+            $message = "Escreveu uma sugestão na tarefa: <strong>".$textoTarefa."</strong>";
+            $id = Notification::insertGetId(
+                    ['user_id' =>  $s->owner, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                    );
+
+            $notification = Notification::find($id);
+            $notification->link= "setaDadosModalSugestaoNotification('".$suggestoin->tarefa_id."','".$textoTarefa."', '".$id."'); return false;";
+            $notification->save();
 
             echo json_encode($json);die();         
         }
@@ -357,6 +379,17 @@ class TarefaController extends Controller {
             $tarefa->data_conclusao = Carbon::now();
             $tarefa->save();
             
+            if($tarefa->user_id != $tarefa->doit){
+                /*Envia notificação*/
+                $message = "Concluiu a tarefa doit: <strong>".$tarefa->texto."</strong>";
+                $id = Notification::insertGetId(
+                        ['user_id' =>  $tarefa->user_id, 'sender_id' => $tarefa->doit, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
+
+                $notification = Notification::find($id);
+                $notification->link= "setaDadosModalSugestaoNotification('".$tarefa->id."','".$tarefa->texto."', '".$id."'); return false;";
+                $notification->save();
+            }
 
             $tipoOrdenacao = $this->getCategoriaParaOrdenacao($tarefa->categoria_id);
 
@@ -581,7 +614,7 @@ class TarefaController extends Controller {
             $id = Request::input('id');
             $tarefa = Tarefa::find($id);            
             $tarefa->status = "E";            
-            $tarefa->save();
+            $tarefa->save();            
 
             $tipoOrdenacao = $this->getCategoriaParaOrdenacao($tarefa->categoria_id);
             
@@ -597,7 +630,7 @@ class TarefaController extends Controller {
             )->join('users', 'users.id', '=', 'tarefas.user_id')
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')
-            ->orderBy($categoria->prioridade, $ordem)->get(); 
+            ->orderBy($tipoOrdenacao['prioridade'], $tipoOrdenacao['ordem'])->get(); 
 
             $tarefasConcluidas = Tarefa::where(
                     [
@@ -653,6 +686,17 @@ class TarefaController extends Controller {
             $tarefa->status = "R";            
             $tarefa->save();
 
+            /*Envia notificação*/
+            $message = "Recusou a tarefa doit: <strong>".$tarefa->texto."</strong>";
+            $id = Notification::insertGetId(
+                    ['user_id' =>  $tarefa->user_id, 'sender_id' => $tarefa->doit, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                    );
+
+            $notification = Notification::find($id);
+            $notification->link= "setaDadosModalSugestaoNotification('".$tarefa->id."','".$tarefa->texto."', '".$id."'); return false;";
+            $notification->save();
+
+
             $tipoOrdenacao = $this->getCategoriaParaOrdenacao($tarefa->categoria_id);
             
             $json = [];
@@ -666,7 +710,7 @@ class TarefaController extends Controller {
             )->join('users', 'users.id', '=', 'tarefas.doit')
             ->orderBy('nickname')
             ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')
-            ->orderBy($categoria->prioridade, $ordem)->get(); 
+            ->orderBy($tipoOrdenacao['prioridade'], $tipoOrdenacao['ordem'])->get(); 
 
             if ($tarefasAtivas->count() > 0) {
                 foreach ($tarefasAtivas as $key => $ta) {
