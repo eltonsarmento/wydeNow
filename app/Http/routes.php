@@ -41,6 +41,7 @@ Route::post('/profile/unpermit', 'UserController@unPermit');
 
 //Route::get('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
 
+Route::get('/tarefa/getMyCategories', 'TarefaController@getMyCategories');
 Route::get('/tarefa/listar/{tipo?}', 'TarefaController@listByStatus');
 Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::get('/tarefa/doit/{nickname?}', 'TarefaController@indexDoit');

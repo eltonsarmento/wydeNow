@@ -8,7 +8,11 @@
       <ul class="nav ol">
         @foreach($user->categorias as $categoria)
           <li @if($categoriaSetada == $categoria->descricao) class="active" @endif >
-            <a  href="/tarefa/{{$categoria->descricao}}">{{$categoria->descricao}} </a>
+            <a  href="/tarefa/{{$categoria->descricao}}">{{$categoria->descricao}}
+              @if($categoria->tarefasAtivas->count() > 0)
+                ({{ $categoria->tarefasAtivas->count() }}) 
+              @endif
+            </a>
           </li>        
         @endforeach
         @if($user->tarefasDoIT->count() > 0)

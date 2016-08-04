@@ -47,6 +47,79 @@ function atualizarTimeline(){
 }
  
 // Definindo intervalo que a função será chamada
-setInterval("atualizarTimeline()", 30000);
+setInterval("atualizarTimeline()", 60000);
+
+/*======================================================= Pega todas categorias para modal mensagem ============================================================*/
+
+
+getMyCategories();
+function getMyCategories(){
+	$.get("/tarefa/getMyCategories", function(result){            
+        var json = jQuery.parseJSON(result);
+        
+        var htmlBody = '<div class="bv" >';        
+
+        $.each(json, function(key,item) { 
+        	htmlBody += ' 	<div class="ex ug uk">';
+        	htmlBody += ' 		<label>';
+        	htmlBody += ' 			<input type="radio" id="radioCategoria" onclick="cadastraTarefaHome('+item['id']+'); return false;" value="'+item['id']+'" name="radioCategoria"><span class="uh"></span>'+item['descricao'];
+        	htmlBody += ' 		</label>';
+        	htmlBody += ' 	</div>';        	
+        });
+        htmlBody += ' </div>';
+        $('#divModalMessageCategorias').html(htmlBody);
+    });
+}
+/*============================================================================================================================================*/
+
+
+
+/*======================================================== Cadastra Tarefa home =============================================================*/
+function cadastraTarefaHome(categoria_id){
+	var texto = $('#messageHome').val();
+	var htmlMessagem = '';
+
+	$('#msgModalMessage').modal('hide');
+	$('#messageHome').val('');
+	$('#radioStatusPublico').prop('checked', false);
+	$('#radioStatusPrivado').prop('checked', false);     
+	$('#radioCategoria').prop('checked', false); 
+
+    $.post("/tarefa/adiciona", {categoria_id: categoria_id, texto: texto}, function(result){            
+    	htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
+		htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+		htmlMessagem += '	 <p><span class="h xl"></span> Sua tarefa foi adicionada!!</p>';
+		htmlMessagem += ' </div>';
+		$("#app-growl").html(htmlMessagem);
+		  
+    });
+}
+function btnMessagePrivado(){
+    var messageHome = $('#messageHome').val();
+    $('#radioStatusPrivado').prop('checked', true);
+    if(messageHome.length > 3){    
+    	$('#messageHome').val(messageHome + " #privado");    
+        $('#msgModalMessage').modal('show');  
+    }
+}
+
+function opcaoStatus(status){
+	var messageHome = $('#messageHome').val();
+	if(status == "privado"){
+		var mensagem = messageHome.replace("#privado", "");
+		$('#messageHome').val(mensagem + " #privado");    
+		$('#radioStatusPublico').prop('checked', false);
+		$('#radioStatusPrivado').prop('checked', true);
+	}else{
+		var mensagem = messageHome.replace("#privado", "");
+		$('#messageHome').val(mensagem);    
+		$('#radioStatusPrivado').prop('checked', false);
+		$('#radioStatusPublico').prop('checked', true);
+	}	
+}
+
+
+
+
 
 

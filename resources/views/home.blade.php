@@ -53,11 +53,11 @@
 
         <li class="qf b aml">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Message">
+            <input type="text" class="form-control" id="messageHome" placeholder="Message">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="fj">
-              <button type="button" class="cg fm">
-                <span class="h xi"></span>
+              <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                <span class="h adw"></span>
               </button>
             </div>
           </div>
@@ -188,6 +188,51 @@
   </div>
 </div>
 
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalMessage" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Escolha a categoria para sua tarefa</h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">
+        <div class="modal-body">          
+          
+              <div class="dj" >
+                  <div class="ex ug uk">
+                    <label>
+                      <input type="radio" id="radioStatusPublico" onclick="opcaoStatus('publico');"  name="radioStatus"><span class="uh"></span>Público
+                    </label>
+                  </div>
+                  <div class="ex ug uk">
+                    <label>
+                      <input type="radio" id="radioStatusPrivado" onclick="opcaoStatus('privado');" name="radioStatus"><span class="uh"></span>Privado
+                    </label>
+                  </div>
+              </div>
+              <hr>
+              <div id="divModalMessageCategorias">
+                
+              </div>
+
+
+          
+        </div>        
+        <div class="uq">          
+
+          <div class="alj js-conversation" id="corpoTarefaSugestao">
+            <ul class="qo aob">
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

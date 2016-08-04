@@ -69,7 +69,7 @@ class User extends Authenticatable
             // if you want to rely on accepted field, then add this:        
     }
 
-    public function notification(){
+    public function notificationAtivas(){
         return $this->hasMany('App\Notification')->where([
                                                 ['status','A'],
                                                 ['user_id',$this->id],

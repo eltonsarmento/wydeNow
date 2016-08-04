@@ -86,11 +86,11 @@
 
 	        <ul class="nav navbar-nav og ale ss">
 	          <li >
-	            <a class="g" data-toggle="modal" href="#msgModalNotification">	            
+	            <a class="g" onclick="openModalNotification();">	            
 	              <span class="h ws"></span>
 	              <div id="divNumberNotification">
-		              @if(Auth::user()->notification()->count() > 0)
-		              	({{ Auth::user()->notification()->count() }})
+		              @if(Auth::user()->notificationAtivas()->count() > 0)
+		              	({{ Auth::user()->notificationAtivas()->count() }})
 		              @endif
 	              </div>
 	            </a>
@@ -141,7 +141,7 @@
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
 	        <h4 class="modal-title" >Notifications</h4>
 	      </div>
-
+	      <input name="idsAtivas" id="idsAtivas" type="hidden">
 	      <div class="modal-body amf js-modalBody">        
 	        <div class="uq">          
 

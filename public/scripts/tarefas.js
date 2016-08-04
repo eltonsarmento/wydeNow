@@ -263,6 +263,15 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
+
+                    if(item['isdoit']) {
+                        htmlAtivas += '   <ul class="ano">';
+                        htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
+                        htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item['avatar']+'">';
+                        htmlAtivas += '     </li>';
+                        htmlAtivas += '     <li style="display: inline-block"><small>'+item['nickname']+'</small></li>';
+                        htmlAtivas += '   </ul>';
+                    }
                     htmlAtivas += '</li>';  
                  });
                 htmlAtivas += '</ol>';  
@@ -288,6 +297,14 @@ $('#btnContinueModalCancelar').click(function(){
                     htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                     htmlConcluidas +='      </div>';
                     htmlConcluidas +='  </div>';
+                    if(item2['isdoit']) {
+                        htmlConcluidas += '   <ul class="ano">';
+                        htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
+                        htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                        htmlConcluidas += '     </li>';
+                        htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                        htmlConcluidas += '   </ul>';
+                    }
                     htmlConcluidas +='</li> ';
                 })
             }
@@ -361,7 +378,7 @@ $('#btnContinueModalRecusarDoIt').click(function(){
                     htmlConcluidas +='    <div class="qj ">';
                     htmlConcluidas +='      <span class="h'; 
                     if(item2['isdoit']){
-                        htmlAtivas += ' ajw ">';
+                        htmlConcluidas += ' ajw ">';
                     }else if(item2['privado']){
                         htmlConcluidas += ' adw">';
                     }else{
@@ -375,25 +392,25 @@ $('#btnContinueModalRecusarDoIt').click(function(){
                     htmlConcluidas +='  </div>';
 
                     if(item2['isdoit']) {
-                        htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                        htmlAtivas += '     <div class="panel-body">';                                                
-                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
-                        htmlAtivas += '     </div>';
-                        htmlAtivas += '   </div>';
-                        htmlAtivas += '   <ul class="ano">';
-                        htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
-                        htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
-                        htmlAtivas += '     </li>';
-                        htmlAtivas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
-                        htmlAtivas += '   </ul>';
-                        htmlAtivas += '</li>';
+                        htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                        htmlConcluidas += '     <div class="panel-body">';                                                
+                        htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlConcluidas += '     </div>';
+                        htmlConcluidas += '   </div>';
+                        htmlConcluidas += '   <ul class="ano">';
+                        htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
+                        htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                        htmlConcluidas += '     </li>';
+                        htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                        htmlConcluidas += '   </ul>';
+                        htmlConcluidas += '</li>';
                     }else{
-                        htmlAtivas += '   <div class="panel panel-default panel-link-list">';
-                        htmlAtivas += '     <div class="panel-body">';
-                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
-                        htmlAtivas += '     </div>';
-                        htmlAtivas += '   </div>';
-                        htmlAtivas += '</li>';  
+                        htmlConcluidas += '   <div class="panel panel-default panel-link-list">';
+                        htmlConcluidas += '     <div class="panel-body">';
+                        htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlConcluidas += '     </div>';
+                        htmlConcluidas += '   </div>';
+                        htmlConcluidas += '</li>';  
                     }
                 })
             }
@@ -420,27 +437,47 @@ $('#btnContinueModalExcluirDoIt').click(function(){
                  $.each(value, function(key2,item) {
                     htmlAtivas += ' <li class="b qf aml dd-item dd3-item" data-id="'+item['id']+'">';
                     htmlAtivas += '   <div class="qj dd-handles dd3-handles">';
-                    htmlAtivas += '     <span class="h ajw "></span>';
+
+                    if(item['status'] == "A"){
+                        htmlAtivas += '     <span class="h ajw "></span>';
+                    }else if(item['status'] == "R"){
+                        htmlAtivas += '     <span class="h ya"></span>'; 
+                    }
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <div class="qg">';   
                     htmlAtivas += '      <small class="eg dp">'+item['tempoCadastada']+'</small>';
-                    htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
+
+                    if(item['status'] == "A"){
+                        htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
+                    }else if(item['status'] == "R"){
+                        htmlAtivas += '       <strike>'+item['texto']+'</strike> - RECUSADA';
+                    }
+
                     htmlAtivas += '   </div>';                
                     htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                     htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Excluir</a>';                    
-                    htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
+
+                    if(item['status'] == "A"){                    
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalExcluirDoIt('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Excluir</a>';                    
+                        htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlAtivas += '         <a data-toggle="modal" href="#msgModalConcluir" onClick="setaDadosModalConcluir('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h xl"></span> Concluir</a>';  
+                    }else if(item['status'] == "R"){
+                        htmlAtivas += '    <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelar(\''+item['id']+'\',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Excluir</a>';
+                    }
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
+
+                    
                     htmlAtivas += '   <ul class="ano">';
                     htmlAtivas += '     <li class="anp" style="vertical-align: 0">';
                     htmlAtivas += '         <img class="cu" src="/uploads/avatars/'+item['avatar']+'">';
                     htmlAtivas += '     </li>';
                     htmlAtivas += '     <li style="display: inline-block"><small>'+item['nickname']+'</small></li>';
                     htmlAtivas += '   </ul>';
+                
                     htmlAtivas += '</li>';
                     
+
                  });
                 htmlAtivas += '</ol>';  
             }else if(key == 'tarefasConcluidas'){

@@ -54,6 +54,7 @@ class UserController extends Controller{
                 }
             }
 
+
             /*Vefificação se o visitante me permitiu acesso*/
             $follower2 = $user->followersTable()->where([
                                                         ['follower_id',Auth::user()->id],
@@ -68,44 +69,27 @@ class UserController extends Controller{
                                 ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
                                 ->select('categorias.*')
                                 ->where('followers.id', $follower2->id)->get();
-            }
 
-            
+                
+            }            
     	}
 
-       $vCategoriasExibir = categoria::where([
+       /*$vCategoriasExibir = Categoria::where([
                     ['categorias.user_id', $user->id],
-                    ['tarefas.privado', 0],
                     ['tarefas.status', 'A'],
                 ])->join('tarefas', 'categorias.id', '=', 'tarefas.categoria_id')
                   ->select('categorias.*')
-                  ->distinct()->get();                
+                  ->distinct()->get();                */
+        $vCategoriasExibir = Categoria::where([
+                    ['categorias.user_id', $user->id],                    
+                ])->get();                
 
-        foreach ($vCategoriasExibir as $key => $categoria) {
-            if($categoria['descricao'] == $categoriaDefault){
-                $categoria = $categoria;
+         
+        foreach ($vCategoriasExibir as $key => $categoriasExibir) {            
+            if($categoriasExibir['descricao'] == $categoriaDefault){
+                $categoria = $categoriasExibir;
             }
         }
-        
-        if(empty($categoria)){
-            $vCategoria = categoria::where([
-                    ['user_id', $user->id],
-                    ['descricao', $categoriaDefault],
-            ])->get();
-            
-            if(empty($vCategoria[0])){           
-                $categoriaDefault = "Pessoal";
-                $vCategoria = categoria::where([
-                        ['user_id', $user->id],
-                        ['descricao', $categoriaDefault],
-                ])->get();            
-            }
-            $categoria = $vCategoria[0];
-        }else{
-            $categoria = $vCategoriasExibir[0];
-        }        
-        
-
 
         $campoOrdenacao = "created_at";
         $order = "asc";
@@ -151,6 +135,10 @@ class UserController extends Controller{
             $people = User::where('id','<>', Auth::user()->id)->take(5)->get();            
             $categoriaDefault = $categoria;            
 
+            
+
+            
+        
 
             return view('profile_follower', array(
                  'user' => $user, 

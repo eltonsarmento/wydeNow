@@ -12,16 +12,17 @@ function getSuggestion(tarefa_id){
     $.post("/tarefa/getSuggestion", {tarefa_id: tarefa_id}, function(result){  
                
         $("#divInputSugestao").html('<input type="text" id="sugestao" class="form-control" placeholder="Write your menssage">');
-        
+   
         var json = jQuery.parseJSON(result);
         
         var htmlBody = '<ul class="qo aob">';
 
         var texto = '';
 
-        $.each(json, function(key,item) {            
+        $.each(json, function(key,item) {    
+            
             if(item['statusTarefa'] != "A"){
-                
+                $("#divInputSugestao").html('');
             }
 
             if((key+1) == json.length){
@@ -76,21 +77,21 @@ function getSuggestion(tarefa_id){
     });
 }
 
-$(document).keypress(function(e) {
+$(document).keypress(function(e) {    
     if(e.which == 13){
+        
         var texto = $('#sugestao').val();        
         var tarefa_id  = $('#idTarefaSugestao').val(); 
         if(texto.length > 3){            
             $('#sugestao').val('');
-
+            alert('tarefa_id : '+tarefa_id);
             $.post("/tarefa/suggestion", {tarefa_id: tarefa_id, texto: texto}, function(result){  
                
                 var json = jQuery.parseJSON(result);
                 
                 var htmlBody = '<ul class="qo aob">';
-
-                $.each(json, function(key,item) {                
-
+                var texto = '';
+                $.each(json, function(key,item) {                    
                     if((key+1) == json.length){
                         texto  += item['texto'];             
                         if(item['isOwner']){                    
@@ -112,7 +113,7 @@ $(document).keypress(function(e) {
                         }
                     }else{
                         if(json[key+1]['id_usuario'] != item['id_usuario']){    
-                            texto  += item['texto'];                                
+                            texto  += item['texto'];                               
                             if(item['isOwner']){
                                 htmlBody += '<li class="qf aoe alu">';
                                 htmlBody += '    <div class="qg">';
@@ -132,7 +133,7 @@ $(document).keypress(function(e) {
                             }
                             texto = '';
                         }else{                                      
-                            texto  += item['texto'] + '<br>';                    
+                            texto  += item['texto'] + '<br>';             
                         }
                     }
                 });    
@@ -142,5 +143,12 @@ $(document).keypress(function(e) {
                                    
             });
         }
+
+        var messageHome = $('#messageHome').val(); 
+        if(messageHome.length > 3){
+            $('#radioStatusPublico').prop('checked', true);            
+            $('#msgModalMessage').modal('show');   
+        }   
     }
 });
+

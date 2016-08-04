@@ -13,4 +13,8 @@ class Categoria extends Model{
     protected $fillable = [
         'descricao', 'user_id', 'status', 'posicao'
     ];
+
+    protected function tarefasAtivas(){
+    	return $this->hasMany('App\Tarefa')->where('status','A');	
+    }
 }

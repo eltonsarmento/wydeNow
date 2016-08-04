@@ -38,18 +38,35 @@ $('#btnContinueModalCancelar').click(function(){
             if(key == 'tarefasAtivas'){
                 htmlAtivas += ' <ol class="dd-list">';
                  $.each(value, function(key2,item) {
+                    alert(item['status']);
                     htmlAtivas += ' <li class="b qf aml dd-item dd3-item" data-id="'+item['id']+'">';
                     htmlAtivas += '   <div class="qj dd-handles dd3-handles">';
-                    htmlAtivas += '     <span class="h ajw "></span>';                                                
+
+                    if(item['status'] == "A")
+                        htmlAtivas += '     <span class="h ajw "></span>';                                                
+                    if(item['status'] == "R")
+                        htmlAtivas += '     <span class="h ya"></span>'; 
+
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <div class="qg">';   
                     htmlAtivas += '      <small class="eg dp">'+item['tempoCadastada']+'</small>';
-                    htmlAtivas += '       <a href="#"><strong>'+item['texto']+'</strong></a>';
+
+                    if(item['status'] == "A")
+                        htmlAtivas += '       <strong>'+item['texto']+'  </strong>';
+                    if(item['status'] == "R")
+                        htmlAtivas += '       <strike>'+item['texto']+'</strike> - RECUSADA';
+                    
                     htmlAtivas += '   </div>';                    
                     htmlAtivas += '   <div class="panel panel-default panel-link-list">';
                     htmlAtivas += '     <div class="panel-body">';
-                    htmlAtivas += '         <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\'+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';
-                    htmlAtivas += '         <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+
+                    if(item['status'] == "A"){
+                        htmlAtivas += '    <a data-toggle="modal" href="#msgModalCancelar" style="margin-right: 10px;" onclick="setaDadosModalCancelar('+item['id']+',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Cancelar</a>';
+                        htmlAtivas += '    <a  onClick="setaDadosModalSugestao('+item['id']+',\''+item['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                    }if(item['status'] == "R"){
+                        htmlAtivas += '    <a data-toggle="modal" href="#msgModalExcluirDoIt" style="margin-right: 10px;" onclick="setaDadosModalCancelar(\''+item['id']+'\',\''+item['texto']+'\'); return false;"><span class="h ya"></span> Excluir</a>';                                            
+                    }
+
                     htmlAtivas += '     </div>';
                     htmlAtivas += '   </div>';
                     htmlAtivas += '   <ul class="ano">';
@@ -62,29 +79,30 @@ $('#btnContinueModalCancelar').click(function(){
                  });
                 htmlAtivas += '</ol>';  
             }else if(key == 'tarefasConcluidas'){
-                $.each(value, function(key3,item2) {
+                $.each(value, function(key4,item3) {
                     htmlConcluidas +='  <li class="b qf aml" >';
                     htmlConcluidas +='    <div class="qj "> <span class="h ajw"> </span></div>';                        
                     htmlConcluidas +='  <div class="qg">';
-                    htmlConcluidas +='      <small class="eg dp">'+item2['tempoCadastada']+'</small>';
-                    htmlConcluidas +='      <strike>'+item2['texto']+'</strike>';
+                    htmlConcluidas +='      <small class="eg dp">'+item3['tempoCadastada']+'</small>';
+                    htmlConcluidas +='      <strike>'+item3['texto']+'</strike>';
                     htmlConcluidas +='  </div>';
-                    if(item2['hasSuggestion']){
+                    if(item3['hasSuggestion']){
                         htmlConcluidas +='  <div class="panel panel-default panel-link-list">';
                         htmlConcluidas +='      <div class="panel-body">';
-                        htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item2['id']+',\''+item2['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
+                        htmlConcluidas += '         <a  onClick="setaDadosModalSugestao('+item3['id']+',\''+item3['texto']+'\'); return false;" style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a>';
                         htmlConcluidas +='      </div>';
                         htmlConcluidas +='  </div>';
                     }
                     htmlConcluidas += '   <ul class="ano">';
                     htmlConcluidas += '     <li class="anp" style="vertical-align: 0">';
-                    htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item2['avatar']+'">';
+                    htmlConcluidas += '         <img class="cu" src="/uploads/avatars/'+item3['avatar']+'">';
                     htmlConcluidas += '     </li>';
-                    htmlConcluidas += '     <li style="display: inline-block"><small>'+item2['nickname']+'</small></li>';
+                    htmlConcluidas += '     <li style="display: inline-block"><small>'+item3['nickname']+'</small></li>';
                     htmlConcluidas += '   </ul>';
                     htmlConcluidas += '</li>';
                 })
             }
+
         });
         $('#returnListaAtivas').html(htmlAtivas);
         $('#returnListaConcluidas').html(htmlConcluidas);
