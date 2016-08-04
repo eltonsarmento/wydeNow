@@ -53,7 +53,7 @@
 
         <li class="qf b aml">
           <div class="input-group">
-            <input type="text" class="form-control" id="messageHome" placeholder="Message">
+            <input type="text" class="form-control" id="messageHome" placeholder="Crie agora sua tarefa">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="fj">
               <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
@@ -87,51 +87,95 @@
         </div>   
       </ul>
     </div>
-    <div class="gn">
-      <div class="alert pv alert-dismissible ss" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <a class="pr" href="profile/index.html">Visit your profile!</a> Check your self, you aren't looking too good.
-      </div>
-     
 
-      <div class="qv rc alu ss">
-        <div class="qw">
-        <h5 class="ald">Likes <small>· <a href="#">View All</a></small></h5>
-        <ul class="qo anx">
-          <li class="qf alm">
-            <a class="qj" href="#">
-              <img
-                class="qh cu"
-                src="assets/img/avatar-fat.jpg">
-            </a>
-            <div class="qg">
-              <strong>Jacob Thornton</strong> @fat
-              <div class="aoa">
-                <button class="cg ts fx">
-                  <span class="h vc"></span> Follow</button>
-              </div>
-            </div>
-          </li>
-           <li class="qf">
-            <a class="qj" href="#">
-              <img
-                class="qh cu"
-                src="assets/img/avatar-mdo.png">
-            </a>
-            <div class="qg">
-              <strong>Mark Otto</strong> @mdo
-              <div class="aoa">
-                <button class="cg ts fx">
-                  <span class="h vc"></span> Follow</button></button>
-              </div>
-            </div>
-          </li>
-        </ul>
+
+    <div class="gn">
+
+    
+       <div class="qv rc alu ss">
+          <div class="qw">             
+            @if(Auth::user()->followers->count() > 0)  
+                  <h5 class="ald">Estou Seguindo<small> · <a href="#"> Ver todos</a></small></h5>
+                  <ul class="qo anx">
+                    @foreach(Auth::user()->followers as $key => $follow)  
+                      @if($key < 5)
+                        <li class="qf alm">
+                          <a class="qj" href="/profile/{{ $follow->nickname }}"><img class="qh cu" src="/uploads/avatars/{{$follow->avatar}}"></a>
+                          <div class="qg">
+                            <strong>{{ $follow->name }}</strong> 
+                            <small>{{ $follow->nickname }}</small>
+                            <br>                    
+                            @if($follow->tarefas->count() > 0)
+                              {{ $follow->tarefas->where('status', 'A')->count() }} Pendentes
+                            @else
+                              <small>Nenhuma Pendente</small>
+                            @endif                    
+                            <div class="aoa">                      
+                                {{ $follow->tarefas->count() }} <span class="h aif"></span>
+                            </div>
+                          </div>
+                        </li>           
+                      @endif
+                    @endforeach
+                    </ul>
+                    </div>
+            @else          
+                <h5 class="ald">Nenhum Seguidor <small> ·<a href="#"> Procurar</a></small></h5>
+                <ul class="qo anx">
+                  @foreach($people as $key => $person) 
+                          <li class="qf alm">
+                            <a class="qj" href="/profile/{{$person->nickname}}"><img class="qh cu" src="/uploads/avatars/{{$person->avatar}}"></a>
+                            <div class="qg">
+                              <strong>{{$person->name}}</strong> {{$person->nickname}}
+                              <div class="aoa">
+                                <a href="/profile/{{$person->nickname}}" class="cg ts fx">
+                                  <span class="h vc"></span> Follow</a>
+                              </div>
+                            </div>
+                          </li>                        
+                  @endforeach
+                </ul>
+                </div>
+                <div class="qz">
+                  Descubra colaboradores para lhe ajudar em suas tarefas e juntos compartilharem sugestões.
+                </div>          
+            @endif
         </div>
-        <div class="qz">
-          Dave really likes these nerds, no one knows why though.
+
+        <div class="qv rc alu ss">
+            <div class="qw">
+              <h5 class="ald">Likes <small>· <a href="#">View All</a></small></h5>
+                <ul class="qo anx">
+                  <li class="qf alm">
+                    <a class="qj" href="#">
+                      <img class="qh cu" src="assets/img/avatar-fat.jpg">
+                    </a>
+                    <div class="qg">
+                      <strong>Jacob Thornton</strong> @fat
+                      <div class="aoa">
+                        <button class="cg ts fx">
+                          <span class="h vc"></span> Follow</button>
+                      </div>
+                    </div>
+                  </li>
+                   <li class="qf">
+                    <a class="qj" href="#">
+                      <img class="qh cu" src="assets/img/avatar-mdo.png">
+                    </a>
+                    <div class="qg">
+                      <strong>Mark Otto</strong> @mdo
+                      <div class="aoa">
+                        <button class="cg ts fx">
+                          <span class="h vc"></span> Follow</button>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+            </div>
+            <div class="qz">
+              Descubra novos parceiros e mutualmente se ajudem a realizar suas tarefas.
+            </div>
         </div>
-      </div>
 
       <div class="qv rc aok">
         <div class="qw">

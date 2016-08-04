@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::auth();
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'TarefaController@index');
 Route::get('/home', 'HomeController@index');
 Route::post('/home/getTimeline', 'HomeController@getTimeline');
 Route::get('/admin', 'AdminController@index');

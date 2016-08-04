@@ -186,7 +186,7 @@
 
     <div class="gn">
       <div class="qv rc alu ss">
-            <div class="qw">             
+          <div class="qw">             
             @if($user->followers->count() > 0)  
                   <h5 class="ald">Estou Seguindo<small> · <a href="#"> Ver todos</a></small></h5>
                   <ul class="qo anx">

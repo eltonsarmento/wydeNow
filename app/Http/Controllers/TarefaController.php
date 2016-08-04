@@ -358,17 +358,16 @@ class TarefaController extends Controller {
                 }
             }
 
+            if(Auth::user()->id != $s->owner){
+                $message = "Escreveu uma sugestão na tarefa: <strong>".$textoTarefa."</strong>";
+                $id = Notification::insertGetId(
+                        ['user_id' =>  $s->owner, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
 
-
-            $message = "Escreveu uma sugestão na tarefa: <strong>".$textoTarefa."</strong>";
-            $id = Notification::insertGetId(
-                    ['user_id' =>  $s->owner, 'sender_id' => Auth::user()->id, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
-                    );
-
-            $notification = Notification::find($id);
-            $notification->link= "setaDadosModalSugestaoNotification('".$suggestoin->tarefa_id."','".$textoTarefa."', '".$id."'); return false;";
-            $notification->save();
-
+                $notification = Notification::find($id);
+                $notification->link= "setaDadosModalSugestaoNotification('".$suggestoin->tarefa_id."','".$textoTarefa."', '".$id."'); return false;";
+                $notification->save();
+            }
             echo json_encode($json);die();         
         }
     }

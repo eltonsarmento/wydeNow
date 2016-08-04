@@ -84,7 +84,7 @@ $(document).keypress(function(e) {
         var tarefa_id  = $('#idTarefaSugestao').val(); 
         if(texto.length > 3){            
             $('#sugestao').val('');
-            alert('tarefa_id : '+tarefa_id);
+
             $.post("/tarefa/suggestion", {tarefa_id: tarefa_id, texto: texto}, function(result){  
                
                 var json = jQuery.parseJSON(result);
