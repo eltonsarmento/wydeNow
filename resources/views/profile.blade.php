@@ -54,12 +54,113 @@
        
 
        <div class="qv rc sm sp">
-        
+           <li class="b aml">
+              <h3 class="alcs">Privacidade</h3>                       
+            </li>
+
+            <!-- Nome e Nickname -->
+             <li class="qf b aml">
+                <p></p>
+                <div class="input-group" style="width: 100%;">
+                    <label style="width: 50%;">Name</label>
+                    <label style="width: 50%;">Nickname</label>
+                </div>
+                <div class="input-group" style="width: 100%;">                    
+                    <div class="fj" style="width: 50%;">
+                      <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <span class="h agz"></span>
+                      </button>
+                    </div>
+                                      
+                    <div class="fj" style="width: 50%;">
+                      <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <span class="h agz"></span>
+                      </button>
+                    </div>
+                </div>                
+            </li>
+            <!-- Nome e Nickname -->
+
       </div>
     </div>
 
     <div class="gz">
-      
+        <ul class="ca qo anx">            
+            <li class="b aml">
+              <h3 class="alcs">Dados pessoais</h3>        
+              
+                  <div id="divLock">
+                    <button type="button" class="cg fm" onclick="actionLock('unlock');" ><span class="h adw"></span></button>                  
+                    <small>Clique no cadeado para efetuar alterações.</small>
+                  </div>
+                  
+            </li>
+
+            <div style="pointer-events:none;" id="divDadoPessoais">
+                <!-- Nome e Nickname -->
+                 <li class="qf b aml" >
+                    <div class="input-group" style="width: 100%;">
+                        <label style="width: 50%;">Name</label>
+                        <label style="width: 50%;">Nickname</label>
+                    </div>
+                    <div class="input-group" style="width: 100%;">
+                        <input type="text" class="form-control" id="messageHome" placeholder="Nome do usuário"  value="{{ Auth::user()->name }}">                  
+                        <div class="fj" style="width: 10%;">
+                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                            <span class="h agz"></span>
+                          </button>
+                        </div>
+                      
+                        <input type="text" class="form-control" id="messageHome" placeholder="Ex: @johnyblack" value="{{ Auth::user()->nickname }}">                  
+                        <div class="fj" style="width: 10%;">
+                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                            <span class="h agz"></span>
+                          </button>
+                        </div>
+                    </div>                
+                </li>
+                <!-- Nome e Nickname -->
+
+
+                <!-- Nome e Nickname -->
+                 <li class="qf b aml">
+                    <div class="input-group" style="width: 100%;">
+                        <label style="width: 50%;">Lives in</label>
+                        <label style="width: 50%;">Worked at</label>
+                    </div>
+                    <div class="input-group" style="width: 100%;">
+                        <input type="text" class="form-control" id="messageHome" placeholder="San Francisco, CA">                  
+                        <div class="fj" style="width: 10%;">
+                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                            <span class="h agz"></span>
+                          </button>
+                        </div>
+                      
+                        <input type="text" class="form-control" id="messageHome" placeholder="Github">                  
+                        <div class="fj" style="width: 10%;">
+                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                            <span class="h agz"></span>
+                          </button>
+                        </div>
+                    </div>                
+                </li>
+                <!-- Nome e Nickname -->
+
+                <!-- Senha -->
+                <li class="qf b aml">
+                    <label>Senha</label>                                          
+                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Senha atual">                            
+                    <br>                                                    
+                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Nova Senha">                            
+                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Repita nova senha">                            
+                    <br>                                                    
+                    <button type="submit" class="cg tr">Salvar</button>                
+                    </form>                     
+                </li>      
+            </div>
+
+        </ul>
+
     </div>
 
     <div class="gn">
@@ -138,6 +239,33 @@
     </div>
 
 
+  </div>
+</div>
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="modalLock" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Insira abaixo sua senha</h4>
+      </div>
+
+      <div class="modal-body amf js-modalBody">        
+        <div class="uq">          
+          <div class="alj js-conversation">
+            <ul class="qo aob">
+                <li class="qf b aml">
+                    <label>Senha</label>                                          
+                    <input type="text" class="form-control" id="texto" name="texto" placeholder="senha" id="senhaModal">
+                    <br>
+                    <button type="submit" class="cg tr">Desbloquear</button>                                    
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <script src="/scripts/profile.js"></script>

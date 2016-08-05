@@ -51,6 +51,7 @@ Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar'
 
 Route::post('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
 Route::post('/tarefa/adiciona', 'TarefaController@adiciona');
+Route::post('/tarefa/copiar', 'TarefaController@copiarTarefa');
 Route::post('/tarefa/doit', 'TarefaController@doit');
 Route::post('/tarefa/novaCategoria', 'TarefaController@add_categoria');
 Route::post('/tarefa/prioridade/{categoria_id?}', 'TarefaController@ordenarPrioridade');

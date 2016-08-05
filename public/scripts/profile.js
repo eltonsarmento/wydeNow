@@ -96,3 +96,34 @@ $(document).ready(function(){
       }
     });
 });
+
+/************************************* CONCLUIR TAREFA *******************************************************/
+
+
+/************************************* Formulario *******************************************************/
+function actionLock(option){
+    if(option == 'lock'){
+        $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'unlock\'); return false;"><span class="h adw"></span></button> <small> Clique no cadeado para efetuar alterações.</small>');
+        document.getElementById("divDadoPessoais").style = "pointer-events:none;";
+    }else if(option == 'unlock'){
+        //$('#modalLock').modal('show');
+        $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'lock\'); return false;"><span class="h adv"></span></button> <small> Clique no cadeado para bloquear os campos.</small>');
+        document.getElementById("divDadoPessoais").style = "";
+    }
+    
+}
+
+
+function verificaSenhaDesbloquear(){
+    var senha = $('#senhaModal').val();
+    $.post('/profile/validaSenha', {senha: senha}, function(result){
+        if(result == "valid"){
+            $('#modalLock').modal('hide');
+            $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock("lock");"><span class="h adv"></span></button>');
+            
+        }else{
+
+        }
+    })
+}
+/************************************* Formulario *******************************************************/

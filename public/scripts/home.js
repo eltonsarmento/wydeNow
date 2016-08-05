@@ -64,10 +64,24 @@ function getMyCategories(){
         	htmlBody += ' 		<label>';
         	htmlBody += ' 			<input type="radio" id="radioCategoria" onclick="cadastraTarefaHome('+item['id']+'); return false;" value="'+item['id']+'" name="radioCategoria"><span class="uh"></span>'+item['descricao'];
         	htmlBody += ' 		</label>';
-        	htmlBody += ' 	</div>';        	
+        	htmlBody += ' 	</div>';  
         });
+
         htmlBody += ' </div>';
         $('#divModalMessageCategorias').html(htmlBody);
+
+		var htmlBodyCopy = '<div class="bv" >';           
+        $.each(json, function(key,item) { 
+        	htmlBodyCopy += ' 	<div class="ex ug uk">';
+        	htmlBodyCopy += ' 		<label>';
+        	htmlBodyCopy += ' 			<input type="radio" id="radioCopiar" onclick="copiarTarefaHome('+item['id']+'); return false;" value="'+item['id']+'" name="radioCopiar"><span class="uh"></span>'+item['descricao'];
+        	htmlBodyCopy += ' 		</label>';
+        	htmlBodyCopy += ' 	</div>';  
+        });
+
+        htmlBodyCopy += ' </div>';
+        $('#divModalCopiarCategorias').html(htmlBodyCopy);        
+        
     });
 }
 /*============================================================================================================================================*/
@@ -117,9 +131,46 @@ function opcaoStatus(status){
 		$('#radioStatusPublico').prop('checked', true);
 	}	
 }
+/*======================================================== Cadastra Tarefa home =============================================================*/
 
 
+/*=========================================================== Copiar Tarefa =================================================================*/
+function setaTarefaCopiar(texto){
+	$('#textoTarefaCopiar').val(texto);
+	$('#msgModalCopiar').modal('show');	
+}
 
+
+function copiarTarefaHome(categoria_id){
+	var texto  = $('#textoTarefaCopiar').val();
+	var status = $('#statusTarefaCopiar').val();
+	
+
+	$('#msgModalCopiar').modal('hide');    
+	$('#radioStatusCopiarPrivado').prop('checked', true); 
+	$('#statusTarefaCopiar').val('1');
+	var htmlMessagem = '';
+    $.post("/tarefa/copiar", {categoria_id: categoria_id, texto: texto, status: status}, function(result){            
+    	htmlMessagem += ' <div class="alert fq alert-dismissible fade in" role="alert">';
+		htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+		htmlMessagem += '	 <p><span class="h xl"></span> Sua tarefa foi copiada!!</p>';
+		htmlMessagem += ' </div>';
+		$("#app-growl").html(htmlMessagem);		  
+    });
+}
+
+
+function opcaoStatusCopiar(status){	
+	if(status == "privado"){
+		$('#statusTarefaCopiar').val(1);
+		$('#radioStatusCopiarPublico').prop('checked', false);
+		$('#radioStatusCopiarPrivado').prop('checked', true);
+	}else{		
+		$('#statusTarefaCopiar').val(0);
+		$('#radioStatusCopiarPrivado').prop('checked', false);
+		$('#radioStatusCopiarPublico').prop('checked', true);
+	}	
+}
 
 
 

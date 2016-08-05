@@ -200,6 +200,34 @@ class TarefaController extends Controller {
                  "people" => (empty($people) ? null : $people),
         ));
     }
+    
+    public function copiarTarefa(){
+
+        if(Request::ajax()){
+            $status        = Request::input('status');
+            $categoria_id  = Request::input('categoria_id');
+            $texto         = Request::input('texto');  
+            
+            $tarefa = Tarefa::select('posicao')->where([
+                    ['categoria_id', $categoria_id],
+                    ['user_id', Auth::user()->id],
+                    ['status', 'A'],
+            ])->orderBy('posicao', "desc")->get();  
+
+            $posicao = (empty($tarefa[0]) ? 1 : $tarefa[0]->posicao + 1);
+
+            /*Constroi e salva */
+            $novaTarefa               = new Tarefa();
+            $novaTarefa->texto        = $texto;
+            $novaTarefa->privado      = $status;
+            $novaTarefa->posicao      = $posicao;
+            $novaTarefa->categoria_id = $categoria_id;
+            $novaTarefa->status       = "A";
+            $novaTarefa->user_id      = Auth::user()->id;  
+            $novaTarefa->doit         = Auth::user()->id;  
+            $novaTarefa->save();
+        }
+    }
 
     public function adiciona(){
 

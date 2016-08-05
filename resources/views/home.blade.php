@@ -74,10 +74,11 @@
                       <div class="qn">
                         <small class="eg dp">{{ $tarefa->tempoCadastada }}</small>
                         <h5>{{ $tarefa->name }}</h5>
-                      </div>
-                      <p>{{ $tarefa->texto }}</p>
+                      </div>                      
+                      <p>{{ $tarefa->texto }}</p>                      
+                      <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
+                      <a  style="margin-left: 75%;" title="Copy" onclick="setaTarefaCopiar('{{$tarefa->texto}}'); return false;"><span class="h age"></span> </a>
                       
-                        <a  onClick="setaDadosModalSugestao('{{$tarefa->id}}','{{$tarefa->texto}}'); return false;"style="margin-right: 10px;"><span class="h xk"></span> Sugestões</a></a>
                     </div>
                   </div>
                 </li>
@@ -242,30 +243,27 @@
         <h4 class="modal-title">Escolha a categoria para sua tarefa</h4>
       </div>
 
-      <div class="modal-body amf js-modalBody">
-        <div class="modal-body">          
-          
-              <div class="dj" >
-                  <div class="ex ug uk">
-                    <label>
-                      <input type="radio" id="radioStatusPublico" onclick="opcaoStatus('publico');"  name="radioStatus"><span class="uh"></span>Público
-                    </label>
+          <div class="modal-body amf js-modalBody">
+            <div class="modal-body">          
+              
+                  <div class="dj" >
+                      <div class="ex ug uk">
+                        <label>
+                          <input type="radio" id="radioStatusPublico" onclick="opcaoStatus('publico');"  name="radioStatus"><span class="uh"></span>Público
+                        </label>
+                      </div>
+                      <div class="ex ug uk">
+                        <label>
+                          <input type="radio" id="radioStatusPrivado" onclick="opcaoStatus('privado');" name="radioStatus"><span class="uh"></span>Privado
+                        </label>
+                      </div>
                   </div>
-                  <div class="ex ug uk">
-                    <label>
-                      <input type="radio" id="radioStatusPrivado" onclick="opcaoStatus('privado');" name="radioStatus"><span class="uh"></span>Privado
-                    </label>
-                  </div>
-              </div>
-              <hr>
-              <div id="divModalMessageCategorias">
-                
-              </div>
 
+                  <hr>
+                  <div id="divModalMessageCategorias"></div>
 
-          
-        </div>        
-        <div class="uq">          
+            </div>        
+          <div class="uq">          
 
           <div class="alj js-conversation" id="corpoTarefaSugestao">
             <ul class="qo aob">
@@ -274,6 +272,42 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalCopiar" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="d">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+          <h4 class="modal-title">Copiar tarefa</h4>
+        </div>
+        <input type='hidden' id="textoTarefaCopiar">
+        <input type='hidden' id="statusTarefaCopiar" value="1">
+        <div class="modal-body amf js-modalBody">
+          <div class="modal-body">          
+              
+              <div class="ex ug uk">
+                <label>
+                  <input type="radio" id="radioStatusCopiarPublico"  onclick="opcaoStatusCopiar('publico');"  name="radioStatusCopiar"><span class="uh"></span>Público
+                </label>
+              </div>
+              <div class="ex ug uk">
+                <label>
+                  <input type="radio" id="radioStatusCopiarPrivado" checked="true" onclick="opcaoStatusCopiar('privado');" name="radioStatusCopiar"><span class="uh"></span>Privado
+                </label>
+              </div> 
+              <hr>
+              <p>Escolha em qual categoria deseja salvar</p>                  
+              
+              <hr>
+
+              <div id="divModalCopiarCategorias"></div>
+
+          </div>
+        </div>
     </div>
   </div>
 </div>
