@@ -70,11 +70,7 @@ function btnPermit(id){
         });
 
     }
-}
-
-
-
-    
+}    
 /************************************* CONCLUIR TAREFA *******************************************************/
 
 
@@ -103,27 +99,62 @@ $(document).ready(function(){
 /************************************* Formulario *******************************************************/
 function actionLock(option){
     if(option == 'lock'){
+        limpaCamposModalSenha();
         $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'unlock\'); return false;"><span class="h adw"></span></button> <small> Clique no cadeado para efetuar alterações.</small>');
         document.getElementById("divDadoPessoais").style = "pointer-events:none;";
-    }else if(option == 'unlock'){
-        //$('#modalLock').modal('show');
-        $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'lock\'); return false;"><span class="h adv"></span></button> <small> Clique no cadeado para bloquear os campos.</small>');
-        document.getElementById("divDadoPessoais").style = "";
+    }else{        
+        $('#modalLock').modal('show');    
     }
     
 }
-
+$('#modalLock').on('shown.bs.modal', function () {
+    $('#senhaModal').focus();
+}) 
 
 function verificaSenhaDesbloquear(){
     var senha = $('#senhaModal').val();
     $.post('/profile/validaSenha', {senha: senha}, function(result){
-        if(result == "valid"){
+        if(result == 'true'){            
+            $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'lock\'); return false;"><span class="h adv"></span></button> <small> Clique no cadeado para bloquear os campos.</small>');
+            document.getElementById("divDadoPessoais").style = "";            
             $('#modalLock').modal('hide');
-            $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock("lock");"><span class="h adv"></span></button>');
-            
+            limpaCamposModalSenha();
         }else{
+            $('#divErrorSenha').html('<smal>* A senha digitada está incorreta. Tente novamente.</smal>'); 
+            $('#divLock').html('<button type="button" class="cg fm" onclick="actionLock(\'unlock\'); return false;"><span class="h adw"></span></button> <small> Clique no cadeado para efetuar alterações.</small>');
+            document.getElementById("divDadoPessoais").style = "pointer-events:none;";
+        }
+        
+    })
+}
 
+function limpaCamposModalSenha(){
+    $('#divErrorSenha').html(''); 
+    $('#senhaModal').val(''); 
+}
+
+function atualizarSenha(){
+
+    var novaSenha     = $('#novaSenha').val();
+    var confirmaSenha = $('#confirmaSenha').val();    
+    var htmlMessagem = '';
+    $.post('/profile/updatepassword', {novaSenha: novaSenha, confirmaSenha: confirmaSenha}, function(result){
+        if(result == 'true'){
+            htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
+            htmlMessagem += '    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+            htmlMessagem += '    <p><span class="h xl"></span> Senha alterada com sucesso!!</p>';
+            htmlMessagem += ' </div>';
+            $("#app-growl").html(htmlMessagem);
+            $('#novaSenha').val('');
+            $('#confirmaSenha').val(''); 
+        }else{
+            htmlMessagem += '<div class="alert fs alert-dismissible fade in" role="alert">';
+            htmlMessagem += '    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+            htmlMessagem += '    <p><span class="h akk"></span> <strong>Senha</strong> e <strong>confirma senha</strong> são diferentes!!</p>';
+            htmlMessagem += ' </div>';
+            $("#app-growl").html(htmlMessagem);   
         }
     })
 }
+
 /************************************* Formulario *******************************************************/

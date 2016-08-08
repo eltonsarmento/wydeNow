@@ -32,6 +32,9 @@ Route::post('/profile/favorite', 'UserController@favorite');
 Route::post('/profile/unfavorite', 'UserController@unFavorite');
 Route::post('/profile/permit', 'UserController@permit');
 Route::post('/profile/unpermit', 'UserController@unPermit');
+Route::post('/profile/validaSenha', 'UserController@validaSenha');
+Route::post('/profile/updatepassword', 'UserController@update_password');
+
 
 
 

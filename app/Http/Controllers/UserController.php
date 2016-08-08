@@ -13,6 +13,8 @@ use App\Tarefa;
 use Auth;
 use DB;
 use Image;
+use Crypt;
+use Hash;
 
 class UserController extends Controller{
 
@@ -73,13 +75,7 @@ class UserController extends Controller{
                 
             }            
     	}
-
-       /*$vCategoriasExibir = Categoria::where([
-                    ['categorias.user_id', $user->id],
-                    ['tarefas.status', 'A'],
-                ])->join('tarefas', 'categorias.id', '=', 'tarefas.categoria_id')
-                  ->select('categorias.*')
-                  ->distinct()->get();                */
+       
         $vCategoriasExibir = Categoria::where([
                     ['categorias.user_id', $user->id],                    
                 ])->get();                
@@ -358,6 +354,45 @@ class UserController extends Controller{
              'people' => $people,
         ));
     }
+
+    public function validaSenha(Request $request){
+
+        if($request->ajax()){
+            if($request->has('senha')) {
+                $senha = $request->input('senha');
+
+                if(Hash::check($senha, Auth::user()->password)){
+                    echo "true";die();
+                }else{
+                    echo "false";die();    
+                }
+            }
+        }
+        echo "false";die();
+    }
+
+    public function update_password(Request $request){
+
+        if($request->ajax()){
+            if($request->has('novaSenha') && $request->has('confirmaSenha')) {
+                
+                $novaSenha     = $request->input('novaSenha');
+                $confirmeSenha = $request->input('confirmaSenha');
+
+                if($novaSenha == $confirmeSenha){                    
+                    $user = Auth::user();
+                    $user->password = Hash::make($novaSenha);
+                    $user->save();
+                    echo "true";die();                        
+                }else{                    
+                    echo "false";die();    
+                }                
+            }
+        }
+        echo "false";die();
+    }
+
+    /*$2y$10$5D4v9iwqS6Fp4p9VApEDteOvCOvCSFISklG4j.JPSps6WuevzoepC*/
 
      
     

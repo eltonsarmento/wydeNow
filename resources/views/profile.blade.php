@@ -148,13 +148,12 @@
 
                 <!-- Senha -->
                 <li class="qf b aml">
-                    <label>Senha</label>                                          
-                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Senha atual">                            
+                    <label>Alterar Senha</label>                                                              
+                    <input type="password" class="form-control" id="novaSenha"  placeholder="Nova Senha">                            
+                    <br>
+                    <input type="password" class="form-control" id="confirmaSenha"  placeholder="Repita nova senha">                            
                     <br>                                                    
-                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Nova Senha">                            
-                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Repita nova senha">                            
-                    <br>                                                    
-                    <button type="submit" class="cg tr">Salvar</button>                
+                    <button type="button" onclick="atualizarSenha(); return false;" class="cg tr" >Atualizar</button>                
                     </form>                     
                 </li>      
             </div>
@@ -256,10 +255,11 @@
           <div class="alj js-conversation">
             <ul class="qo aob">
                 <li class="qf b aml">
-                    <label>Senha</label>                                          
-                    <input type="text" class="form-control" id="texto" name="texto" placeholder="senha" id="senhaModal">
+                    <label>Senha</label>   
+                    <div id="divErrorSenha"></div>                                       
+                    <input type="password" class="form-control"  placeholder="senha" id="senhaModal">
                     <br>
-                    <button type="submit" class="cg tr">Desbloquear</button>                                    
+                    <button type="button" onclick="verificaSenhaDesbloquear(); return false" class="cg tr">Desbloquear</button>                                    
                 </li>
             </ul>
           </div>

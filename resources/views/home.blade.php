@@ -53,7 +53,7 @@
 
         <li class="qf b aml">
           <div class="input-group">
-            <input type="text" class="form-control" id="messageHome" placeholder="Crie agora sua tarefa">
+            <input type="text" class="form-control" id="messageHome" autofocus placeholder="Crie agora sua tarefa">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="fj">
               <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
