@@ -311,42 +311,83 @@ class TarefaController extends Controller {
 
     public function doit(){
 
-        $categoria_id = Request::input('categoria_id');
-        $user_id      = Request::input('user_id');
-        $user         = User::find($user_id);
-        $tarefa = Tarefa::select('posicao')->where(
-            [
-                ['categoria_id', $categoria_id],
-                ['user_id', $user->id],
-                ['status', 'A'],
-            ]
-        )->orderBy('posicao', "desc")->get();  
+        if(Request::ajax()){
+            $categoria_id  = Request::input('categoria_id');
+            $nickname      = Request::input('nickname');
+            
+            $vUser          = User::where('nickname', $nickname)->get();
+            $user           = $vUser[0];
+            
+            $tarefa        = Tarefa::select('posicao')->where(
+                [
+                    ['categoria_id', $categoria_id],
+                    ['user_id', $user->id],
+                    ['status', 'A'],
+                ]
+            )->orderBy('posicao', "desc")->get();  
 
-        $posicao = (empty($tarefa[0]) ? 1 : $tarefa[0]->posicao + 1);
+            $posicao = (empty($tarefa[0]) ? 1 : $tarefa[0]->posicao + 1);
 
-        /*Constroi e salva */
-        $tarefa               = new Tarefa();
-        $tarefa->texto        = Request::input('texto');
-        $tarefa->privado      = 1;
-        $tarefa->posicao      = $posicao;
-        $tarefa->categoria_id = $categoria_id;
-        $tarefa->status       = "A";
-        $tarefa->user_id      = Auth::user()->id;  
-        $tarefa->doit         = $user_id;  
-        $tarefa->save();
+            /*Constroi e salva */
+            $tarefa               = new Tarefa();
+            $tarefa->texto        = Request::input('texto');
+            $tarefa->privado      = 1;
+            $tarefa->posicao      = $posicao;
+            $tarefa->categoria_id = $categoria_id;
+            $tarefa->status       = "A";
+            $tarefa->user_id      = Auth::user()->id;  
+            $tarefa->doit         = $user->id;  
+            $tarefa->save();
 
-        $categoria = Categoria::find($categoria_id);
-        
-        
-        $id = Notification::insertGetId(
-                    ['user_id' => $user_id, 'sender_id' => Auth::user()->id, 'message' => "Enviou uma tarefa DoIt para você!", 'status' => 'I', 'created_at' => Carbon::now()]
-                    );
+            $categoria = Categoria::find($categoria_id);
+            
+            
+            $id = Notification::insertGetId(
+                        ['user_id' => $user->id, 'sender_id' => Auth::user()->id, 'message' => "Enviou uma tarefa DoIt para você!", 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
 
-        $notification = Notification::find($id);
-        $notification->link= "redirectFor('/tarefa/".$categoria->descricao."'); return false;";
-        $notification->save();
+            $notification = Notification::find($id);
+            $notification->link= "redirectFor('/tarefa/".$categoria->descricao."'); return false;";
+            $notification->save();
 
-        return redirect('/profile/'.$user->nickname.'/'.$categoria->descricao);
+        }else{
+            $categoria_id = Request::input('categoria_id');
+            $user_id      = Request::input('user_id');
+            $user         = User::find($user_id);
+            $tarefa = Tarefa::select('posicao')->where(
+                [
+                    ['categoria_id', $categoria_id],
+                    ['user_id', $user->id],
+                    ['status', 'A'],
+                ]
+            )->orderBy('posicao', "desc")->get();  
+
+            $posicao = (empty($tarefa[0]) ? 1 : $tarefa[0]->posicao + 1);
+
+            /*Constroi e salva */
+            $tarefa               = new Tarefa();
+            $tarefa->texto        = Request::input('texto');
+            $tarefa->privado      = 1;
+            $tarefa->posicao      = $posicao;
+            $tarefa->categoria_id = $categoria_id;
+            $tarefa->status       = "A";
+            $tarefa->user_id      = Auth::user()->id;  
+            $tarefa->doit         = $user_id;  
+            $tarefa->save();
+
+            $categoria = Categoria::find($categoria_id);
+            
+            
+            $id = Notification::insertGetId(
+                        ['user_id' => $user_id, 'sender_id' => Auth::user()->id, 'message' => "Enviou uma tarefa DoIt para você!", 'status' => 'I', 'created_at' => Carbon::now()]
+                        );
+
+            $notification = Notification::find($id);
+            $notification->link= "redirectFor('/tarefa/".$categoria->descricao."'); return false;";
+            $notification->save();
+
+            return redirect('/profile/'.$user->nickname.'/'.$categoria->descricao);
+        }
     }
 
     public function adiciona_sugestao(){

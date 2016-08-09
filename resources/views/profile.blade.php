@@ -104,46 +104,45 @@
                         <label style="width: 50%;">Nickname</label>
                     </div>
                     <div class="input-group" style="width: 100%;">
-                        <input type="text" class="form-control" id="messageHome" placeholder="Nome do usuário"  value="{{ Auth::user()->name }}">                  
-                        <div class="fj" style="width: 10%;">
-                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <input type="text" class="form-control" id="nameUser" placeholder="Nome do usuário"  value="{{ Auth::user()->name }}">                  
+                        <div class="fj" style="width: 1%;">
+                          <!-- <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
                             <span class="h agz"></span>
-                          </button>
+                          </button> -->
                         </div>
                       
-                        <input type="text" class="form-control" id="messageHome" placeholder="Ex: @johnyblack" value="{{ Auth::user()->nickname }}">                  
-                        <div class="fj" style="width: 10%;">
-                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <input type="text" class="form-control" id="nicknameUser" placeholder="Ex: @johnyblack" value="{{ Auth::user()->nickname }}">                  
+                        <div class="fj" style="width: 1%;">
+                          <!-- <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
                             <span class="h agz"></span>
-                          </button>
+                          </button> -->
                         </div>
                     </div>                
-                </li>
-                <!-- Nome e Nickname -->
+                    <br>
 
-
-                <!-- Nome e Nickname -->
-                 <li class="qf b aml">
                     <div class="input-group" style="width: 100%;">
                         <label style="width: 50%;">Lives in</label>
                         <label style="width: 50%;">Worked at</label>
                     </div>
                     <div class="input-group" style="width: 100%;">
-                        <input type="text" class="form-control" id="messageHome" placeholder="San Francisco, CA">                  
-                        <div class="fj" style="width: 10%;">
-                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <input type="text" class="form-control" id="livesinUser" placeholder="San Francisco, CA" value="{{ Auth::user()->lives_in }}">                  
+                        <div class="fj" style="width: 1%;">
+                          <!-- <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
                             <span class="h agz"></span>
-                          </button>
+                          </button> -->
                         </div>
                       
-                        <input type="text" class="form-control" id="messageHome" placeholder="Github">                  
-                        <div class="fj" style="width: 10%;">
-                          <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
+                        <input type="text" class="form-control" id="workedatUser" placeholder="Github" value="{{ Auth::user()->worked_at }}">                  
+                        <div class="fj" style="width: 1%;">
+                          <!-- <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
                             <span class="h agz"></span>
-                          </button>
+                          </button> -->
                         </div>
-                    </div>                
+                    </div>    
+                    <br>                                                    
+                    <button type="button" onclick="atualizarDadosPessoais(); return false;" class="cg tr" >Atualizar</button>                
                 </li>
+
                 <!-- Nome e Nickname -->
 
                 <!-- Senha -->
@@ -153,8 +152,7 @@
                     <br>
                     <input type="password" class="form-control" id="confirmaSenha"  placeholder="Repita nova senha">                            
                     <br>                                                    
-                    <button type="button" onclick="atualizarSenha(); return false;" class="cg tr" >Atualizar</button>                
-                    </form>                     
+                    <button type="button" onclick="atualizarSenha(); return false;" class="cg tr" >Atualizar</button>                                    
                 </li>      
             </div>
 

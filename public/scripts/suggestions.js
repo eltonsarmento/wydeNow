@@ -142,12 +142,6 @@ $(document).keypress(function(e) {
                 $('#corpoTarefaSugestao').html(htmlBody);
                                    
             });
-        }
-
-        var messageHome = $('#messageHome').val(); 
-        if(messageHome.length > 3){
-            $('#radioStatusPublico').prop('checked', true);            
-            $('#msgModalMessage').modal('show');   
         }   
     }
 });

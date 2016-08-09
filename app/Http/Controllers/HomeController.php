@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Tarefa;
+use App\User;
 use Carbon\Carbon;
 use Auth;
+
 
 class HomeController extends Controller {
     
@@ -30,9 +32,12 @@ class HomeController extends Controller {
             $tarefasPublicas[$key]['tempoCadastada'] = $dt->diffForHumans(Carbon::now('America/Maceio'));         
         }        
 
-        
+        if(Auth::user()->followers->count() == 0){
+            $people = User::where('id','<>',Auth::user()->id)->take(5)->get();
+        }
         return view('home', array(
                     'tarefasPublicas' => $tarefasPublicas,
+                    'people'          => (empty($people) ?  null : $people),
         ));
     }
 

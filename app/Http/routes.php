@@ -34,6 +34,11 @@ Route::post('/profile/permit', 'UserController@permit');
 Route::post('/profile/unpermit', 'UserController@unPermit');
 Route::post('/profile/validaSenha', 'UserController@validaSenha');
 Route::post('/profile/updatepassword', 'UserController@update_password');
+Route::post('/profile/updateprofile', 'UserController@update_profile');
+Route::post('/profile/getusersearch', 'UserController@getUserSearch');
+Route::post('/profile/getcategoriasdoitbynickname', 'UserController@getCategoriasDoItByNickname');
+
+
 
 
 

@@ -46,15 +46,11 @@ class User extends Authenticatable
 
     public function followers(){
         return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
-        //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
-            // if you want to rely on accepted field, then add this:        
     }
 
 
     public function followersTable(){
-        return $this->hasMany('App\Follower', 'user_id', 'id');
-        //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
-            // if you want to rely on accepted field, then add this:        
+        return $this->hasMany('App\Follower', 'user_id', 'id');        
     }    
     
     public function countFollowers(){
@@ -64,9 +60,7 @@ class User extends Authenticatable
     public function following(){
         return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')
                         ->where('follow',1)
-                        ->orWhere('favorite', 1);
-        //return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id')->wherePivot('accepted', '=', 'A');
-            // if you want to rely on accepted field, then add this:        
+                        ->orWhere('favorite', 1);        
     }
 
     public function notificationAtivas(){

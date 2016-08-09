@@ -35,13 +35,16 @@
 
       <div class="qv rc sm sp">
         <div class="qw">
-          <h5 class="ald">About <small>· <a href="#">Edit</a></small></h5>
+          <h5 class="ald">About <small>· <a href="/profile">Edit</a></small></h5>
           <ul class="eb tb">
-            <li><span class="dp h xh all"></span>Went to <a href="#">Oh, Canada</a>
-            <li><span class="dp h ajw all"></span>Became friends with <a href="#">Obama</a>
-            <li><span class="dp h abu all"></span>Worked at <a href="#">Github</a>
-            <li><span class="dp h ack all"></span>Lives in <a href="#">San Francisco, CA</a>
-            <li><span class="dp h adt all"></span>From <a href="#">Seattle, WA</a>
+            <!-- <li><span class="dp h xh all"></span>Went to <a href="#">Oh, Canada</a> -->
+            @if(Auth::user()->worked_at)
+              <li><span class="dp h abu all"></span>Worked at <a href="#">{{ Auth::user()->worked_at }}</a>
+            @endif
+            @if(Auth::user()->lives_in)
+              <li><span class="dp h ack all"></span>Lives in <a href="#">{{ Auth::user()->lives_in }}</a>
+            @endif
+            <!-- <li><span class="dp h adt all"></span>From <a href="#">Seattle, WA</a> -->
           </ul>
         </div>
       </div>
@@ -53,7 +56,10 @@
 
         <li class="qf b aml">
           <div class="input-group">
-            <input type="text" class="form-control" id="messageHome" autofocus placeholder="Crie agora sua tarefa">
+            <input type="text" class="form-control" id="messageHome" autofocus placeholder="Crie agora sua tarefa">            
+            <input type="hidden" id="nicknameMessageHome" value="">
+            <input type="hidden" id="isSearch" value="0">
+            <input type="hidden" id="textSearch" value="">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="fj">
               <button type="button" class="cg fm" onclick="btnMessagePrivado(); return false;">
@@ -61,6 +67,11 @@
               </button>
             </div>
           </div>
+            <div class="popover fade bottom in" role="tooltip" id="listaPerquisaDoit" style="top: 42px; left: 45%; display: none;">
+                <div class="arrow" style="left: 90%;"></div>
+                <div class="popover-content p-x-0" id="conteudoListaPerquisaDoit">
+                </div>
+            </div>
         </li>
         <br>
         <input type="hidden" id="totalTarefas" value="{{ $tarefasPublicas->count()}}">
@@ -258,10 +269,8 @@
                         </label>
                       </div>
                   </div>
-
                   <hr>
                   <div id="divModalMessageCategorias"></div>
-
             </div>        
           <div class="uq">          
 
@@ -275,6 +284,26 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal Sugestões -->
+<div class="cd fade" id="msgModalMessageDoIt" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="d">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
+        <h4 class="modal-title">Escolha a categoria do usuário</h4>
+      </div>
+
+          <div class="modal-body amf js-modalBody">            
+            <div class="uq">          
+              <div class="alj js-conversation" id="categoriasmsgModalMessageDoIt"></div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Modal Sugestões -->
 <div class="cd fade" id="msgModalCopiar" tabindex="-1" role="dialog" aria-labelledby="msgModal" aria-hidden="true">

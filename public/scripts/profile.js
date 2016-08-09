@@ -157,4 +157,24 @@ function atualizarSenha(){
     })
 }
 
+function atualizarDadosPessoais(){
+
+    var nameUser      = $('#nameUser').val();
+    var nicknameUser  = $('#nicknameUser').val();
+    var livesinUser   = $('#livesinUser').val();
+    var workedatUser  = $('#workedatUser').val();
+    
+    var htmlMessagem = '';
+    $.post('/profile/updateprofile', {name: nameUser, nickname: nicknameUser, livesin: livesinUser, workedat: workedatUser}, function(result){
+        if(result == 'true'){
+            htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
+            htmlMessagem += '    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+            htmlMessagem += '    <p><span class="h xl"></span> Dados pessoais atualizados com sucesso!!</p>';
+            htmlMessagem += ' </div>';
+            
+            $("#app-growl").html(htmlMessagem);                   
+        }
+        
+    })
+}
 /************************************* Formulario *******************************************************/

@@ -391,9 +391,102 @@ class UserController extends Controller{
         }
         echo "false";die();
     }
+    public function update_profile(Request $request){
 
-    /*$2y$10$5D4v9iwqS6Fp4p9VApEDteOvCOvCSFISklG4j.JPSps6WuevzoepC*/
+        if($request->ajax()){        
+            $name      = $request->input('name');
+            $nickname  = $request->input('nickname');
+            $lives_in  = $request->input('livesin');
+            $worked_at = $request->input('workedat');
 
-     
+            Auth::user()->name      = $name;
+            Auth::user()->nickname  = $nickname;
+            Auth::user()->lives_in  = $lives_in;
+            Auth::user()->worked_at = $worked_at;
+        
+            Auth::user()->save();
+            
+            echo "true";die();
+        }
+        echo "false";die();
+    }
+
+    
+
+    public function getUserSearch(Request $request){
+
+        if($request->ajax()){
+            if($request->has('textSearch')) {
+                
+                $textSearch     = str_replace("@", "", $request->input('textSearch'));
+                $textSearch     =  $textSearch . "%";
+                $users = User::join('followers', 'followers.user_id', '=', 'users.id')
+                                            ->select('users.*')
+                                            ->where([
+                                                ['name', 'like', $textSearch],
+                                                ['permit', 1],
+                                                ['follower_id', Auth::user()->id],
+                                            ])->get();
+                
+                if($users->count() > 0){
+                    foreach ($users as $key => $user) {                        
+                        $json[] = ['id' => $user->id, 'avatar' => $user->avatar, 'name' => $user->name, 'nickname' => $user->nickname];
+                    }
+                    echo json_encode($json);die();     
+                }else{
+                    echo "false";die();
+                }
+            }
+        }
+        echo "false";die();
+    }
+
+    public function getCategoriasDoItByNickname(Request $request){
+
+        if($request->ajax()){
+            if($request->has('nickname')) {
+                
+                $nickname     = $request->input('nickname');
+                
+                $users = User::join('followers', 'followers.user_id', '=', 'users.id')
+                                            ->select('users.*')
+                                            ->where([
+                                                ['nickname', $nickname],
+                                                ['permit', 1],
+                                                ['follower_id', Auth::user()->id],
+                                            ])->get();
+                
+                $json = [];
+                if($users->count() > 0){
+                    foreach ($users as $key => $user) {
+                        $follower = $user->followersTable()->where([
+                                                        ['follower_id', Auth::user()->id],
+                                                        ['user_id', $user->id],
+                                                    ])->get();
+                        $follower = (empty($follower[0]) ? null : $follower[0]);
+
+                        if($follower){
+                            $categorias = Categoria::join('follower_categoria', 'categorias.id', '=', 'follower_categoria.categoria_id')
+                                                    ->join('followers', 'followers.id', '=', 'follower_categoria.follower_id')
+                                                    ->select('categorias.*')
+                                                    ->where('followers.id', $follower->id)->get();
+                            if($categorias->count() > 0){
+                                foreach ($categorias as $key => $c) {                                    
+                                    $json[] = ['id' => $c->id, 'descricao' => $c->descricao];    
+                                }                                
+                            }                            
+                        }                        
+                    }
+                    echo json_encode($json);die();     
+                }else{
+                    echo json_encode($json);die();     
+                }
+            }
+        }
+        echo json_encode($json);die();     
+    }
+    
+    
+
     
 }

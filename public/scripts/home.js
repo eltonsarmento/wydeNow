@@ -47,7 +47,7 @@ function atualizarTimeline(){
 }
  
 // Definindo intervalo que a função será chamada
-setInterval("atualizarTimeline()", 60000);
+setInterval("atualizarTimeline()", 120000);
 
 /*======================================================= Pega todas categorias para modal mensagem ============================================================*/
 
@@ -91,30 +91,42 @@ function getMyCategories(){
 /*======================================================== Cadastra Tarefa home =============================================================*/
 function cadastraTarefaHome(categoria_id){
 	var texto = $('#messageHome').val();
-	var htmlMessagem = '';
 
+	if(texto.indexOf("@") != -1){
+		var nickname = $('#nicknameMessageHome').val();
+		texto    	 = texto.replace(nickname,"");
+		cadastraDoIt(categoria_id,nickname,texto);			
+		$('#msgModalMessageDoIt').modal('hide');
+	}else{
+		var htmlMessagem = '';
+
+	    $.post("/tarefa/adiciona", {categoria_id: categoria_id, texto: texto}, function(result){            
+	    	htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
+			htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+			htmlMessagem += '	 <p><span class="h xl"></span> Sua tarefa foi adicionada!!</p>';
+			htmlMessagem += ' </div>';
+			$("#app-growl").html(htmlMessagem);
+	    });
+	}
 	$('#msgModalMessage').modal('hide');
-	$('#messageHome').val('');
 	$('#radioStatusPublico').prop('checked', false);
 	$('#radioStatusPrivado').prop('checked', false);     
 	$('#radioCategoria').prop('checked', false); 
-
-    $.post("/tarefa/adiciona", {categoria_id: categoria_id, texto: texto}, function(result){            
-    	htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
-		htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
-		htmlMessagem += '	 <p><span class="h xl"></span> Sua tarefa foi adicionada!!</p>';
-		htmlMessagem += ' </div>';
-		$("#app-growl").html(htmlMessagem);
-		  
-    });
+	setDefaultCamposTarefaHome();
 }
+
 function btnMessagePrivado(){
-    var messageHome = $('#messageHome').val();
-    $('#radioStatusPrivado').prop('checked', true);
-    if(messageHome.length > 3){    
-    	$('#messageHome').val(messageHome + " #privado");    
-        $('#msgModalMessage').modal('show');  
-    }
+	var messageHome = $('#messageHome').val();
+
+    if(messageHome.indexOf("@") != -1){	    			    		  
+		getcategoriasdoitbynickname();	
+	}else{
+	    $('#radioStatusPrivado').prop('checked', true);
+	    if(messageHome.length > 3){    
+	    	$('#messageHome').val(messageHome + " #privado");    
+	        $('#msgModalMessage').modal('show');  
+	    }
+	}
 }
 
 function opcaoStatus(status){
@@ -171,6 +183,125 @@ function opcaoStatusCopiar(status){
 		$('#radioStatusCopiarPublico').prop('checked', true);
 	}	
 }
+/*=========================================================== Copiar Tarefa =================================================================*/
 
 
 
+$(document).keypress(function(e) {    	
+
+	
+	var isSearch 	  =  $('#isSearch').val();
+	var textSearch 	  =  $('#textSearch').val();
+	var textoCompleto = $('#messageHome').val();
+
+	if(e.which == 64){
+    	$('#isSearch').val('1');
+    	$('#textSearch').val('@');
+    	textoCompleto += "@";
+    }
+
+    if(textoCompleto.indexOf("@") == -1){
+		textSearch = "";
+		$('#textSearch').val('');
+	}else{
+		if(isSearch == '1'){    	
+	    	textSearch += e.key;
+	    	$('#textSearch').val(textSearch);    	
+	    }
+
+	    if(textSearch.length > 3){	    	
+	    	$.post("/profile/getusersearch", {textSearch: textSearch}, function(result){
+	    		if(result != 'false'){
+
+	    			var json = jQuery.parseJSON(result);
+	    			var htmlRetorno = '';
+	    			$.each(json, function(key,item) {
+	    					    				
+		    			htmlRetorno += '<div class="b" onClick="setNicknameDoit(\''+textSearch+'\',\''+item['nickname']+'\'); return false;">';
+						htmlRetorno += '	 <div class="anp">';
+						htmlRetorno += '	 	<img class="cu"  src="/uploads/avatars/'+item['avatar']+'">';
+						htmlRetorno += ' 	</div>';
+						htmlRetorno += ' 	<smal><strong>'+item['name']+'</strong></smal>';
+						htmlRetorno += '</div>';					
+					});
+
+					$("#conteudoListaPerquisaDoit").html(htmlRetorno);
+					$("#listaPerquisaDoit").css("display", "block");
+	    		}else{
+	    			$("#conteudoListaPerquisaDoit").html('');
+					$("#listaPerquisaDoit").css("display", "none");
+	    		}
+		    	
+		    });
+	    }
+	}
+
+	if(e.which == 13){
+		var messageHome = $('#messageHome').val(); 
+	    if(messageHome.length > 3){
+	    	if(messageHome.indexOf("@") != -1){	    			    		  
+	    		getcategoriasdoitbynickname();	    		
+	    	}else{
+	        	$('#radioStatusPublico').prop('checked', true);            
+	        	$('#msgModalMessage').modal('show');   
+	        }
+	    }
+	}
+});
+function getcategoriasdoitbynickname(){
+	var nickname = $('#nicknameMessageHome').val();
+	var texto    = $('#messageHome').val();
+	texto    	 = texto.replace(nickname,"");	
+	$.post("/profile/getcategoriasdoitbynickname", {nickname: nickname}, function(result){
+		
+		var json = jQuery.parseJSON(result);		    			
+		if(json.length == 1){
+			$.each(json, function(key,item) {	 
+				var categoria_id = item['id'];	    					
+				cadastraDoIt(categoria_id,nickname,texto);	    					
+			})						
+		}else if(json.length > 1){
+			var htmlRetornoCategorias = '';
+			$.each(json, function(key,item) {	    						
+				htmlRetornoCategorias += ' 	<div class="ex ug uk">';
+	        	htmlRetornoCategorias += ' 		<label>';
+	        	htmlRetornoCategorias += ' 			<input type="radio" id="radioCategoria" onclick="cadastraTarefaHome('+item['id']+'); return false;" value="'+item['id']+'" name="radioCategoria"><span class="uh"></span>'+item['descricao'];
+	        	htmlRetornoCategorias += ' 		</label>';
+	        	htmlRetornoCategorias += ' 	</div>'; 
+			});
+			$('#categoriasmsgModalMessageDoIt').html(htmlRetornoCategorias);
+			$('#msgModalMessageDoIt').modal('show'); 
+		}
+    	
+    });
+}
+function setNicknameDoit(textSearch,nickname){	
+	var textoCompleto = $('#messageHome').val();
+	textoCompleto = textoCompleto.replace(textSearch,nickname);	
+	
+	setDefaultCamposTarefaHome();
+	$('#nicknameMessageHome').val(nickname);
+	$('#messageHome').val(textoCompleto);
+}
+
+function setDefaultCamposTarefaHome(){
+	$('#messageHome').val('');
+	$('#nicknameMessageHome').val('');
+	$("#conteudoListaPerquisaDoit").html('');
+	$("#listaPerquisaDoit").css("display", "none");
+	$('#textSearch').val('');
+	$('#isSearch').val('0');
+	$('#messageHome').focus();	
+}
+
+function cadastraDoIt(categoria_id,nickname,texto){
+	var htmlMessagem = '';
+	$.post("/tarefa/doit", {categoria_id: categoria_id, nickname: nickname, texto: texto}, function(result){            
+    	htmlMessagem += '<div class="alert fq alert-dismissible fade in" role="alert">';
+		htmlMessagem += '	 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+		htmlMessagem += '	 <p><span class="h xl"></span> Tarefa doit para '+nickname+' foi criada!!</p>';
+		htmlMessagem += ' </div>';
+		$("#app-growl").html(htmlMessagem);	
+		setDefaultCamposTarefaHome();
+    });
+}

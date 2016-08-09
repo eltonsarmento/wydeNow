@@ -79,9 +79,9 @@
 	            <a data-toggle="modal" href="/tarefa/listar/ativas">({{Auth::user()->tarefasPendentes()->count()}}) waiting</a>
 	          </li>
 	          
-	          <li>
+	          <!-- <li>
 	            <a href="docs/index.html">Docs</a>
-	          </li>
+	          </li> -->
 	        </ul>
 
 	        <ul class="nav navbar-nav og ale ss">
@@ -110,20 +110,15 @@
 	        </form>
 
 	        <ul class="nav navbar-nav st su sv">
-	          <li><a href="{{ url('/home') }}">Home</a></li>
-	          <li><a href="{{ url('/profile') }}">Profile</a></li>
-	          <li><a href="#">Notifications</a></li>
-	          <li><a data-toggle="modal" href="#msgModal">Messages</a></li>
-	          <li><a href="docs/index.html">Docs</a></li>	          
-	          <li><a href="#" data-action="growl">Growl</a></li>
+	          <li><a href="{{ url('/tarefa') }}">Tarefas</a></li>
+	          <li><a href="{{ url('/profile') }}">Profile</a></li>	             
+	          <li><a data-toggle="modal" href="/tarefa/listar/concluidas">({{Auth::user()->tarefasConcluidas()->count()}}) finish</a></li>
+	          <li><a data-toggle="modal" href="/tarefa/listar/ativas">({{Auth::user()->tarefasPendentes()->count()}}) waiting</a></li>
 	          <li><a href="{{ url('/logout') }}">Logout</a></li>
 	        </ul>
 
-	        <ul class="nav navbar-nav hidden">
-	        <li><a  onClick="setaDadosModalSugestao('12','criar os layouts secundários do projeto wydenow'); return false;" style="margin-right: 10px;">
-	          		<span class="h xk"></span> Leonardo respondeu a sua sugestão!</a>
-	          </li>
-	          <li><a href="#" data-action="growl">Growl</a></li>
+	        <ul class="nav navbar-nav hidden">	        
+	          <li><a href="{{ url('/profile') }}">Profile</a></li>
 	          <li><a href="{{ url('/logout') }}">Logout</a></li>
 	        </ul>
 	      </div>
