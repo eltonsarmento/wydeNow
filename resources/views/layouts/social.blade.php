@@ -62,16 +62,18 @@
 	    </div>
 	    <div class="f collapse" id="navbar-collapse-main">
 
-	        <ul class="nav navbar-nav ss">	          
+	        <ul class="nav navbar-nav ss">	
+			  <li>
+	            <a href="{{ url('/profile') }}">perfil</a>
+	          </li>          
 	          <li>
-	            <a href="{{ url('/tarefa') }}">Tarefas</a>
-	          </li>
-	          <li>
-	            <a href="{{ url('/profile') }}">Perfil</a>
-	          </li>
-	          <li>
-	            <a >({{Auth::user()->my_tarefas()->count()}}) tarefas</a>
-	          </li>
+	            <a href="{{ url('/tarefa') }}">
+	            	@if(Auth::user()->my_tarefas()->count() > 0)
+	            		 ({{Auth::user()->my_tarefas()->count()}}) 
+	            	@endif
+	            	tarefas
+	            </a>
+	          </li>	          
 	          <li>
 	            <a data-toggle="modal" href="/tarefa/listar/concluidas">({{Auth::user()->tarefasConcluidas()->count()}}) finish</a>
 	          </li>

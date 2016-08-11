@@ -17,6 +17,7 @@ class HomeController extends Controller {
     }
 
     public function index() {
+        
         $tarefasPublicas = Tarefa::where(
                 [
                     ['tarefas.doit', '<>' , Auth::user()->id],                    

@@ -51,8 +51,8 @@ Route::post('/profile/getcategoriasdoitbynickname', 'UserController@getCategoria
 
 Route::get('/tarefa/getMyCategories', 'TarefaController@getMyCategories');
 Route::get('/tarefa/listar/{tipo?}', 'TarefaController@listByStatus');
-Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::get('/tarefa/doit/{nickname?}', 'TarefaController@indexDoit');
+Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar');
 
 

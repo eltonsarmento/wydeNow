@@ -106,7 +106,8 @@ class TarefaController extends Controller {
         ));
     }
 
-    public function indexDoit(){             
+    public function indexDoit(){  
+                   
         $user = Auth::user();             
           
         $user->tarefas = Tarefa::where(
@@ -116,7 +117,7 @@ class TarefaController extends Controller {
                 ]            
         )->whereIn('status', ['A','R'])
         ->join('users', 'users.id', '=', 'tarefas.doit')
-        ->orderBy('nickname')
+        ->orderBy('created_at', 'desc')
         ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get();
         
         $user->tarefasConcluidas = Tarefa::where(
@@ -128,7 +129,7 @@ class TarefaController extends Controller {
                     ['data_conclusao', '<', Carbon::tomorrow()],
                 ]            
         )->join('users', 'users.id', '=', 'tarefas.doit')
-        ->orderBy('nickname')
+        ->orderBy('created_at', 'desc')
         ->select('tarefas.*', 'users.name', 'users.nickname','users.avatar')->get();   
 
         
@@ -173,9 +174,9 @@ class TarefaController extends Controller {
             ]            
         )->leftjoin('suggestions', 'suggestions.tarefa_id', '=', 'tarefas.id')
          ->select('tarefas.*', 'suggestions.id as id_suggestion')
-         ->orderBy('created_at', 'asc')->get(); 
+         ->orderBy('created_at', 'asc')->groupBy('tarefas.id')->get(); 
 
-
+        
         foreach ($tarefas as $key => $t) {        
             if($t->user_id != Auth::user()->id){
                 $tarefas[$key]['isdoit'] = true;
@@ -505,6 +506,7 @@ class TarefaController extends Controller {
                         ['user_id' =>  $tarefa->user_id, 'sender_id' => $tarefa->doit, 'message' => $message, 'status' => 'I', 'created_at' => Carbon::now()]
                         );
 
+                $userNoti = User::find($tarefa->user_id);
                 $notification = Notification::find($id);                
                 $notification->link= "redirectFor('/tarefa/doit/".$userNoti->nickname."'); return false;";
                 $notification->save();

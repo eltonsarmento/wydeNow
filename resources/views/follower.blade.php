@@ -206,68 +206,7 @@
 
     </div>
 
-    <div class="gn">
-      <div class="qv rc alu ss">
-        <div class="qw">
-        <h5 class="ald">Active Users <small>· <a href="#">View All</a></small></h5>
-        <ul class="qo anx">
-          <li class="qf alm">
-            <a class="qj" href="#">
-              <img
-                class="qh cu"
-                src="/assets/img/avatar-fat.jpg">
-            </a>
-            <div class="qg">
-              <strong>Jacob Thornton</strong> @fat
-              <div class="aoa">
-                <button class="cg ts fx">
-                  <span class="h vc"></span> Follow</button>
-              </div>
-            </div>
-          </li>
-           <li class="qf">
-            <a class="qj" href="#">
-              <img
-                class="qh cu"
-                src="/assets/img/avatar-mdo.png">
-            </a>
-            <div class="qg">
-              <strong>Mark Otto</strong> @mdo
-              <div class="aoa">
-                <button class="cg ts fx">
-                  <span class="h vc"></span> Follow</button></button>
-              </div>
-            </div>
-          </li>
-        </ul>
-        </div>
-        <div class="qz">
-          Dave really likes these nerds, no one knows why though.
-        </div>
-      </div>
-
-
-        <div class="qv rc">
-          <div class="qw">
-          © 2015 Bootstrap
-
-          <a href="#">About</a>
-          <a href="#">Help</a>
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
-          <a href="#">Cookies</a>
-          <a href="#">Ads </a>
-
-          <a href="#">info</a>
-          <a href="#">Brand</a>
-          <a href="#">Blog</a>
-          <a href="#">Status</a>
-          <a href="#">Apps</a>
-          <a href="#">Jobs</a>
-          <a href="#">Advertise</a>
-          </div>
-      </div>
-    </div>
+    @include('helpers.coluna_direita')
   </div>
 </div>
 @endsection

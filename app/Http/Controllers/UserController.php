@@ -29,6 +29,11 @@ class UserController extends Controller{
 		}else{
         	$vUser = User::where('nickname',$nickname)->get();            
         	$user = $vUser[0];
+
+            if($user->id == Auth::user()->id){
+                return redirect('/profile');
+            }
+
             $my_perfil = false;            
             $categoriasUserLogado = Auth::user()->categorias()->get();
             $categoriasAutorizadasParaVisitante = null;
@@ -128,13 +133,11 @@ class UserController extends Controller{
                  'people' => (empty($people) ?  null : $people),
             ));
         }else{            
-            $people = User::where('id','<>', Auth::user()->id)->take(5)->get();            
+
+            $people = User::where('id','<>', Auth::user()->id)->take(5)->get();
+
+            
             $categoriaDefault = $categoria;            
-
-            
-
-            
-        
 
             return view('profile_follower', array(
                  'user' => $user, 

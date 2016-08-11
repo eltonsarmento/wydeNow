@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'nickname', 'lives_in', 'worked_at'
     ];
 
     /**
@@ -28,10 +28,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Tarefa');
     }
     public function my_tarefas(){
-        return $this->hasMany('App\Tarefa')->whereIn('status', ['A', 'C']);
+        return $this->hasMany('App\Tarefa')->whereIn('status', ['A', 'C'])->get();
     }
     public function tarefasConcluidas(){
-        return $this->hasMany('App\Tarefa')->where('status', 'C');
+        return $this->hasMany('App\Tarefa', 'doit')->where('status', 'C')->get();
     }
     public function tarefasPendentes(){
         return Tarefa::where([
