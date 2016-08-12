@@ -19,6 +19,52 @@ class NotificationController extends Controller {
         $this->middleware('auth');
     }
 
+    public function index(){
+        $notifications  = Notification::where(
+                                [
+                                    ['sender_id','<>',Auth::user()->id],                                    
+                                    ['user_id', Auth::user()->id],                                    
+                                ])->join('users', 'users.id', '=', 'notifications.sender_id')
+                                  ->select('notifications.*', 'users.name', 'users.nickname','users.avatar')
+                                  ->orderBy('created_at', 'desc')->take(50)->get();  
+        
+        
+        foreach ($notifications as $key => $n) {
+            $dt = new Carbon($n->created_at, 'America/Maceio');
+            $n->tempoCadastada = $dt->diffForHumans(Carbon::now('America/Maceio')); 
+            
+            $pos      = strripos($n->message, "Está seguindo");            
+            if ($pos !== false) {
+                $n->tipo = "1";
+            }else{
+                $pos      = strripos($n->message, "Escreveu uma sugestão");
+                if ($pos !== false) {
+                    $n->tipo = "2";
+                }else{
+                    $pos      = strripos($n->message, "Respondeu");
+                    if ($pos !== false) {
+                        $n->tipo = "3";
+                    }else{
+                        $n->tipo = "4";    
+                    }                    
+                }
+            } 
+            $n->message = strip_tags($n->message);
+        
+        }
+        
+
+        if(Auth::user()->followers()->count() == 0)
+            $people = User::where('id','<>', $user->id)->take(5)->get();
+
+        return view('notification', array(
+                "notifications" => $notifications,
+                "people" => (empty($people) ? null : $people),
+        ));
+
+
+    }
+
     public function verificanotifications(){
 
         /*

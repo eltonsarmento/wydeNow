@@ -10,21 +10,18 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-/*
-Route::get('/', function () {
-    return view('welcome');
-});*/
 
 Route::auth();
-
 Route::get('/', 'TarefaController@index');
 Route::get('/home', 'HomeController@index');
 Route::post('/home/getTimeline', 'HomeController@getTimeline');
 Route::get('/admin', 'AdminController@index');
 
-/*Profile */
+/*======================================================= PROFILE ======================================================= */
+/*GET*/
 Route::get('/profile/{nickname?}', 'UserController@index');
 Route::get('/profile/{nickname?}/{categoria?}', 'UserController@index');
+/*POST*/
 Route::post('/profile', 'UserController@update_avatar');
 Route::post('/profile/follow', 'UserController@follow');
 Route::post('/profile/unfollow', 'UserController@unFollow');
@@ -38,25 +35,15 @@ Route::post('/profile/updateprofile', 'UserController@update_profile');
 Route::post('/profile/getusersearch', 'UserController@getUserSearch');
 Route::post('/profile/getcategoriasdoitbynickname', 'UserController@getCategoriasDoItByNickname');
 
+/*======================================================= Tarefas ======================================================= */
 
-
-
-
-
-
-/*Tarefas */
-
-
-//Route::get('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
-
+/*GET*/
 Route::get('/tarefa/getMyCategories', 'TarefaController@getMyCategories');
 Route::get('/tarefa/listar/{tipo?}', 'TarefaController@listByStatus');
 Route::get('/tarefa/doit/{nickname?}', 'TarefaController@indexDoit');
 Route::get('/tarefa/{categoria?}', 'TarefaController@index');
 Route::get('/tarefa/ordenar/{categoria_id?}/{tipo?}', 'TarefaController@ordenar');
-
-
-
+/*POST*/
 Route::post('/tarefa/getSuggestion', 'TarefaController@getSuggestion');
 Route::post('/tarefa/adiciona', 'TarefaController@adiciona');
 Route::post('/tarefa/copiar', 'TarefaController@copiarTarefa');
@@ -70,17 +57,10 @@ Route::post('/tarefa/removerdoit', 'TarefaController@removerDoIt');
 Route::post('/tarefa/recusardoit', 'TarefaController@recusarDoIt');
 Route::post('/tarefa/suggestion', 'TarefaController@adiciona_sugestao');
 
-
+/*======================================================= Notification ======================================================= */
+Route::get('/notification', 'NotificationController@index');
 Route::get('/notification/verificanotifications', 'NotificationController@verificanotifications');
 Route::post('/notification/setStatus', 'NotificationController@setStatusNotification');
 
-
-/*Route::post('tarefa/concluir', function(){
-	if(Request::ajax()){
-		$id = Request::input('id');
-		
-    	print_r($id);die();
-    }
-});*/
 
 

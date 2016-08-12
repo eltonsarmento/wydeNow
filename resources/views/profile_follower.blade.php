@@ -9,7 +9,7 @@
        <div class="qv rc aog alu">
           <div class="qx" style="background-image: url(/assets/img/iceland.jpg);"></div>
           <div class="qw dj">
-            <a href="profile/index.html">
+            <a href="/profile">
               <img class="aoh" src="/uploads/avatars/{{ $user->avatar }}">
             </a>
             <input name="idUser" id="idUser" value="{{$user->id}}" type="hidden">            

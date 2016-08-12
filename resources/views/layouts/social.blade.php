@@ -136,7 +136,7 @@
 	    <div class="modal-content">
 	      <div class="d">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>        
-	        <h4 class="modal-title" >Notifications</h4>
+	        <h4 class="ald">Notifications <small> · <a href="/notification"> Ver todas</a></small></h4>
 	      </div>
 	      <input name="idsAtivas" id="idsAtivas" type="hidden">
 	      <div class="modal-body amf js-modalBody">        
